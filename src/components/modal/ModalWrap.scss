@@ -1,0 +1,48 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+@import '../../styles/fonts';
+
+
+.modal-overlay{
+  position: fixed;
+  inset: 0;
+  background-color: $color-b-o70;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  animation: fadeInOverlay 0.3s forwards;
+}
+
+.modal-content{
+  background-color: $color-gray-900;
+  color: #fff;
+  width: 90%;
+  max-width: 440px;
+  padding: $sp-30;
+  border-radius: 20px;
+  border: 1px solid $color-w-o05;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: scale(0.95);
+  animation: fadeInModal 0.4s forwards;
+
+  @media (max-width: $responsive-md){
+    padding: $sp-20;
+  }
+}
+
+// 애니메이션
+@keyframes fadeInOverlay{
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInModal{
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

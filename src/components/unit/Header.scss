@@ -1,0 +1,42 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+@import '../../styles/fonts';
+
+.header{
+    // header 공통 START
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%;
+    padding: $sp-24 2% 0;
+    background-color: $bg-gradient;
+
+    @include md{
+        padding: $sp-08 4%;
+    }
+    // header 공통 END
+
+    &__inner{
+        max-width: 1440px;
+        margin: 0 auto;
+        @include flex-between;
+        .header__inner__logo{
+            img{
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        &__btn-lang{
+            display: flex;
+            align-items: center;
+            column-gap: 4px;
+            span{
+                @include font-sm-b;
+                color: $color-gray-400;
+                @include md{
+                    @include font-xs-b
+                }
+            }
+        }
+    }
+}

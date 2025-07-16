@@ -1,0 +1,36 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+@import '../../styles/fonts';
+
+.header--back{
+  .header__inner__logo{
+    position: relative;
+    @include flex-start;
+    gap: 12px;
+
+    a {
+      opacity: 1;
+      transform: translateY(0);
+
+      @include md {
+        opacity: 0;
+        transform: translateY(-5px);
+        pointer-events: none;
+      }
+    }
+
+    .header-back__btn-back{
+      position: absolute;
+      left: 0;
+      opacity: 0;
+      transform: translateY(-5px);
+      pointer-events: none;
+
+      @include md{
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+    }
+  }
+}

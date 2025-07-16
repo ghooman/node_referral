@@ -1,23 +1,32 @@
-import logo from './logo.svg';
+import { Routes, Route } from 'react-router-dom';
+// style
 import './App.css';
+import './styles/Main.scss'
+// Route
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
+import SalesRecord from './pages/SalesRecord';
+import RecommenderList from './pages/RecommenderList';
+import RefferalEarningList from './pages/RefferalEarningList';
+import OtherSalesRecord from './pages/OtherSalesRecord';
+import MasterDashboardDoing from './pages/MasterDashboardDoing';
+import MasterDashboardDone from './pages/MasterDashboardDone';
 
-function App() {
+function App(){
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/SalesRecord" element={<SalesRecord />} />
+        <Route path="/RecommenderList" element={<RecommenderList />} />
+        <Route path="/RefferalEarningList" element={<RefferalEarningList />} />
+        <Route path="/OtherSalesRecord" element={<OtherSalesRecord />} />
+        <Route path="/MasterDashboardDoing" element={<MasterDashboardDoing />} />
+        <Route path="/MasterDashboardDone" element={<MasterDashboardDone />} />
+      </Routes>
     </div>
   );
 }

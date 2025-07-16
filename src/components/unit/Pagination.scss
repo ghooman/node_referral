@@ -1,0 +1,45 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.pagination{
+    @include flex-between;
+    gap: 10px;
+    width: auto;
+    max-width: 300px;
+    margin: $sp-10 auto 0;
+
+    &__arrow{
+        background: none;
+        border: none;
+        color: $color-gray-400;
+        font-size: 20px;
+        cursor: pointer;
+        padding: $sp-06;
+
+        &:disabled{
+            color: $color-w-o20;
+            cursor: not-allowed;
+        }
+    }
+
+    &__number{
+        @include font-sm-b;
+        background: transparent;
+        border: none;
+        color: $color-gray-000;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+
+    &.active{
+        background-color: $color-primary;
+        color: $color-gray-000;
+    }
+
+    &:hover:not(.active){
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+}

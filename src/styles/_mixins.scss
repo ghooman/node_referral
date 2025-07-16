@@ -1,0 +1,168 @@
+/* ============================================================
+   ▶ Font Style
+============================================================ */
+
+/* -------------------- 공통 Font Style (w/ font-base) -------------------- */
+@mixin font-base($size, $line, $weight){
+    font-size: $size;
+    line-height: $line;
+    font-weight: $weight;
+}
+
+/* -------------------- Font Style include -------------------- */
+// Heading Font Style
+@mixin font-h0{
+    @include font-base($fs-48, 60px, 800);
+}
+@mixin font-h1{
+    @include font-base($fs-40, 50px, 700);
+}
+@mixin font-h2{
+    @include font-base($fs-34, 44px, 700);
+}
+@mixin font-h3{
+    @include font-base($fs-30, 40px, 700);
+}
+@mixin font-h4{
+    @include font-base($fs-26, 36px, 700);
+}
+@mixin font-h5-eb{ 
+    @include font-base($fs-24, 34px, 800);
+}
+@mixin font-h5-b{ 
+    @include font-base($fs-24, 34px, 700);
+}
+
+// Context Font Style
+@mixin font-xl-eb{
+    @include font-base($fs-20, 30px, 800);
+}
+@mixin font-xl-b{
+    @include font-base($fs-20, 30px, 700);
+}
+@mixin font-xl-r{
+    @include font-base($fs-20, 30px, 400);
+}
+@mixin font-lg-b{
+    @include font-base($fs-18, 28px, 700);
+}
+@mixin font-lg-r{
+    @include font-base($fs-18, 28px, 400);
+}
+@mixin font-md-b{
+    @include font-base($fs-16, 24px, 700);
+}
+@mixin font-md-r{
+    @include font-base($fs-16, 24px, 400);
+}
+@mixin font-sm-b{
+    @include font-base($fs-14, 22px, 700);
+}
+@mixin font-sm-r{
+    @include font-base($fs-14, 22px, 400);
+}
+@mixin font-xs-b{
+    @include font-base($fs-12, 18px, 700);
+}
+@mixin font-xs-r{
+    @include font-base($fs-12, 18px, 400);
+}
+@mixin font-mini{
+    @include font-base($fs-11, 16px, 400);
+}
+
+
+/* ============================================================
+   ▶ Media Query Mixins
+============================================================ */
+
+/* desktop (min-width: 1200px) */
+@mixin xl{
+    @media (min-width: $responsive-lg){
+        @content;
+    }
+}
+// desctop~tablet range
+@mixin lg{
+    @media (max-width: $responsive-lg){
+        @content;
+    }
+}
+/* tablet~mobile (min-width: 999px) */
+@mixin md{
+    @media (max-width: $responsive-md){
+        @content;
+    }
+}
+/* mini-mobile (min-width: 768px) */
+@mixin sm{
+    @media (max-width: $responsive-sm){
+        @content;
+    }
+}
+
+
+/* ============================================================
+   ▶ Flex Layout
+============================================================ */
+// 좌 정렬, 가운데 맞춤
+@mixin flex-start{
+    display: flex;
+    align-items: center;
+}
+
+// 좌우 정렬, 가운데 맞춤 
+@mixin flex-between{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+// 세로 정렬
+@mixin flex-column{
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+
+/* ============================================================
+   ▶ Loading Dot Animation
+============================================================ */
+@mixin dot-animation{
+  display: inline-flex;
+  margin-left: 4px;
+
+  .dot{
+    display: inline-block;
+    opacity: 0;
+    animation: dot-blink 1.2s infinite;
+  }
+  .dot-1 { animation-delay: 0s; }
+  .dot-2 { animation-delay: 0.2s; }
+  .dot-3 { animation-delay: 0.4s; }
+}
+
+
+/* ============================================================
+   ▶ Ellipsis
+============================================================ */
+@mixin ellipsis{
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+
+/* ============================================================
+   ▶ Web Accessibility
+============================================================ */
+@mixin sr-only{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

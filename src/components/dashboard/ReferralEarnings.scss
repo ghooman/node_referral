@@ -1,0 +1,138 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.table-section{
+  &__tit{
+    @include flex-between;
+    margin-bottom: $sp-16;
+
+    a{
+      font-size: 14px;
+      color: $color-primary;
+    }
+  }
+
+  &__tit__list-head{
+    @include font-sm-r;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    padding: 10px 0;
+    color: $color-gray-400;
+    @include md{
+      @include font-xs-r;
+    }
+
+    .col{
+      text-align: left;
+
+    }
+  }
+
+  .list-item{
+    border-bottom: 1px solid $color-w-o05;
+
+    &__row{
+      @include font-sm-r;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      align-items: center;
+      padding: 14px 0;
+      color: $color-gray-000;
+      @include md{
+        @include font-xs-r;
+      }
+
+      .col{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .col--btn{
+        display: flex;
+        justify-content: flex-end;
+
+        button{
+          background: none;
+          border: none;
+          padding: 0;
+          cursor: pointer;
+
+          img{
+            width: 20px;
+            height: 20px;
+          }
+        }
+      }
+    }
+
+    &__detail{
+      margin-top: $sp-12;
+      padding: $sp-16;
+
+      .info-table{
+        width: 100%;
+
+        .info-header{
+          @include font-sm-b;
+          display: flex;
+          padding: $sp-08 0;
+          color: $color-gray-400;
+          @include md{
+            @include font-xs-b;
+          }
+
+          .col{
+            flex: 1;
+            text-align: center;
+
+            &.col--email{
+              text-align: left;
+              padding: 0 $sp-12;
+            }
+          }
+        }
+
+        .info-row{
+          @include font-sm-r;
+          display: flex;
+          padding: $sp-08 0;
+          color: $color-gray-000;
+          @include md{
+            @include font-xs-r;
+          }
+
+          .col{
+            flex: 1;
+            text-align: center;
+
+            &:first-child {
+              text-align: left;
+            }
+
+            &.col--email{
+              padding: 0 $sp-12;
+              a{
+                @include flex-start;
+                column-gap: 6px;
+              }
+              strong{
+                @include font-sm-b;
+                @include md{
+                  @include font-xs-b;
+                }
+              }
+              span{
+                @include font-sm-r;
+                color: $color-gray-400;
+                @include md{
+                  @include font-xs-r;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

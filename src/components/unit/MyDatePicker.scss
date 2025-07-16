@@ -1,0 +1,119 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.react-datepicker {
+  background-color: $color-gray-900;
+  border-radius: 20px;
+  font-family: inherit;
+  padding: 20px;
+  border: 1px solid $color-w-o20;
+
+  &__header {
+    background-color: transparent;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &__current-month {
+    @include font-xl-b;
+    color: $color-gray-000;
+    padding-bottom: $sp-30 !important;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #363636;
+    @include font-sm-b;
+  }
+
+  &__navigation {
+    top: 30px;
+
+    &--previous{
+        left: 10px !important;
+    }
+    &--next{
+        right: 10px !important;
+    }
+
+    &--previous,
+    &--next {
+      width: 32px;
+      height: 30px;
+      background-color: transparent;
+      border-radius: 10px;
+      border: 1px solid $color-gray-000;
+
+      &::before {
+        border-color: #fff;
+        width: 6px;
+        height: 6px;
+      }
+    }
+  }
+
+  &__day-names {
+    margin-bottom: 8px;
+
+    .react-datepicker__day-name {
+      color: #999;
+      font-size: 12px;
+      font-weight: 400;
+    }
+  }
+
+  &__day {
+    @include font-sm-b;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    margin: 4px;
+    border-radius: 10px;
+    color: #fff;
+    background: none;
+
+    &:hover {
+        background-color: $color-primary;
+        color: $color-gray-000;
+    }
+
+    &--selected {
+      border: 2px solid $color-primary;
+      background-color: transparent;
+      color: #fff;
+    }
+
+    &--today.react-datepicker__day--selected {
+        background-color: transparent;
+        border: 2px solid $color-primary;
+
+
+        &::after {
+        display: none; // 점 숨기기
+        }
+    }
+  }
+}
+
+.react-datepicker__navigation-icon{
+    top: 1px;
+
+    &--next{
+        left: 0;
+    }
+    &--previous{
+        right: 0;
+    }
+}
+
+.react-datepicker__day:hover {
+  background-color: $color-w-o10 !important;
+  color: #fff; 
+  border-radius: 8px; 
+  transition: background-color 0.2s ease;
+}
+.react-datepicker__day--today {
+  border: 1px solid $color-primary;
+  background-color: transparent;
+  border-radius: 8px;
+  &:hover{
+    background-color: $color-primary !important;
+  }
+}

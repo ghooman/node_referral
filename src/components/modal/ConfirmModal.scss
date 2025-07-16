@@ -1,0 +1,54 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+@import '../../styles/fonts';
+
+
+.modal__title{
+    @include font-xl-b;
+    text-align: center;
+    margin-bottom: $sp-16;
+
+    @media (max-width: $responsive-md){
+        @include font-md-b;
+        margin-bottom: $sp-12;
+    }
+}
+.modal__txt{
+    @include font-sm-r;
+    margin-bottom: $sp-30;
+    text-align: center;
+
+    @media (max-width: $responsive-md){
+        margin-bottom: $sp-24;
+    }
+}
+.modal__btn-box{
+    @include flex-start;
+    column-gap: 12px;
+}
+.modal__button{
+    @include font-md-b;
+    width: 100%;
+    display: flex;
+    padding: $sp-12 $sp-20;
+    justify-content: center;
+    align-items: center;
+    flex: 1 0 0;
+    border-radius: 12px;
+    color: $color-gray-000;
+    background-color: $color-primary;
+
+    @media (max-width: $responsive-md){
+        @include font-sm-b;
+    }
+}
+
+.modal__button--cancel {
+  color: $color-gray-000;
+  background-color: transparent;
+  border: 1px solid $color-w-o20;
+
+  &:hover {
+    background-color: $color-w-o05;
+  }
+}

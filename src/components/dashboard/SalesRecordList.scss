@@ -1,0 +1,145 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.table-section{
+  
+  .table-section__tit{
+    @include flex-between;
+    align-items: center;
+    margin-bottom: $sp-30;
+
+    .table-section__tit__tit-button{
+      display: flex;
+      align-items: center;
+      gap: $sp-20;
+
+      .btn-sm{
+        @include font-sm-b;
+        padding: 8px 16px;
+        background-color: $color-primary;
+        color: $color-gray-000;
+        border-radius: 12px;
+      }
+    }
+  }
+
+  .table-section__tit__list-head{
+    @include flex-between;
+    padding: 16px 0;
+    font-weight: 600;
+    color: $color-gray-000;
+
+    .col{
+      font-size: 14px;
+    }
+    .indent-text{
+      color: transparent;
+    }
+  }
+
+  .table-empty{
+    text-align: center;
+    padding: 60px 0;
+    color: $color-gray-000;
+    font-weight: 600;
+  }
+
+  .list-item{
+    border-bottom: 1px solid $color-w-o10;
+
+    &.open{
+      .list-item__detail{
+        display: flex;
+        text-align: center;
+      }
+    }
+
+    .list-item__row{
+      @include flex-between;
+      padding: 20px 0;
+      color: $color-gray-000;
+
+      .col{
+        flex: 1;
+        text-align: center;
+        padding: 0 20px;
+        border-radius: 8px;
+
+        .badge{
+          @include font-sm-b;
+          @include md{
+            @include font-xs-b;
+          }
+
+          &--requested{
+            // 승인요청
+            background-color: $color-primary;
+            color: $color-gray-000;
+            padding: 4px 20px;
+          }
+
+          &--approved,
+          &--settlement_pending,
+          &--settled{
+            // 승인완료, 정산대기, 정산완료
+            background-color: transparent;
+            color: $color-gray-000;
+          }
+
+          &--pending{
+            // 승인대기
+            background-color: transparent;
+            color: $color-primary;
+          }
+
+          &--cancelled{
+            // 승인취소
+            background-color: transparent;
+            color: #FF3232;
+          }
+        }
+      }
+    }
+
+       .list-item__detail{
+        @include flex-between;
+        @include font-sm-r;
+        padding: $sp-16 0;
+        border-top: 1px solid $color-w-o10;
+        color: $color-gray-400;
+        .list-item__detail__list{
+            width: 50%;
+            @include md{
+                width: 100%;
+                font-size: $fs-12;
+            }
+            }
+        }
+        p{
+            @include flex-start;
+            row-gap: 8px;
+            column-gap: 10px;
+            b{
+                width: 30%;
+            }
+            span{
+                width: 70%;
+                @include flex-start;
+                column-gap: 8px;
+                img{
+                    width: 100%;
+                    max-width: 20px;
+                }
+            }
+        }
+    }
+  }
+
+  // table width style
+.list-item__row.sales-record{
+  .col:last-of-type{
+    @include flex-start;
+    column-gap: 16px;
+    justify-content: center;
+  }
+}

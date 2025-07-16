@@ -1,0 +1,87 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+@import '../../styles/fonts';
+
+@include md{
+    .modal{
+        position: static !important;
+    }
+}
+
+.full-modal-wrap{
+    position: fixed;
+    inset: 0;
+    background-color: $color-b-o70;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    animation: fadeInOverlay 0.3s forwards;
+
+    // mobile에서 Full Layer 형태
+    @include md{
+    justify-content: flex-start;
+    align-items: flex-start;
+    }
+}
+
+.full-modal-content{
+    position: relative;
+    background-color: $color-gray-900;
+    color: $color-gray-000;
+    width: 90%;
+    max-width: 440px;
+    padding: $sp-30;
+    border-radius: 20px;
+    border: 1px solid $color-w-o05;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: scale(0.95);
+    animation: fadeInModal 0.4s forwards;
+
+  // 모바일에서는 꽉 차는 전체 화면
+  @include md {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    padding: $sp-30 $sp-24 $sp-60;
+    overflow-y: auto;
+    .input-field input{
+        max-width: 100%;
+    }
+    .modal__footer{
+        position: sticky;
+        bottom: 20px !important;
+        left: 2.5%;
+        width: 95% !important;
+    }
+  }
+}
+.twoway-inputField {
+    display: flex;
+    column-gap: $sp-12; // 간격은 디자인에 따라 조정
+
+    @include md{
+    > div {
+        width: 50%;
+    }
+  }
+}
+
+// 애니메이션
+@keyframes fadeInOverlay {
+    to {
+    opacity: 1;
+    }
+}
+
+@keyframes fadeInModal {
+    to {
+    opacity: 1;
+    transform: scale(1);
+    }
+}

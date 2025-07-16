@@ -1,0 +1,11 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+@include md{
+    .sales-section__record-list.refferal-record-list{
+        flex-wrap: wrap;
+        li{
+            width: 49% !important;
+        }
+    }
+}

@@ -1,0 +1,21 @@
+.loading-dots {
+  display: inline-flex; // 이걸로 공백 방지
+  gap: 0; // 간격 없애기
+
+  .dot {
+    display: inline-block;
+    font-weight: bold;
+    font-size: inherit;
+    line-height: 1;
+    animation: blink 1.2s infinite ease-in-out;
+  }
+
+  @keyframes blink {
+    0%, 100% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+}
