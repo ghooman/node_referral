@@ -30,6 +30,8 @@ function Dashboard() {
 
   // 지갑주소 등록 모달 오픈
   const [isOpenAddWalletModal, setIsOpenAddWalletModal] = useState(false);
+  // 지갑주소 수정 모달 오픈
+  const [isOpenEditWalletModal, setIsOpenEditWalletModal] = useState(false);
   // 초대 코드 모달 오픈
   const [isOpenInviteModal, setIsOpenInviteModal] = useState(false);
   // 초대코드 생성 시, 분리할 지분 (버튼)
@@ -41,20 +43,31 @@ function Dashboard() {
   const [userName, setUserName] = useState("");
   const [userShare, setUserShare] = useState("");
   const [userWallet, setUserWallet] = useState("");
+  const [userOfficeWallet, setUserOfficeWallet] = useState("");
   const [userWalletInput, setUserWalletInput] = useState("");
+  const [userWalletEdit, setUserWalletEdit] = useState("");
   const userToken = localStorage.getItem("userToken");
 
   // 지갑주소 클릭 함수
   const handleClickAddWalletBtn = async () => {
     setIsOpenAddWalletModal(true);
   };
+  // 지갑주소 수정 클릭 함수
+  const handleClickEditWalletBtn = async () => {
+    setUserWalletEdit(userWallet);
+    setIsOpenEditWalletModal(true);
+    console.log("지갑주소 수정 함수입니당!");
+    console.log("userWalletEdit", userWalletEdit);
+    console.log("userWalletInput", userWalletInput);
+    console.log("userWallet", userWallet);
+  };
   // 초대코드 클릭 함수
   const handleClickInviteBtn = async () => {
     setIsOpenInviteModal(true);
   };
 
-  // 지분 선택 & 닉네임 입력 되었는지 확인
-  const isFormValid = selectedShare !== "" && nickname.trim() !== "";
+  // 지분 선택 되었는지 확인 (닉네임은 선택값)
+  const isFormValid = selectedShare !== "";
 
   // 한글/영어/숫자 + 최대 10자 제한
   const handleNicknameChange = (e) => {
@@ -80,6 +93,7 @@ function Dashboard() {
       setUserName(res.data.username);
       setUserShare(res.data.share);
       setUserWallet(res.data.wallet_address);
+      setUserOfficeWallet(res.data.deposit_wallet_address);
     } catch (error) {
       console.error("사용자 정보 가져오는 함수 error입니당", error);
     }
@@ -91,30 +105,33 @@ function Dashboard() {
     }
   }, [userToken]);
   // 지갑주소 등록하는 함수
-  const handleAddWallet = async () => {
+  const handleSaveWallet = async (finalWallet) => {
     try {
-      console.log("서버에 보내는 지갑 주소는?!", userWalletInput);
+      console.log("서버에 보내는 지갑 주소는?!", finalWallet);
       await axios.post(`${serverAPI}/api/user/wallet/address`, null, {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
 
         params: {
-          wallet_address: userWalletInput.trim(),
+          wallet_address: finalWallet.trim(),
         },
       });
-      console.log("지갑주소 등록 완료~!", userWalletInput);
-      setUserWallet(userWalletInput); // 여기서 지갑주소 업데이트!
+      console.log("지갑주소 등록/수정 완료~!", finalWallet);
+      setUserWallet(finalWallet.trim()); // 여기서 지갑주소 업데이트!
+      setUserWalletInput(""); // 등록용 초기화
+      setUserWalletEdit(""); // 수정용 초기화
       setIsOpenAddWalletModal(false);
+      setIsOpenEditWalletModal(false);
       userInfo(); // 사용자 정보 새롭게 갱신하기!
     } catch (error) {
-      console.error("지갑주소 등록 error입니당", error);
+      console.error("지갑주소 등록/수정 error입니당", error);
     }
   };
   // 지갑 주소 포맷팅 함수 (앞뒤 4글자씩 짜르기 0x00....0000)
   const formatWalletAddress = (address) => {
     if (!address || address.length < 10) return address;
-    return `${address.slice(0, 3)}....${address.slice(-4)}`;
+    return `${address.slice(0, 4)}....${address.slice(-4)}`;
   };
   // 초대코드 생성하기 버튼 함수
   const handleCreateInviteBtn = async () => {
@@ -123,7 +140,7 @@ function Dashboard() {
         `${serverAPI}/api/user/invitation/code`,
         {
           share: Number(selectedShare),
-          nick_name: nickname,
+          nick_name: nickname.trim() === "" ? "-" : nickname.trim(),
         },
         {
           headers: {
@@ -132,7 +149,7 @@ function Dashboard() {
         }
       );
       console.log("share", Number(selectedShare));
-      console.log("nickname", nickname);
+      console.log("nickname", nickname.trim() === "" ? "-" : nickname);
       console.log("초대코드 생성 성공");
       // ✅ 응답 값 확인
       console.log("status:", res.data.status);
@@ -246,8 +263,9 @@ function Dashboard() {
             <li>
               <span>본사 입금 지갑주소</span>
               <div className="user-section__wallet__copy-com">
-                <strong>4932....4389</strong>
-                <CopyButton textToCopy="4932....4389" />
+                {/* <strong>{formatWalletAddress(userOfficeWallet)}</strong> */}
+                <strong>0x00....0000</strong>
+                <CopyButton textToCopy={userOfficeWallet} />
               </div>
             </li>
             <li>
@@ -260,7 +278,7 @@ function Dashboard() {
                 <div className="user-section__wallet__copy-com">
                   <strong>{formatWalletAddress(userWallet)}</strong>
                   <CopyButton textToCopy={userWallet} />
-                  <button type="button">
+                  <button type="button" onClick={handleClickEditWalletBtn}>
                     <img src={penIcon} alt="수정" />
                   </button>
                 </div>
@@ -364,7 +382,7 @@ function Dashboard() {
                 <button
                   className={`btn btn-content-modal ${userWalletInput ? "" : "btn--disabled"}`}
                   disabled={!userWalletInput}
-                  onClick={handleAddWallet}
+                  onClick={() => handleSaveWallet(userWalletInput)}
                 >
                   지갑주소 등록 <LoadingDots />
                 </button>
@@ -375,34 +393,42 @@ function Dashboard() {
       )}
 
       {/* 지갑을 등록한 경우 지갑 주소 우측에 연필 아이콘 클릭 시 '내 지갑주소 수정' Modal 노출 */}
-      {/* <ModalWrap>
-        <div className="modal modal-wallet">
+      {isOpenEditWalletModal && (
+        <ModalWrap>
+          <div className="modal modal-wallet">
             <div className="modal__content">
-                <div className="modal__header">
-                    <h2>내 지갑주소 수정</h2>
-                    <button type="button">
-                        <img src={closeBtn} alt="팝업 닫기" />
-                    </button>
-                </div>
-                <div className='modal__body'>
-                    <InputField
-                        id="userWalletAddress"
-                        label="내 지갑주소"
-                        type="text"
-                        placeholder="지갑 주소를 입력해 주세요"
-                        defaultValue="2938293829382938292"
-                        required
-                        // 사용자의 지갑 주소가 입력 필드에 자동으로 기입되도록 처리
-                    />
-                </div>
-                <div className="modal__footer">
-                    <button className="btn btn-content-modal btn--disabled">
-                        지갑주소 수정 <LoadingDots />
-                    </button>
-                </div>
+              <div className="modal__header">
+                <h2>내 지갑주소 수정</h2>
+                <button type="button">
+                  <img src={closeBtn} alt="팝업 닫기" onClick={() => setIsOpenEditWalletModal(false)} />
+                </button>
+              </div>
+              <div className="modal__body">
+                <InputField
+                  id="userWalletAddress"
+                  label="내 지갑주소"
+                  type="text"
+                  placeholder="지갑 주소를 입력해 주세요"
+                  defaultValue="2938293829382938292"
+                  required
+                  value={userWalletEdit}
+                  onChange={(e) => setUserWalletEdit(e.target.value)}
+                  // 사용자의 지갑 주소가 입력 필드에 자동으로 기입되도록 처리
+                />
+              </div>
+              <div className="modal__footer">
+                <button
+                  className={`btn btn-content-modal ${userWalletEdit ? "" : "btn--disabled"}`}
+                  disabled={!userWalletEdit}
+                  onClick={() => handleSaveWallet(userWalletEdit)}
+                >
+                  지갑주소 수정 <LoadingDots />
+                </button>
+              </div>
             </div>
-        </div>
-    </ModalWrap> */}
+          </div>
+        </ModalWrap>
+      )}
 
       {/* '지갑주소 등록' 없이 '새 거래 등록' 선택 시 Confirm Modal 노출  */}
       {/* <ConfirmModal
@@ -492,7 +518,7 @@ function Dashboard() {
                 <div className="user-share">
                   <div>
                     <b>나의 지분</b>
-                    <span>45%</span>
+                    <span>{userShare}%</span>
                   </div>
                   <div>
                     <b>분리할 지분</b>
@@ -534,7 +560,7 @@ function Dashboard() {
                     <input
                       type="number"
                       min={0}
-                      max={45} // 나의 지분 예시
+                      max={userShare} // 나의 지분 예시
                       value={customShare}
                       onChange={(e) => {
                         const value = e.target.value;
