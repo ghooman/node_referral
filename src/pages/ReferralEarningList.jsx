@@ -14,7 +14,7 @@ import arrowRightIcon from "../assets/images/icon-arrow-right.svg";
 // style
 import "../components/dashboard/ReferralEarnings.scss";
 
-function RefferalEarningList() {
+function ReferralEarningList() {
   const [openIndex, setOpenIndex] = useState(null);
 
   const handleToggle = (callback) => {
@@ -64,7 +64,7 @@ function RefferalEarningList() {
                 총 <small>00</small>건
               </span>
             </div>
-            <ul className="sales-section__record-list refferal-record-list">
+            <ul className="sales-section__record-list referral-record-list">
               <li>
                 <h3>하위자 판매 수입</h3>
                 <p>3,284,224</p>
@@ -191,4 +191,4 @@ function RefferalEarningList() {
   );
 }
 
-export default RefferalEarningList;
+export default ReferralEarningList;

@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "../../pages/Dashboard";
 import SalesRecord from "../../pages/SalesRecord";
 import RecommenderList from "../../pages/RecommenderList";
-import RefferalEarningList from "../../pages/RefferalEarningList";
+import ReferralEarningList from "../../pages/ReferralEarningList";
 import OtherSalesRecord from "../../pages/OtherSalesRecord";
 import MasterDashboardDoing from "../../pages/MasterDashboardDoing";
 import MasterDashboardDone from "../../pages/MasterDashboardDone";
@@ -17,7 +17,7 @@ const ProtectedRoutes = () => {
       <Route path="/" element={<Dashboard />} />
       <Route path="/SalesRecord" element={<SalesRecord />} />
       <Route path="/RecommenderList" element={<RecommenderList />} />
-      <Route path="/RefferalEarningList" element={<RefferalEarningList />} />
+      <Route path="/ReferralEarningList" element={<ReferralEarningList />} />
       <Route path="/OtherSalesRecord" element={<OtherSalesRecord />} />
       <Route path="/MasterDashboardDoing" element={<MasterDashboardDoing />} />
       <Route path="/MasterDashboardDone" element={<MasterDashboardDone />} />

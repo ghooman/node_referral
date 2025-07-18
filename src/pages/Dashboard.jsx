@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import React, { use, useState } from "react";
+import React, { use, useState, useEffect } from "react";
 // Components
 import Header from "../components/unit/Header";
 import Footer from "../components/unit/Footer";
@@ -28,18 +28,30 @@ function Dashboard() {
   const [openInviteIndex, setOpenInviteIndex] = useState(null);
   const [openEarningsIndex, setOpenEarningsIndex] = useState(null);
 
+  // 지갑주소 등록 모달 오픈
+  const [isOpenAddWalletModal, setIsOpenAddWalletModal] = useState(false);
   // 초대 코드 모달 오픈
   const [isOpenInviteModal, setIsOpenInviteModal] = useState(false);
+  // 초대코드 생성 시, 분리할 지분 (버튼)
+  const [selectedShare, setSelectedShare] = useState("5"); // 기본값 5%
+  const [customShare, setCustomShare] = useState("");
+  // 초대코드 생성 시, 닉네임 설정
+  const [nickname, setNickname] = useState("");
+  // 사용자 정보 상태
+  const [userName, setUserName] = useState("");
+  const [userShare, setUserShare] = useState("");
+  const [userWallet, setUserWallet] = useState("");
+  const [userWalletInput, setUserWalletInput] = useState("");
+  const userToken = localStorage.getItem("userToken");
+
+  // 지갑주소 클릭 함수
+  const handleClickAddWalletBtn = async () => {
+    setIsOpenAddWalletModal(true);
+  };
   // 초대코드 클릭 함수
   const handleClickInviteBtn = async () => {
     setIsOpenInviteModal(true);
   };
-  // 초대코드 생성 시, 분리할 지분 (버튼)
-  const [selectedShare, setSelectedShare] = useState("5"); // 기본값 5%
-  const [customShare, setCustomShare] = useState("");
-
-  // 초대코드 생성 시, 닉네임 설정
-  const [nickname, setNickname] = useState("");
 
   // 지분 선택 & 닉네임 입력 되었는지 확인
   const isFormValid = selectedShare !== "" && nickname.trim() !== "";
@@ -56,9 +68,54 @@ function Dashboard() {
     }
   };
 
-  // 사용자 토큰 값
-  const userToken = localStorage.getItem("userToken");
+  // 사용자 정보 가져오는 함수
+  const userInfo = async () => {
+    try {
+      const res = await axios.get(`${serverAPI}/api/user/`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      console.log("API에서 받아온 사용자 정보", res.data);
+      setUserName(res.data.username);
+      setUserShare(res.data.share);
+      setUserWallet(res.data.wallet_address);
+    } catch (error) {
+      console.error("사용자 정보 가져오는 함수 error입니당", error);
+    }
+  };
+  // userToken이 존재하면 사용자 정보 호출하기!
+  useEffect(() => {
+    if (userToken) {
+      userInfo();
+    }
+  }, [userToken]);
+  // 지갑주소 등록하는 함수
+  const handleAddWallet = async () => {
+    try {
+      console.log("서버에 보내는 지갑 주소는?!", userWalletInput);
+      await axios.post(`${serverAPI}/api/user/wallet/address`, null, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
 
+        params: {
+          wallet_address: userWalletInput.trim(),
+        },
+      });
+      console.log("지갑주소 등록 완료~!", userWalletInput);
+      setUserWallet(userWalletInput); // 여기서 지갑주소 업데이트!
+      setIsOpenAddWalletModal(false);
+      userInfo(); // 사용자 정보 새롭게 갱신하기!
+    } catch (error) {
+      console.error("지갑주소 등록 error입니당", error);
+    }
+  };
+  // 지갑 주소 포맷팅 함수 (앞뒤 4글자씩 짜르기 0x00....0000)
+  const formatWalletAddress = (address) => {
+    if (!address || address.length < 10) return address;
+    return `${address.slice(0, 3)}....${address.slice(-4)}`;
+  };
   // 초대코드 생성하기 버튼 함수
   const handleCreateInviteBtn = async () => {
     try {
@@ -180,11 +237,11 @@ function Dashboard() {
       <Header />
       <div className="page-wrapper dashboard-wrapper">
         <div className="user-section">
-          <p className="user-section__email">kimchumzi@mob.com</p>
+          <p className="user-section__email">{userName}</p>
           <ul className="user-section__wallet">
             <li>
               <span>나의 지분</span>
-              <strong>50%</strong>
+              <strong>{userShare}%</strong>
             </li>
             <li>
               <span>본사 입금 지갑주소</span>
@@ -195,19 +252,19 @@ function Dashboard() {
             </li>
             <li>
               <span>내 지갑주소</span>
-              {/* 지갑주소를 보유한 경우 */}
-              {/* <div className="user-section__wallet__copy-com">
-                <strong>4932....4389</strong>
-                <CopyButton textToCopy="4932....4389" />
-                <button type="button">
-                  <img src={penIcon} alt="수정" />
+              {!userWallet ? (
+                <button type="button" className="btn-register" onClick={handleClickAddWalletBtn}>
+                  지갑주소 등록
                 </button>
-              </div> */}
-
-              {/* 지갑주소를 보유하지 않은 경우 '지갑주소 등록' 버튼만 노출 */}
-              <button type="button" className="btn-register">
-                지갑주소 등록
-              </button>
+              ) : (
+                <div className="user-section__wallet__copy-com">
+                  <strong>{formatWalletAddress(userWallet)}</strong>
+                  <CopyButton textToCopy={userWallet} />
+                  <button type="button">
+                    <img src={penIcon} alt="수정" />
+                  </button>
+                </div>
+              )}
             </li>
           </ul>
         </div>
@@ -282,32 +339,40 @@ function Dashboard() {
       </div>
       <Footer />
       {/* '지갑주소 등록' 선택 시 '지갑 등록' Modal 노출 */}
-      {/* <ModalWrap>
-        <div className="modal modal-wallet">
+      {isOpenAddWalletModal && (
+        <ModalWrap>
+          <div className="modal modal-wallet">
             <div className="modal__content">
-                <div className="modal__header">
-                    <h2>내 지갑주소 등록</h2>
-                    <button type="button">
-                        <img src={closeBtn} alt="팝업 닫기" />
-                    </button>
-                </div>
-                <div className='modal__body'>
-                    <InputField
-                        id="walletAddress"
-                        label="내 지갑주소"
-                        type="text"
-                        placeholder="지갑 주소를 입력해 주세요"
-                        required
-                    />
-                </div>
-                <div className="modal__footer">
-                    <button className="btn btn-content-modal btn--disabled">
-                        지갑주소 등록 <LoadingDots />
-                    </button>
-                </div>
+              <div className="modal__header">
+                <h2>내 지갑주소 등록</h2>
+                <button type="button" onClick={() => setIsOpenAddWalletModal(false)}>
+                  <img src={closeBtn} alt="팝업 닫기" />
+                </button>
+              </div>
+              <div className="modal__body">
+                <InputField
+                  id="walletAddress"
+                  label="내 지갑주소"
+                  type="text"
+                  placeholder="지갑 주소를 입력해 주세요"
+                  required
+                  value={userWalletInput}
+                  onChange={(e) => setUserWalletInput(e.target.value)}
+                />
+              </div>
+              <div className="modal__footer">
+                <button
+                  className={`btn btn-content-modal ${userWalletInput ? "" : "btn--disabled"}`}
+                  disabled={!userWalletInput}
+                  onClick={handleAddWallet}
+                >
+                  지갑주소 등록 <LoadingDots />
+                </button>
+              </div>
             </div>
-        </div>
-    </ModalWrap> */}
+          </div>
+        </ModalWrap>
+      )}
 
       {/* 지갑을 등록한 경우 지갑 주소 우측에 연필 아이콘 클릭 시 '내 지갑주소 수정' Modal 노출 */}
       {/* <ModalWrap>

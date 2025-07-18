@@ -91,6 +91,7 @@ function Login() {
               type="password"
               placeholder="Please enter your password"
               required
+              withToggle={true}
               value={userPw}
               onChange={(e) => setUserPw(e.target.value)}
             />
