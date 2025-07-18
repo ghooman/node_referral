@@ -1,31 +1,29 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route } from "react-router-dom";
+import PrivateRoute from "./components/routes/PrivateRoute";
+import ProtectedRoutes from "./components/routes/ProtectedRoutes";
 // style
-import './App.css';
-import './styles/Main.scss'
+import "./App.css";
+import "./styles/Main.scss";
 // Route
-import Dashboard from './pages/Dashboard';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
-import SalesRecord from './pages/SalesRecord';
-import RecommenderList from './pages/RecommenderList';
-import RefferalEarningList from './pages/RefferalEarningList';
-import OtherSalesRecord from './pages/OtherSalesRecord';
-import MasterDashboardDoing from './pages/MasterDashboardDoing';
-import MasterDashboardDone from './pages/MasterDashboardDone';
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
 
-function App(){
+function App() {
   return (
-    <div className='App'>
+    <div className="App">
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        {/* 공개 접근 가능한 페이지 */}
         <Route path="/Login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/SalesRecord" element={<SalesRecord />} />
-        <Route path="/RecommenderList" element={<RecommenderList />} />
-        <Route path="/RefferalEarningList" element={<RefferalEarningList />} />
-        <Route path="/OtherSalesRecord" element={<OtherSalesRecord />} />
-        <Route path="/MasterDashboardDoing" element={<MasterDashboardDoing />} />
-        <Route path="/MasterDashboardDone" element={<MasterDashboardDone />} />
+        {/* 보호된 페이지는 모두 여기 아래에서 감쌈 */}
+        <Route
+          path="/*"
+          element={
+            <PrivateRoute>
+              <ProtectedRoutes />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </div>
   );
