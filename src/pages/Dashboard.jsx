@@ -39,6 +39,12 @@ function Dashboard() {
   const [customShare, setCustomShare] = useState("");
   // 초대코드 생성 시, 닉네임 설정
   const [nickname, setNickname] = useState("");
+  // 초대코드 생성한 리스트 상태
+  const [inviteCodeList, setInviteCodeList] = useState([]);
+  // 새 거래 등록 모달 오픈
+  const [isOpenNewDealModal, setIsOpenNewDealModal] = useState(false);
+  // 컨펌 모달 오픈 (새 거래 등록 눌렀을 때 지갑 주소 없을 경우 나오는 모달)
+  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
   // 사용자 정보 상태
   const [userName, setUserName] = useState("");
   const [userShare, setUserShare] = useState("");
@@ -64,6 +70,14 @@ function Dashboard() {
   // 초대코드 클릭 함수
   const handleClickInviteBtn = async () => {
     setIsOpenInviteModal(true);
+  };
+  // 새 거래등록 클릭 함수
+  const handleClickNewDealBtn = async () => {
+    if (!userWallet) {
+      setIsOpenConfirmModal(true);
+    } else {
+      setIsOpenNewDealModal(true);
+    }
   };
 
   // 지분 선택 되었는지 확인 (닉네임은 선택값)
@@ -162,16 +176,19 @@ function Dashboard() {
   // 초대코드 확인 함수
   const fetchInviteCodeList = async () => {
     try {
-      const res = await axios.get(`${serverAPI}/api/user/invitation/code/list`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-        params: {
-          page: 1,
-          limit: 20,
-          // sort_by: "create_dt" // 선택적으로 사용 가능
-        },
-      });
+      const res = await axios.get(
+        `${serverAPI}/api/user/invitation/code/list`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+          params: {
+            page: 1,
+            limit: 20,
+            // sort_by: "create_dt" // 선택적으로 사용 가능
+          },
+        }
+      );
 
       // 전체 응답 보기
       console.log("전체 응답", res.data);
@@ -179,24 +196,25 @@ function Dashboard() {
       // 초대코드 리스트만 보기
       const list = res.data.data_list;
       console.log("초대코드 리스트:", list);
+      setInviteCodeList(list);
 
-      // 첫 번째 코드의 정보
-      if (list.length > 0) {
-        const first = list[0];
-        console.log("코드:", first.invitation_code);
-        console.log("닉네임:", first.nick_name);
-        console.log("지분:", first.share);
-        console.log("등록일:", first.create_dt);
-        console.log("할당된 인원 수:", first.allocation_cnt);
+      // // 첫 번째 코드의 정보
+      // if (list.length > 0) {
+      //   const first = list[0];
+      //   console.log("코드:", first.invitation_code);
+      //   console.log("닉네임:", first.nick_name);
+      //   console.log("지분:", first.share);
+      //   console.log("등록일:", first.create_dt);
+      //   console.log("할당된 인원 수:", first.allocation_cnt);
 
-        // 하위 유저 목록
-        console.log("하위 유저 목록:");
-        first.user_list.forEach((user, idx) => {
-          console.log(`  ${idx + 1}. ${user.username}`);
-        });
-      } else {
-        console.log("아직 생성된 초대코드가 없습니다.");
-      }
+      //   // 하위 유저 목록
+      //   console.log("하위 유저 목록:");
+      //   first.user_list.forEach((user, idx) => {
+      //     console.log(`  ${idx + 1}. ${user.username}`);
+      //   });
+      // } else {
+      //   console.log("아직 생성된 초대코드가 없습니다.");
+      // }
     } catch (error) {
       console.error("초대코드 리스트 가져오기 실패:", error);
       if (error.response) {
@@ -205,6 +223,26 @@ function Dashboard() {
         console.log("기타 에러:", error.message);
       }
     }
+  };
+  // 로그인 후 첫 진입 시, 초대코드 리스트 불러오기!
+  useEffect(() => {
+    if (userToken) {
+      fetchInviteCodeList();
+    }
+  }, []);
+  // 날짜 포맷팅
+  const formatDate = (isoString) => {
+    const raw = new Date(isoString).toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+    // "2025. 07. 19. 15:16" → "2025. 07. 19 15:16"
+    return raw.replace(/(\d{2})\.\s(\d{2})\.\s(\d{2})\.\s/, "$1. $2. $3 ");
   };
 
   const salesData = [
@@ -271,7 +309,11 @@ function Dashboard() {
             <li>
               <span>내 지갑주소</span>
               {!userWallet ? (
-                <button type="button" className="btn-register" onClick={handleClickAddWalletBtn}>
+                <button
+                  type="button"
+                  className="btn-register"
+                  onClick={handleClickAddWalletBtn}
+                >
                   지갑주소 등록
                 </button>
               ) : (
@@ -347,13 +389,25 @@ function Dashboard() {
         </section>
 
         {/* 내 판매기록 */}
-        <SalesRecordList data={salesData} openIndex={openSalesIndex} handleToggle={handleSalesToggle} />
+        <SalesRecordList
+          data={salesData}
+          openIndex={openSalesIndex}
+          handleToggle={handleSalesToggle}
+          handleClickNewDealBtn={handleClickNewDealBtn}
+        />
 
         {/* 초대 코드 리스트 */}
-        <InviteCodeList onClickInviteBtn={handleClickInviteBtn} />
+        <InviteCodeList
+          handleClickInviteBtn={handleClickInviteBtn}
+          inviteCodeList={inviteCodeList}
+          formatDate={formatDate}
+        />
 
         {/* 하위 수입자 리스트 */}
-        <ReferralEarnings openIndex={openEarningsIndex} handleToggle={setOpenEarningsIndex} />
+        <ReferralEarnings
+          openIndex={openEarningsIndex}
+          handleToggle={setOpenEarningsIndex}
+        />
       </div>
       <Footer />
       {/* '지갑주소 등록' 선택 시 '지갑 등록' Modal 노출 */}
@@ -363,7 +417,10 @@ function Dashboard() {
             <div className="modal__content">
               <div className="modal__header">
                 <h2>내 지갑주소 등록</h2>
-                <button type="button" onClick={() => setIsOpenAddWalletModal(false)}>
+                <button
+                  type="button"
+                  onClick={() => setIsOpenAddWalletModal(false)}
+                >
                   <img src={closeBtn} alt="팝업 닫기" />
                 </button>
               </div>
@@ -380,7 +437,9 @@ function Dashboard() {
               </div>
               <div className="modal__footer">
                 <button
-                  className={`btn btn-content-modal ${userWalletInput ? "" : "btn--disabled"}`}
+                  className={`btn btn-content-modal ${
+                    userWalletInput ? "" : "btn--disabled"
+                  }`}
                   disabled={!userWalletInput}
                   onClick={() => handleSaveWallet(userWalletInput)}
                 >
@@ -400,7 +459,11 @@ function Dashboard() {
               <div className="modal__header">
                 <h2>내 지갑주소 수정</h2>
                 <button type="button">
-                  <img src={closeBtn} alt="팝업 닫기" onClick={() => setIsOpenEditWalletModal(false)} />
+                  <img
+                    src={closeBtn}
+                    alt="팝업 닫기"
+                    onClick={() => setIsOpenEditWalletModal(false)}
+                  />
                 </button>
               </div>
               <div className="modal__body">
@@ -418,7 +481,9 @@ function Dashboard() {
               </div>
               <div className="modal__footer">
                 <button
-                  className={`btn btn-content-modal ${userWalletEdit ? "" : "btn--disabled"}`}
+                  className={`btn btn-content-modal ${
+                    userWalletEdit ? "" : "btn--disabled"
+                  }`}
                   disabled={!userWalletEdit}
                   onClick={() => handleSaveWallet(userWalletEdit)}
                 >
@@ -431,69 +496,84 @@ function Dashboard() {
       )}
 
       {/* '지갑주소 등록' 없이 '새 거래 등록' 선택 시 Confirm Modal 노출  */}
-      {/* <ConfirmModal
-    title="새로운 거래를 등록할 수 없습니다"
-    message="내 지갑주소를 먼저 등록해 주세요!"
-    buttonText="OK"
-    onClose={() => {}}
-    /> */}
-
-      {/* '새 거래 등록' 선택 시 '거래등록' Modal 노출 */}
-      {/* <FullModalWrap>
-        <div className="modal modal-transaction">
+      {isOpenConfirmModal && (
+        <ConfirmModal
+          title="새로운 거래를 등록할 수 없습니다"
+          message="내 지갑주소를 먼저 등록해 주세요!"
+          buttonText="OK"
+          onClose={() => setIsOpenConfirmModal(false)}
+          onClick={() => setIsOpenConfirmModal(false)}
+        />
+      )}
+      {isOpenNewDealModal && userWallet && (
+        <FullModalWrap>
+          <div className="modal modal-transaction">
             <div className="modal__content">
-                <div className="modal__header">
-                    <h2>거래등록</h2>
-                    <button type="button">
-                        <img src={closeBtn} alt="팝업 닫기" />
-                    </button>
-                </div>
-                <div className='modal__body'>
-                    <InputField
-                        id="buyerName"
-                        label="구매자명"
-                        type="text"
-                        placeholder="구매자명을 입력해 주세요"
-                        required
+              <div className="modal__header">
+                <h2>거래등록</h2>
+                <button
+                  type="button"
+                  onClick={() => setIsOpenNewDealModal(false)}
+                >
+                  <img src={closeBtn} alt="팝업 닫기" />
+                </button>
+              </div>
+              <div className="modal__body">
+                <InputField
+                  id="buyerName"
+                  label="구매자명"
+                  type="text"
+                  placeholder="구매자명을 입력해 주세요"
+                  required
+                />
+                <div className="twoway-inputField">
+                  <div>
+                    <label htmlFor="avgPrice">객단가</label>
+                    <input
+                      type="text"
+                      id="avgPrice"
+                      placeholder="객단가 입력"
                     />
-                    <div className='twoway-inputField'>
-                        <div>
-                            <label htmlFor="avgPrice">객단가</label>
-                            <input type="text" id="avgPrice" placeholder='객단가 입력' />
-                        </div>
-                        <div>
-                            <label htmlFor="salesCount">판매 개수</label>
-                            <input type="text" id="salesCount" placeholder='판매 노드 개수 입력' />
-                        </div>
-                    </div>
-                    <div className='total-amount-field'>
-                        <b>총 금액(자동계산)</b>
-                        <p><span>0</span>USDT</p>
-                    </div>
-                    <InputField
-                        id="buyerWalletAddress"
-                        label="구매자 지갑 주소"
-                        type="text"
-                        placeholder="노드를 받을 구매자의 지갑 주소를 입력해 주세요"
-                        required
+                  </div>
+                  <div>
+                    <label htmlFor="salesCount">판매 개수</label>
+                    <input
+                      type="text"
+                      id="salesCount"
+                      placeholder="판매 노드 개수 입력"
                     />
-                    <InputField
-                        id="addInput"
-                        label="비고"
-                        type="text"
-                        placeholder="최대 30자까지 입력 가능합니다"
-                        maxLength={30}
-                    />
-                    
+                  </div>
                 </div>
-                <div className="modal__footer">
-                    <button className="btn btn-content-modal btn--disabled">
-                        지갑주소 등록 <LoadingDots />
-                    </button>
+                <div className="total-amount-field">
+                  <b>총 금액(자동계산)</b>
+                  <p>
+                    <span>0</span>USDT
+                  </p>
                 </div>
+                <InputField
+                  id="buyerWalletAddress"
+                  label="구매자 지갑 주소"
+                  type="text"
+                  placeholder="노드를 받을 구매자의 지갑 주소를 입력해 주세요"
+                  required
+                />
+                <InputField
+                  id="addInput"
+                  label="비고"
+                  type="text"
+                  placeholder="최대 30자까지 입력 가능합니다"
+                  maxLength={30}
+                />
+              </div>
+              <div className="modal__footer">
+                <button className="btn btn-content-modal btn--disabled">
+                  지갑주소 등록 <LoadingDots />
+                </button>
+              </div>
             </div>
-        </div>
-    </FullModalWrap> */}
+          </div>
+        </FullModalWrap>
+      )}
 
       {/* '새 거래 등록' 완료 시 Confirm Modal 노출  */}
       {/* <ConfirmModal
@@ -510,7 +590,10 @@ function Dashboard() {
             <div className="modal__content">
               <div className="modal__header">
                 <h2>초대코드 생성</h2>
-                <button type="button" onClick={() => setIsOpenInviteModal(false)}>
+                <button
+                  type="button"
+                  onClick={() => setIsOpenInviteModal(false)}
+                >
                   <img src={closeBtn} alt="팝업 닫기" />
                 </button>
               </div>
@@ -527,7 +610,11 @@ function Dashboard() {
                 </div>
                 <div className="share-setting">
                   <p className="share-setting__label">지분 설정</p>
-                  <div className="share-setting__options" role="radiogroup" aria-label="지분 설정">
+                  <div
+                    className="share-setting__options"
+                    role="radiogroup"
+                    aria-label="지분 설정"
+                  >
                     {/* <div className="share-setting__left">
                       <button type="button" className="share-option">
                         0%
@@ -547,7 +634,9 @@ function Dashboard() {
                         <button
                           key={value}
                           type="button"
-                          className={`share-option ${selectedShare === String(value) ? `is-active` : ""}`}
+                          className={`share-option ${
+                            selectedShare === String(value) ? `is-active` : ""
+                          }`}
                           onClick={() => {
                             setSelectedShare(String(value));
                             setCustomShare(""); // 직접 입력값 초기화
@@ -584,7 +673,9 @@ function Dashboard() {
               </div>
               <div className="modal__footer">
                 <button
-                  className={`btn btn-content-modal ${isFormValid ? "" : "btn--disabled"}`}
+                  className={`btn btn-content-modal ${
+                    isFormValid ? "" : "btn--disabled"
+                  }`}
                   disabled={!isFormValid}
                   onClick={handleCreateInviteBtn}
                 >
