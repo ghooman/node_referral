@@ -4,6 +4,7 @@ import InputField from "../components/unit/InputField";
 import LoadingDots from "../components/unit/LoadingDots";
 // style
 import "../styles/pages/SignUp.scss";
+// 외부 라이브러리 및 패키지
 import { Link, useNavigate } from "react-router-dom";
 import React, { use, useState, useEffect } from "react";
 import axios from "axios";
@@ -11,7 +12,6 @@ import { is } from "date-fns/locale";
 
 const serverAPI = process.env.REACT_APP_NODE_SERVER_API;
 
-// test ing
 function SignUp() {
   // 회원가입 성공하고 로그인으로 화면 이동
   const navigate = useNavigate();
@@ -23,6 +23,9 @@ function SignUp() {
   const [emailCode, setEmailCode] = useState("");
   // 이메일 인증 코드 상태
   const [emailAuthCode, setEmailAuthCode] = useState("");
+  // 이메일 인증 타이머 상태
+  const [timeLeft, setTimeLeft] = useState(180); // 3분(180초)
+  const [timerActive, setTimerActive] = useState(false);
   // 비밀번호 상태
   const [passWord, setPassWord] = useState("");
   // 비밀번호 확인
@@ -31,18 +34,18 @@ function SignUp() {
   const [isCodeConfirmed, setIsCodeConfirmed] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
-  // 이메일 인증 타이머 상태
-  const [timeLeft, setTimeLeft] = useState(180); // 3분(180초)
-  const [timerActive, setTimerActive] = useState(false);
 
   // 초대코드 일치 함수
   const checkInviteCode = async () => {
     try {
-      const res = await axios.get(`${serverAPI}/api/user/invitation/code/check`, {
-        params: {
-          invitation_code: inviteCode,
-        },
-      });
+      const res = await axios.get(
+        `${serverAPI}/api/user/invitation/code/check`,
+        {
+          params: {
+            invitation_code: inviteCode,
+          },
+        }
+      );
       // if 초대코드(l74kUz)가 true면 승인, 아니면 실패
       console.log("초대코드", res.data);
       const isVaildCode = res.data;
@@ -65,11 +68,15 @@ function SignUp() {
   const sendEmailCode = async () => {
     console.log("보내지고 있는 emailcode", emailCode);
     try {
-      const res = await axios.post(`${serverAPI}/api/user/email/vertification/send`, null, {
-        params: {
-          email: emailCode,
-        },
-      });
+      const res = await axios.post(
+        `${serverAPI}/api/user/email/vertification/send`,
+        null,
+        {
+          params: {
+            email: emailCode,
+          },
+        }
+      );
       console.log("이메일 보내는 함수!", res.data);
       setIsEmailSent(true); // 성공했으니 버튼 비활성화되도록
       setTimeLeft(180); // 시간 초기화
@@ -82,41 +89,22 @@ function SignUp() {
   // 이메일 인증 코드 일치 함수
   const checkEmailAuthCode = async () => {
     try {
-      const res = await axios.post(`${serverAPI}/api/user/email/vertification/check`, null, {
-        params: {
-          email: emailCode,
-          vertification: emailAuthCode,
-        },
-      });
+      const res = await axios.post(
+        `${serverAPI}/api/user/email/vertification/check`,
+        null,
+        {
+          params: {
+            email: emailCode,
+            vertification: emailAuthCode,
+          },
+        }
+      );
       console.log("이메일 인증 코드 일치 함수!", res.data);
       console.log("emailAuthCode 상태", emailAuthCode);
       setIsEmailVerified(true); // 성공했으니 버튼 비활성화되도록
     } catch (error) {
       console.error("이메일 인증 코드 일치 함수 error입니당", error);
       setIsEmailVerified(false); // 실패했으니 버튼 그대로 활성화
-    }
-  };
-  // 비민번호 조건 체크
-  const lengthOk = passWord.length >= 8;
-  const upperCaseOk = /[A-Z]/.test(passWord);
-  // 비밀번호 확인란 작성 중 && 비밀번호와 일치하지 않을 때
-  const isMismatch = confirmPassword !== "" && passWord !== confirmPassword;
-  // 모든 텍스트를 다 적었으며 각 조건들에 부합하는가? (회원가입 Send 버튼 활성화 위함)
-  const isFormValid =
-    isCodeConfirmed && isEmailSent && isEmailVerified && lengthOk && upperCaseOk && passWord === confirmPassword;
-  // 회원가입을 위한 최종 Send 버튼 함수
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // 이거 없으면 무조건 새로고침 됨..
-    try {
-      await axios.post(`${serverAPI}/api/user/join`, {
-        email: emailCode,
-        password: passWord,
-        invitation_code: inviteCode,
-      });
-      console.log("회원가입 성공~!");
-      navigate("/Login");
-    } catch (error) {
-      console.error("회원가입 error입니당", error);
     }
   };
   // useEffect 사용해서 이메일 인증 타이머 작동시키기!
@@ -141,6 +129,35 @@ function SignUp() {
     const sec = String(seconds % 60).padStart(2, "0");
     return `${min}:${sec}`;
   };
+  // 비밂번호 조건 체크
+  const lengthOk = passWord.length >= 8;
+  const upperCaseOk = /[A-Z]/.test(passWord);
+  // 비밀번호 확인란 작성 중 && 비밀번호와 일치하지 않을 때
+  const isMismatch = confirmPassword !== "" && passWord !== confirmPassword;
+  // 모든 텍스트를 다 적었으며 각 조건들에 부합하는가? (회원가입 Send 버튼 활성화 위함)
+  const isFormValid =
+    isCodeConfirmed &&
+    isEmailSent &&
+    isEmailVerified &&
+    lengthOk &&
+    upperCaseOk &&
+    passWord === confirmPassword;
+  // 회원가입을 위한 최종 Send 버튼 함수
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // 이거 없으면 무조건 새로고침 됨..
+    try {
+      await axios.post(`${serverAPI}/api/user/join`, {
+        email: emailCode,
+        password: passWord,
+        invitation_code: inviteCode,
+      });
+      console.log("회원가입 성공~!");
+      navigate("/Login");
+    } catch (error) {
+      console.error("회원가입 error입니당", error);
+    }
+  };
+
   return (
     <>
       <HeaderBack />
@@ -151,7 +168,11 @@ function SignUp() {
           <fieldset className="signup__form__code">
             <legend>Verify Invitation Code</legend>
             {/* 초대코드 인증 */}
-            <div className={`input-btn-field ${isValidInviteCode === false ? "input-btn-field--error" : ""}`}>
+            <div
+              className={`input-btn-field ${
+                isValidInviteCode === false ? "input-btn-field--error" : ""
+              }`}
+            >
               <label htmlFor="invitationCode">Invitation code</label>
               <div className="input-btn-field__box">
                 <input
@@ -165,9 +186,9 @@ function SignUp() {
                   disabled={isCodeConfirmed} // 성공 시 비활성화
                 />
                 <button
-                  className={`btn ${inviteCode.trim() !== "" ? "" : "btn--disabled"} ${
-                    isCodeConfirmed ? "btn--disabled" : ""
-                  }`}
+                  className={`btn ${
+                    inviteCode.trim() !== "" ? "" : "btn--disabled"
+                  } ${isCodeConfirmed ? "btn--disabled" : ""}`}
                   onClick={(e) => {
                     e.preventDefault(); // ✅ 폼 제출 막기
                     checkInviteCode();
@@ -178,10 +199,15 @@ function SignUp() {
                 </button>
               </div>
               {/* 에러 메시지 */}
-              <span className="input-btn-field__error-txt">Invalid invitation code</span>
+              <span className="input-btn-field__error-txt">
+                Invalid invitation code
+              </span>
             </div>
           </fieldset>
-          <fieldset className="signup__form__email" disabled={isValidInviteCode !== true}>
+          <fieldset
+            className="signup__form__email"
+            disabled={isValidInviteCode !== true}
+          >
             <legend>Email Verification</legend>
             {/* 아이디 (이메일) 인증 */}
             <div className="input-btn-field">
@@ -196,9 +222,9 @@ function SignUp() {
                   onChange={(e) => setEmailCode(e.target.value)}
                 />
                 <button
-                  className={`btn ${emailCode.trim() !== "" ? "" : "btn--disabled"}${
-                    isEmailSent ? "btn--disabled" : ""
-                  }`}
+                  className={`btn ${
+                    emailCode.trim() !== "" ? "" : "btn--disabled"
+                  }${isEmailSent ? "btn--disabled" : ""}`}
                   onClick={(e) => {
                     e.preventDefault();
                     sendEmailCode();
@@ -225,10 +251,16 @@ function SignUp() {
                   disabled={timeLeft === 0 || isEmailVerified} // ⛔ 타임아웃 시 비활성화
                 />
                 <button
-                  className={`btn ${emailAuthCode.trim() !== "" ? "" : "btn--disabled"} ${
-                    isEmailVerified ? "btn--disabled" : ""
-                  } ${timeLeft === 0 ? "btn--disabled" : ""}`}
-                  disabled={timeLeft === 0 || isEmailVerified || emailAuthCode.trim() === ""}
+                  className={`btn ${
+                    emailAuthCode.trim() !== "" ? "" : "btn--disabled"
+                  } ${isEmailVerified ? "btn--disabled" : ""} ${
+                    timeLeft === 0 ? "btn--disabled" : ""
+                  }`}
+                  disabled={
+                    timeLeft === 0 ||
+                    isEmailVerified ||
+                    emailAuthCode.trim() === ""
+                  }
                   onClick={(e) => {
                     e.preventDefault();
                     checkEmailAuthCode();
@@ -259,7 +291,10 @@ function SignUp() {
               )}
             </div>
           </fieldset>
-          <fieldset className="signup__form__pw" disabled={isValidInviteCode !== true}>
+          <fieldset
+            className="signup__form__pw"
+            disabled={isValidInviteCode !== true}
+          >
             <legend>Set Password</legend>
 
             {/* 비밀번호 */}
@@ -276,12 +311,20 @@ function SignUp() {
 
             {/* 비밀번호 조건 안내 */}
             <ul className="password-rules">
-              <li className={`${lengthOk ? "check" : ""}`}>At least 8 characters</li>
-              <li className={`${upperCaseOk ? "check" : ""}`}>Must contain at least one uppercase letter</li>
+              <li className={`${lengthOk ? "check" : ""}`}>
+                At least 8 characters
+              </li>
+              <li className={`${upperCaseOk ? "check" : ""}`}>
+                Must contain at least one uppercase letter
+              </li>
             </ul>
 
             {/* 비밀번호 확인 - InputField 안 쓰고 직접 마크업 */}
-            <div className={`input-btn-field ${isMismatch ? "input-btn-field--error" : ""}`}>
+            <div
+              className={`input-btn-field ${
+                isMismatch ? "input-btn-field--error" : ""
+              }`}
+            >
               <label htmlFor="userPwConfirm">Password Again</label>
               <div className="input-btn-field__box">
                 <InputField
@@ -295,7 +338,9 @@ function SignUp() {
                 />
               </div>
               {/* 에러 메시지 */}
-              <span className="input-btn-field__error-txt">Passwords do not match</span>
+              <span className="input-btn-field__error-txt">
+                Passwords do not match
+              </span>
             </div>
           </fieldset>
 

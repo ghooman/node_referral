@@ -6,11 +6,35 @@ import CopyButton from "../unit/CopyButton";
 import "./SalesRecordList.scss";
 import { Link } from "react-router-dom";
 
-function SalesRecordList({ data, handleClickNewDealBtn }) {
+function SalesRecordList({
+  handleClickNewDealBtn,
+  newDealList,
+  formatDate,
+  sliceList5,
+}) {
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggle = (index) => {
     setOpenIndex((prev) => (prev === index ? null : index));
+  };
+
+  const getBadgeClassName = (state) => {
+    switch (state) {
+      case "승인요청":
+        return "requested";
+      case "승인대기":
+        return "pending";
+      case "승인취소":
+        return "cancelled";
+      case "승인완료":
+        return "approved";
+      case "정산대기":
+        return "settlement_pending";
+      case "정산완료":
+        return "settled";
+      default:
+        return "";
+    }
   };
 
   return (
@@ -42,25 +66,29 @@ function SalesRecordList({ data, handleClickNewDealBtn }) {
         </div>
 
         {/* 데이터 유무에 따라 item or empty */}
-        {!data || data.length === 0 ? (
+        {!newDealList || newDealList.length === 0 ? (
           // 판매 기록이 없는 경우
           <div className="table-empty">판매 기록이 없습니다.</div>
         ) : (
-          data.map((item, index) => (
+          sliceList5(newDealList, 5).map((item, index) => (
             <div
               className={`list-item ${openIndex === index ? "open" : ""}`}
               key={index}
             >
               <div className="list-item__row sales-record">
-                <div className="col">{item.buyer}</div>
-                <div className="col mobile-del">{item.count}</div>
-                <div className="col mobile-del">{item.unitPrice}</div>
-                <div className="col">{item.total}</div>
-                <div className="col">{item.settlement}</div>
-                <div className="col mobile-del">{item.date}</div>
+                <div className="col">{item.buyer_name}</div>
+                <div className="col mobile-del">{item.cnt}</div>
+                <div className="col mobile-del">{item.unit_price}</div>
+                <div className="col">{item.cnt * item.unit_price}</div>
+                <div className="col">{item.settlement_amount}</div>
+                <div className="col mobile-del">
+                  {formatDate(item.create_dt)}
+                </div>
                 <div className="col toggle-btn-box">
-                  <button className={`badge badge--${item.statusType}`}>
-                    {item.status}
+                  <button
+                    className={`badge badge--${getBadgeClassName(item.state)}`}
+                  >
+                    {item.state}
                   </button>
                   <button
                     className={`toggle-btn ${
@@ -79,8 +107,8 @@ function SalesRecordList({ data, handleClickNewDealBtn }) {
                     <p>
                       <b>지갑주소</b>
                       <span>
-                        {item.wallet}
-                        <CopyButton textToCopy={item.wallet} />
+                        {item.buyer_wallet_address}
+                        <CopyButton textToCopy={item.buyer_wallet_address} />
                       </span>
                     </p>
                     <p>
@@ -91,11 +119,11 @@ function SalesRecordList({ data, handleClickNewDealBtn }) {
                   <div className="list-item__detail__list">
                     <p>
                       <b>승인완료 날짜</b>
-                      <span>{item.approveDate}</span>
+                      <span>{formatDate(item.approval_dt)}</span>
                     </p>
                     <p>
                       <b>정산완료 날짜</b>
-                      <span>{item.completeDate}</span>
+                      <span>{item.settlement_dt}</span>
                     </p>
                   </div>
                 </div>

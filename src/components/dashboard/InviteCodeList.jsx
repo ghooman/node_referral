@@ -8,27 +8,17 @@ import arrowRightIcon from "../../assets/images/icon-arrow-right.svg";
 
 import "./InviteCodeList.scss";
 
-function InviteCodeList({ handleClickInviteBtn, inviteCodeList, formatDate }) {
+function InviteCodeList({
+  handleClickInviteBtn,
+  inviteCodeList,
+  formatDate,
+  sliceList5,
+}) {
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggle = (index) => {
     setOpenIndex((prev) => (prev === index ? null : index));
   };
-
-  const data = [
-    {
-      지분: "50%",
-      코드: "7FBDWQ",
-      닉네임: "닉네임은 최대열자입",
-      인원: "3명",
-      생성일: "2025.06.02 17:48",
-      이메일리스트: [
-        "kimcheomzi@mob.com",
-        "kimcheomji@mob.com",
-        "kimchumji@mob.com",
-      ],
-    },
-  ];
 
   return (
     <section className="table-section">
@@ -58,7 +48,7 @@ function InviteCodeList({ handleClickInviteBtn, inviteCodeList, formatDate }) {
 
         {/* 초대코드 리스트가 있는 경우 */}
         {inviteCodeList.length > 0 ? (
-          inviteCodeList.map((item, index) => (
+          sliceList5(inviteCodeList, 5).map((item, index) => (
             <div
               key={index}
               className={`list-item ${openIndex === index ? "open" : ""}`}

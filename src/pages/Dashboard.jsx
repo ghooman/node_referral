@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-import React, { use, useState, useEffect } from "react";
 // Components
 import Header from "../components/unit/Header";
 import Footer from "../components/unit/Footer";
@@ -19,7 +17,10 @@ import arrowUpIcon from "../assets/images/icon-arrow-up.svg";
 import closeBtn from "../assets/images/icon-close.svg";
 // style
 import "../styles/pages/Dashboard.scss";
+// 외부 라이브러리 및 패키지
 import axios from "axios";
+import { Link } from "react-router-dom";
+import React, { use, useState, useEffect } from "react";
 
 const serverAPI = process.env.REACT_APP_NODE_SERVER_API;
 
@@ -28,23 +29,7 @@ function Dashboard() {
   const [openInviteIndex, setOpenInviteIndex] = useState(null);
   const [openEarningsIndex, setOpenEarningsIndex] = useState(null);
 
-  // 지갑주소 등록 모달 오픈
-  const [isOpenAddWalletModal, setIsOpenAddWalletModal] = useState(false);
-  // 지갑주소 수정 모달 오픈
-  const [isOpenEditWalletModal, setIsOpenEditWalletModal] = useState(false);
-  // 초대 코드 모달 오픈
-  const [isOpenInviteModal, setIsOpenInviteModal] = useState(false);
-  // 초대코드 생성 시, 분리할 지분 (버튼)
-  const [selectedShare, setSelectedShare] = useState("5"); // 기본값 5%
-  const [customShare, setCustomShare] = useState("");
-  // 초대코드 생성 시, 닉네임 설정
-  const [nickname, setNickname] = useState("");
-  // 초대코드 생성한 리스트 상태
-  const [inviteCodeList, setInviteCodeList] = useState([]);
-  // 새 거래 등록 모달 오픈
-  const [isOpenNewDealModal, setIsOpenNewDealModal] = useState(false);
-  // 컨펌 모달 오픈 (새 거래 등록 눌렀을 때 지갑 주소 없을 경우 나오는 모달)
-  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
+  //---- 공통 상태 ----------------------------------------------------
   // 사용자 정보 상태
   const [userName, setUserName] = useState("");
   const [userShare, setUserShare] = useState("");
@@ -54,47 +39,48 @@ function Dashboard() {
   const [userWalletEdit, setUserWalletEdit] = useState("");
   const userToken = localStorage.getItem("userToken");
 
-  // 지갑주소 클릭 함수
-  const handleClickAddWalletBtn = async () => {
-    setIsOpenAddWalletModal(true);
-  };
-  // 지갑주소 수정 클릭 함수
-  const handleClickEditWalletBtn = async () => {
-    setUserWalletEdit(userWallet);
-    setIsOpenEditWalletModal(true);
-    console.log("지갑주소 수정 함수입니당!");
-    console.log("userWalletEdit", userWalletEdit);
-    console.log("userWalletInput", userWalletInput);
-    console.log("userWallet", userWallet);
-  };
-  // 초대코드 클릭 함수
-  const handleClickInviteBtn = async () => {
-    setIsOpenInviteModal(true);
-  };
-  // 새 거래등록 클릭 함수
-  const handleClickNewDealBtn = async () => {
-    if (!userWallet) {
-      setIsOpenConfirmModal(true);
-    } else {
-      setIsOpenNewDealModal(true);
-    }
-  };
+  // 버튼 로딩 상태
+  const [isLoading, setIsLoading] = useState(false);
 
-  // 지분 선택 되었는지 확인 (닉네임은 선택값)
-  const isFormValid = selectedShare !== "";
+  //---- 지갑주소 상태 ----------------------------------------------------
+  // 지갑주소 등록 모달 오픈
+  const [isOpenAddWalletModal, setIsOpenAddWalletModal] = useState(false);
+  // 지갑주소 수정 모달 오픈
+  const [isOpenEditWalletModal, setIsOpenEditWalletModal] = useState(false);
 
-  // 한글/영어/숫자 + 최대 10자 제한
-  const handleNicknameChange = (e) => {
-    const value = e.target.value;
+  //---- 새 거래 등록 상태 ----------------------------------------------------
+  // 새 거래 등록 정보
+  const [newDealUser, setNewDealUser] = useState("");
+  const [newDealPerPrice, setNewDealPerPrice] = useState("");
+  const [newDealNumber, setNewDealNumber] = useState("");
+  const [newDealTotalAmount, setNewDealTotalAmount] = useState(0);
+  const [newDealWallet, setNewDealWallet] = useState("");
+  const [newDealNote, setNewDealNote] = useState("");
+  const [isNewDealValid, setIsNewDealValid] = useState(false);
+  // 새 거래 등록 모달 오픈
+  const [isOpenNewDealModal, setIsOpenNewDealModal] = useState(false);
+  // 컨펌 모달 오픈 (새 거래 등록 눌렀을 때 지갑 주소 없을 경우 나오는 모달)
+  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
+  // 새 거래 등록 생성한 리스트 상태
+  const [newDealList, setNewDealList] = useState([]);
+  // 새 거래 등록 생성 시 성공 모달
+  const [isNewDealCreateSuccess, setIsNewDealCreateSuccess] = useState(false);
 
-    // 정규식: 한글, 영문, 숫자만 허용
-    const regex = /^[ㄱ-ㅎ가-힣a-zA-Z0-9]*$/;
+  //----- 초대코드 상태 ----------------------------------------------------
+  // 초대 코드 모달 오픈
+  const [isOpenInviteModal, setIsOpenInviteModal] = useState(false);
+  // 초대코드 생성 시, 분리할 지분 (버튼)
+  const [selectedShare, setSelectedShare] = useState("5"); // 기본값 5%
+  const [customShare, setCustomShare] = useState("");
+  // 초대코드 생성 시, 닉네임 설정
+  const [nickname, setNickname] = useState("");
+  // 초대코드 생성한 리스트 상태
+  const [inviteCodeList, setInviteCodeList] = useState([]);
+  // 초대코드 생성 시 성공 모달
+  const [isInviteCodeCreateSuccess, setIsInviteCodeCreateSuccess] =
+    useState(false);
 
-    if (regex.test(value) && value.length <= 10) {
-      setNickname(value);
-    }
-  };
-
+  //---- 공통 ----------------------------------------------------
   // 사용자 정보 가져오는 함수
   const userInfo = async () => {
     try {
@@ -118,8 +104,50 @@ function Dashboard() {
       userInfo();
     }
   }, [userToken]);
+  // 로그인 후 첫 진입 시, 각 리스트 불러오기!
+  useEffect(() => {
+    if (userToken) {
+      fetchInviteCodeList();
+      fetchNewDealList();
+    }
+  }, []);
+  // 날짜 포맷팅
+  const formatDate = (isoString) => {
+    const raw = new Date(isoString).toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+    // "2025. 07. 19. 15:16" → "2025. 07. 19 15:16"
+    return raw.replace(/(\d{2})\.\s(\d{2})\.\s(\d{2})\.\s/, "$1. $2. $3 ");
+  };
+  // 각 리스트 5개만 보여주기
+  const sliceList5 = (list, count = 5) => {
+    if (!Array.isArray(list)) return [];
+    return list.slice(0, count);
+  };
+
+  //---- 지갑주소 ----------------------------------------------------
+  // 지갑주소 클릭 함수
+  const handleClickAddWalletBtn = async () => {
+    setIsOpenAddWalletModal(true);
+  };
+  // 지갑주소 수정 클릭 함수
+  const handleClickEditWalletBtn = async () => {
+    setUserWalletEdit(userWallet);
+    setIsOpenEditWalletModal(true);
+    console.log("지갑주소 수정 함수입니당!");
+    console.log("userWalletEdit", userWalletEdit);
+    console.log("userWalletInput", userWalletInput);
+    console.log("userWallet", userWallet);
+  };
   // 지갑주소 등록하는 함수
   const handleSaveWallet = async (finalWallet) => {
+    setIsLoading(true);
     try {
       console.log("서버에 보내는 지갑 주소는?!", finalWallet);
       await axios.post(`${serverAPI}/api/user/wallet/address`, null, {
@@ -137,9 +165,11 @@ function Dashboard() {
       setUserWalletEdit(""); // 수정용 초기화
       setIsOpenAddWalletModal(false);
       setIsOpenEditWalletModal(false);
+      setIsLoading(false);
       userInfo(); // 사용자 정보 새롭게 갱신하기!
     } catch (error) {
       console.error("지갑주소 등록/수정 error입니당", error);
+      setIsLoading(false);
     }
   };
   // 지갑 주소 포맷팅 함수 (앞뒤 4글자씩 짜르기 0x00....0000)
@@ -147,8 +177,151 @@ function Dashboard() {
     if (!address || address.length < 10) return address;
     return `${address.slice(0, 4)}....${address.slice(-4)}`;
   };
+
+  //---- 새 거래등록 ----------------------------------------------------
+  // 새 거래등록 클릭 함수
+  const handleClickNewDealBtn = async () => {
+    if (!userWallet) {
+      setIsOpenConfirmModal(true);
+    } else {
+      setIsOpenNewDealModal(true);
+    }
+  };
+
+  // 새 거래등록 총 금액 자동 계산
+  useEffect(() => {
+    const price = parseInt(newDealPerPrice, 10);
+    const count = parseInt(newDealNumber, 10);
+
+    if (!isNaN(price) && !isNaN(count)) {
+      setNewDealTotalAmount(price * count);
+    } else {
+      setNewDealTotalAmount(0);
+    }
+  }, [newDealPerPrice, newDealNumber]);
+  // 새 거래등록 유효성 검사 및 버튼 활성화 로직
+  useEffect(() => {
+    const isUserValid = /^[a-zA-Z가-힣]{1,8}$/.test(newDealUser);
+    const isPerPriceValid = /^\d+$/.test(newDealPerPrice);
+    const isNumberValid = /^\d+$/.test(newDealNumber);
+    const isWalletValid = newDealWallet.trim().length > 0;
+
+    if (isUserValid && isPerPriceValid && isNumberValid && isWalletValid) {
+      setIsNewDealValid(true);
+    } else {
+      setIsNewDealValid(false);
+    }
+  }, [newDealUser, newDealPerPrice, newDealNumber, newDealWallet]);
+  // 새 거래등록 글자갯수 포맷팅 (이름)
+  const handleBuyerNameChange = (e) => {
+    const value = e.target.value;
+    const regex = /^[ㄱ-ㅎ가-힣a-zA-Z]*$/; // 한글/영문만 허용
+
+    if (regex.test(value) && value.length <= 8) {
+      setNewDealUser(value);
+    }
+  };
+  // 새 거래등록 글자갯수 포맷팅 (비고)
+  const handleNoteChange = (e) => {
+    const value = e.target.value;
+    const regex = /^[ㄱ-ㅎ가-힣a-zA-Z0-9\s.,!?()'"-]*$/; // 문장 기호도 허용하면 이렇게
+
+    if (regex.test(value) && value.length <= 30) {
+      setNewDealNote(value);
+    }
+  };
+  // 새 거래등록 필드 초기화
+  const resetNewDealFields = () => {
+    setNewDealUser("");
+    setNewDealPerPrice("");
+    setNewDealNumber("");
+    setNewDealTotalAmount(0);
+    setNewDealWallet("");
+    setNewDealNote("");
+    setIsNewDealValid(false); // 등록 버튼 비활성화 초기화
+  };
+
+  // 새 거래등록 최종 등록하는 함수
+  const handleNewDealSubmit = async () => {
+    setIsLoading(true);
+    try {
+      console.log("서버로 보내는 거래등록 내용 모음!");
+      console.log("newDealUser", newDealUser);
+      console.log("newDealPerPrice", newDealPerPrice);
+      console.log("newDealNumber", newDealNumber);
+      console.log("newDealTotalAmount", newDealTotalAmount);
+      console.log("newDealWallet", newDealWallet);
+      console.log("newDealNote", newDealNote);
+      await axios.post(
+        `${serverAPI}/api/sales/record`,
+        {
+          buyer_name: newDealUser,
+          unit_price: parseInt(newDealPerPrice, 10),
+          cnt: parseInt(newDealNumber, 10),
+          buyer_wallet_address: newDealWallet,
+          memo: newDealNote,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+      console.log("새 거래등록 서버 전달 완료~!");
+      await fetchNewDealList();
+      resetNewDealFields(); // 입력 필드 초기화
+      setIsLoading(false);
+      setIsOpenNewDealModal(false);
+      setIsNewDealCreateSuccess(true);
+    } catch (error) {
+      console.error("새 거래등록 최종 등록하는 함수 error입니당", error);
+      setIsLoading(false);
+    }
+  };
+  // 새 거래등록 확인 함수
+  const fetchNewDealList = async () => {
+    try {
+      const res = await axios.get(`${serverAPI}/api/sales/list`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+        params: {
+          page: 1,
+          limit: 20,
+          // state: "state" // 선택적으로 사용 가능
+        },
+      });
+      console.log("전체 응답", res.data);
+      const list = res.data.data_list;
+      setNewDealList(list);
+    } catch (error) {
+      console.error("새 거래등록 리스트 가져오기 실패", error);
+    }
+  };
+
+  //---- 초대코드 ----------------------------------------------------
+  // 초대코드 클릭 함수
+  const handleClickInviteBtn = async () => {
+    setIsOpenInviteModal(true);
+  };
+  // 초대코드 지분 선택 되었는지 확인 (닉네임은 선택값)
+  const isFormValid = selectedShare !== "";
+
+  // 초대코드 한글/영어/숫자 + 최대 10자 제한
+  const handleNicknameChange = (e) => {
+    const value = e.target.value;
+
+    // 정규식: 한글, 영문, 숫자만 허용
+    const regex = /^[ㄱ-ㅎ가-힣a-zA-Z0-9]*$/;
+
+    if (regex.test(value) && value.length <= 10) {
+      setNickname(value);
+    }
+  };
+
   // 초대코드 생성하기 버튼 함수
   const handleCreateInviteBtn = async () => {
+    setIsLoading(true);
     try {
       const res = await axios.post(
         `${serverAPI}/api/user/invitation/code`,
@@ -168,8 +341,12 @@ function Dashboard() {
       // ✅ 응답 값 확인
       console.log("status:", res.data.status);
       await fetchInviteCodeList(); // 생성 후 최신 데이터 확인
+      setIsLoading(false);
+      setIsOpenInviteModal(false);
+      setIsInviteCodeCreateSuccess(true);
     } catch (error) {
       console.error("초대코드 생성 에러", error);
+      setIsLoading(false);
     }
   };
 
@@ -197,24 +374,6 @@ function Dashboard() {
       const list = res.data.data_list;
       console.log("초대코드 리스트:", list);
       setInviteCodeList(list);
-
-      // // 첫 번째 코드의 정보
-      // if (list.length > 0) {
-      //   const first = list[0];
-      //   console.log("코드:", first.invitation_code);
-      //   console.log("닉네임:", first.nick_name);
-      //   console.log("지분:", first.share);
-      //   console.log("등록일:", first.create_dt);
-      //   console.log("할당된 인원 수:", first.allocation_cnt);
-
-      //   // 하위 유저 목록
-      //   console.log("하위 유저 목록:");
-      //   first.user_list.forEach((user, idx) => {
-      //     console.log(`  ${idx + 1}. ${user.username}`);
-      //   });
-      // } else {
-      //   console.log("아직 생성된 초대코드가 없습니다.");
-      // }
     } catch (error) {
       console.error("초대코드 리스트 가져오기 실패:", error);
       if (error.response) {
@@ -224,57 +383,6 @@ function Dashboard() {
       }
     }
   };
-  // 로그인 후 첫 진입 시, 초대코드 리스트 불러오기!
-  useEffect(() => {
-    if (userToken) {
-      fetchInviteCodeList();
-    }
-  }, []);
-  // 날짜 포맷팅
-  const formatDate = (isoString) => {
-    const raw = new Date(isoString).toLocaleString("ko-KR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-
-    // "2025. 07. 19. 15:16" → "2025. 07. 19 15:16"
-    return raw.replace(/(\d{2})\.\s(\d{2})\.\s(\d{2})\.\s/, "$1. $2. $3 ");
-  };
-
-  const salesData = [
-    {
-      buyer: "김첨지",
-      count: 100,
-      unitPrice: 3,
-      total: 300,
-      settlement: 180.15,
-      date: "2025.06.02 17:48",
-      status: "승인 요청",
-      statusType: "requested",
-      wallet: "0x8687****7868786878687",
-      memo: "구매한 사람에 대한 메모 최대 30자",
-      approveDate: "2025.06.03 13:00",
-      completeDate: "-",
-    },
-    {
-      buyer: "홍길동",
-      count: 20,
-      unitPrice: 5,
-      total: 100,
-      settlement: 70.5,
-      date: "2025.07.01 10:20",
-      status: "승인 대기",
-      statusType: "ready",
-      wallet: "0x7788****1234567890",
-      memo: "2차 구매자",
-      approveDate: "-",
-      completeDate: "-",
-    },
-  ];
 
   const handleSalesToggle = (index) => {
     setOpenSalesIndex((prev) => (prev === index ? null : index));
@@ -390,10 +498,13 @@ function Dashboard() {
 
         {/* 내 판매기록 */}
         <SalesRecordList
-          data={salesData}
+          // data={salesData}
           openIndex={openSalesIndex}
           handleToggle={handleSalesToggle}
           handleClickNewDealBtn={handleClickNewDealBtn}
+          newDealList={newDealList}
+          formatDate={formatDate}
+          sliceList5={sliceList5}
         />
 
         {/* 초대 코드 리스트 */}
@@ -401,6 +512,7 @@ function Dashboard() {
           handleClickInviteBtn={handleClickInviteBtn}
           inviteCodeList={inviteCodeList}
           formatDate={formatDate}
+          sliceList5={sliceList5}
         />
 
         {/* 하위 수입자 리스트 */}
@@ -439,11 +551,12 @@ function Dashboard() {
                 <button
                   className={`btn btn-content-modal ${
                     userWalletInput ? "" : "btn--disabled"
-                  }`}
+                  } ${isLoading ? "btn--loading" : ""}`}
                   disabled={!userWalletInput}
                   onClick={() => handleSaveWallet(userWalletInput)}
                 >
-                  지갑주소 등록 <LoadingDots />
+                  {isLoading ? "지갑주소 등록 중" : "지갑주소 등록"}
+                  <LoadingDots />
                 </button>
               </div>
             </div>
@@ -483,11 +596,12 @@ function Dashboard() {
                 <button
                   className={`btn btn-content-modal ${
                     userWalletEdit ? "" : "btn--disabled"
-                  }`}
+                  } ${isLoading ? "btn--loading" : ""}`}
                   disabled={!userWalletEdit}
                   onClick={() => handleSaveWallet(userWalletEdit)}
                 >
-                  지갑주소 수정 <LoadingDots />
+                  {isLoading ? "지갑주소 수정 중" : "지갑주소 수정"}{" "}
+                  <LoadingDots />
                 </button>
               </div>
             </div>
@@ -505,6 +619,7 @@ function Dashboard() {
           onClick={() => setIsOpenConfirmModal(false)}
         />
       )}
+      {/* '새 거래 등록' 선택 시 거래 등록 모달 노출  */}
       {isOpenNewDealModal && userWallet && (
         <FullModalWrap>
           <div className="modal modal-transaction">
@@ -513,7 +628,10 @@ function Dashboard() {
                 <h2>거래등록</h2>
                 <button
                   type="button"
-                  onClick={() => setIsOpenNewDealModal(false)}
+                  onClick={() => {
+                    resetNewDealFields();
+                    setIsOpenNewDealModal(false);
+                  }}
                 >
                   <img src={closeBtn} alt="팝업 닫기" />
                 </button>
@@ -525,29 +643,38 @@ function Dashboard() {
                   type="text"
                   placeholder="구매자명을 입력해 주세요"
                   required
+                  value={newDealUser}
+                  onChange={handleBuyerNameChange}
                 />
                 <div className="twoway-inputField">
                   <div>
-                    <label htmlFor="avgPrice">객단가</label>
-                    <input
+                    <InputField
                       type="text"
                       id="avgPrice"
+                      label="객단가"
                       placeholder="객단가 입력"
+                      required
+                      value={newDealPerPrice}
+                      onChange={(e) => setNewDealPerPrice(e.target.value)}
                     />
                   </div>
                   <div>
-                    <label htmlFor="salesCount">판매 개수</label>
-                    <input
+                    <InputField
                       type="text"
+                      label="판매 개수"
                       id="salesCount"
                       placeholder="판매 노드 개수 입력"
+                      required
+                      value={newDealNumber}
+                      onChange={(e) => setNewDealNumber(e.target.value)}
                     />
                   </div>
                 </div>
                 <div className="total-amount-field">
                   <b>총 금액(자동계산)</b>
                   <p>
-                    <span>0</span>USDT
+                    <span>{newDealTotalAmount.toLocaleString()}</span>
+                    USDT
                   </p>
                 </div>
                 <InputField
@@ -556,6 +683,8 @@ function Dashboard() {
                   type="text"
                   placeholder="노드를 받을 구매자의 지갑 주소를 입력해 주세요"
                   required
+                  value={newDealWallet}
+                  onChange={(e) => setNewDealWallet(e.target.value)}
                 />
                 <InputField
                   id="addInput"
@@ -563,11 +692,19 @@ function Dashboard() {
                   type="text"
                   placeholder="최대 30자까지 입력 가능합니다"
                   maxLength={30}
+                  value={newDealNote}
+                  onChange={handleNoteChange}
                 />
               </div>
               <div className="modal__footer">
-                <button className="btn btn-content-modal btn--disabled">
-                  지갑주소 등록 <LoadingDots />
+                <button
+                  className={`btn btn-content-modal ${
+                    isNewDealValid ? "" : "btn--disabled"
+                  } ${isLoading ? "btn--loading" : ""}`}
+                  disabled={!isNewDealValid}
+                  onClick={handleNewDealSubmit}
+                >
+                  {isLoading ? "거래등록 중" : "거래등록 완료"} <LoadingDots />
                 </button>
               </div>
             </div>
@@ -576,12 +713,15 @@ function Dashboard() {
       )}
 
       {/* '새 거래 등록' 완료 시 Confirm Modal 노출  */}
-      {/* <ConfirmModal
-    title="등록 완료"
-    message="등록 후 승인요청 버튼을 꼭 클릭해 주세요. 노드 전송 및 정산금 입금은 영업일 기준 2~3일 소요됩니다."
-    buttonText="확인"
-    onClose={() => {}}
-    /> */}
+      {isNewDealCreateSuccess && (
+        <ConfirmModal
+          title="등록 완료"
+          message="등록 후 승인요청 버튼을 꼭 클릭해 주세요. 노드 전송 및 정산금 입금은 영업일 기준 2~3일 소요됩니다."
+          buttonText="확인"
+          onClose={() => {}}
+          onClick={() => setIsNewDealCreateSuccess(false)}
+        />
+      )}
 
       {/* '초대코드 생성' 선택 시 '초대코드 생성' Modal 노출 */}
       {isOpenInviteModal && (
@@ -615,20 +755,6 @@ function Dashboard() {
                     role="radiogroup"
                     aria-label="지분 설정"
                   >
-                    {/* <div className="share-setting__left">
-                      <button type="button" className="share-option">
-                        0%
-                      </button>
-                      <button type="button" className="share-option is-active">
-                        5%
-                      </button>
-                      <button type="button" className="share-option">
-                        10%
-                      </button>
-                      <button type="button" className="share-option">
-                        15%
-                      </button>
-                    </div> */}
                     <div className="share-setting__left">
                       {[0, 5, 10, 15].map((value) => (
                         <button
@@ -675,11 +801,12 @@ function Dashboard() {
                 <button
                   className={`btn btn-content-modal ${
                     isFormValid ? "" : "btn--disabled"
-                  }`}
+                  } ${isLoading ? "btn--loading" : ""}`}
                   disabled={!isFormValid}
                   onClick={handleCreateInviteBtn}
                 >
-                  초대코드 생성 <LoadingDots />
+                  {isLoading ? "초대코드 생성 중" : "초대코드 생성"}
+                  <LoadingDots />
                 </button>
               </div>
             </div>
@@ -688,12 +815,15 @@ function Dashboard() {
       )}
 
       {/* '초대코드 생성' 완료 시 Confirm Modal 노출  */}
-      {/* <ConfirmModal
-    title="초대코드 생성 완료"
-    message="초대코드를 성공적으로 생성했습니다."
-    buttonText="확인"
-    onClose={() => {}}
-    /> */}
+      {isInviteCodeCreateSuccess && (
+        <ConfirmModal
+          title="초대코드 생성 완료"
+          message="초대코드를 성공적으로 생성했습니다."
+          buttonText="확인"
+          onClose={() => {}}
+          onClick={() => setIsInviteCodeCreateSuccess(false)}
+        />
+      )}
     </>
   );
 }
