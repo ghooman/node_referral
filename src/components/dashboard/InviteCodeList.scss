@@ -1,108 +1,113 @@
-@import '../../styles/variables';
-@import '../../styles/mixins';
+@import "../../styles/variables";
+@import "../../styles/mixins";
 
-.table-section{
+.table-section {
   // padding: 16px 2% !important;
-  .table-section__tit{
+  .table-section__tit {
     @include flex-between;
     align-items: center;
     margin-bottom: $sp-30;
 
-    .table-section__tit__tit-button{
-        gap: $sp-20;
+    .table-section__tit__tit-button {
+      gap: $sp-20;
 
-      .btn-sm{
+      .btn-sm {
         @include font-sm-b;
         padding: 8px 16px;
         background-color: $color-primary;
         color: $color-gray-000;
         border-radius: 8px;
-        @include md{
+        @include md {
           @include font-xs-b;
         }
       }
     }
-}
+  }
 
-    .table-section__tit__list-head{
+  .table-section__tit__list-head {
     display: flex;
     padding: 16px 0;
     color: $color-gray-000;
 
-    .col{
+    .col {
       @include font-sm-b;
-        flex: 1;
-        text-align: center;
+      flex: 1;
+      text-align: center;
 
-        &.col--action{
+      &.col--action {
         flex: 2;
         text-align: center;
-        }
+      }
     }
-}
+  }
 
-    .table-section__tit__list-item{
-    .list-item__row{
+  .table-section__tit__list-item {
+    .list-item__row {
       @include font-sm-b;
-        display: flex;
-        align-items: center;
-        padding: 20px;
-        color: $color-gray-000;
-        border-bottom: 1px solid $color-w-o10;
-        @include md{
-          @include font-xs-b;
-        }
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      color: $color-gray-000;
+      border-bottom: 1px solid $color-w-o10;
+      @include md {
+        @include font-xs-b;
+      }
 
-        .col{
+      .col {
         flex: 1;
         text-align: center;
 
-        &.col--action{
-            flex: 2;
-            display: flex;
-            gap: 8px;
+        &.col--action {
+          flex: 2;
+          display: flex;
+          gap: 8px;
         }
-        }
+      }
     }
-}
-.invite-code-button{
-  @include flex-start;
-  flex: 2 1 !important;
-  gap: 10px;
-  padding-right: 50px !important;
-}
-.btn--line-mini{
-  @include font-sm-r;
-  padding: 4px 10px;
-  border: 1px solid $color-w-o20;
-  border-radius: 6px;
-  background-color: $color-w-o05;
-  color: $color-gray-000;
-  white-space: nowrap;
-  @include lg{
-    @include font-xs-r;
   }
-}
-  .table-empty{
+  .invite-code-button {
+    @include flex-start;
+    flex: 2 1 !important;
+    gap: 10px;
+    padding-right: 50px !important;
+    justify-content: center;
+  }
+  .btn--line-mini {
+    @include font-sm-r;
+    padding: 4px 10px;
+    border: 1px solid $color-w-o20;
+    border-radius: 6px;
+    background-color: $color-w-o05;
+    color: $color-gray-000;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    &.copied {
+      color: #a8a8a8;
+      border: 1px solid $color-w-o05;
+    }
+    @include lg {
+      @include font-xs-r;
+    }
+  }
+  .table-empty {
     @include font-xl-b;
     padding: 40px 0;
     text-align: center;
     color: $color-gray-500;
-    @include md{
+    @include md {
       @include font-sm-b;
     }
   }
 }
-.invite-code{
+.invite-code {
   @include flex-column;
   align-items: flex-start !important;
-  .email-row{
-      @include flex-start;
-      column-gap: 12px;
-      width: 100%;
-      .index{
-        padding: 0 12px;
-      }
+  .email-row {
+    @include flex-start;
+    column-gap: 12px;
+    width: 100%;
+    .index {
+      padding: 0 12px;
+    }
   }
 }
-

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // img
 import arrowDownIcon from "../../assets/images/icon-arrow-down.svg";
@@ -8,17 +8,35 @@ import arrowRightIcon from "../../assets/images/icon-arrow-right.svg";
 
 import "./InviteCodeList.scss";
 
-function InviteCodeList({
-  handleClickInviteBtn,
-  inviteCodeList,
-  formatDate,
-  sliceList5,
-}) {
+function InviteCodeList({ handleClickInviteBtn, inviteCodeList, formatDate, sliceList5 }) {
   const [openIndex, setOpenIndex] = useState(null);
+
+  const [copiedIndex, setCopiedIndex] = useState({ code: null, link: null });
+
+  const handleCopyCode = (code, index) => {
+    navigator.clipboard.writeText(code);
+    setCopiedIndex((prev) => ({ ...prev, code: index }));
+  };
+
+  const handleCopyLink = (code, index) => {
+    // url 확정되면 변경 필요
+    const fullUrl = `https://metapol.io/metapol-referral/signup/?r=${code}`;
+    navigator.clipboard.writeText(fullUrl);
+    setCopiedIndex((prev) => ({ ...prev, link: index }));
+  };
 
   const toggle = (index) => {
     setOpenIndex((prev) => (prev === index ? null : index));
   };
+
+  useEffect(() => {
+    if (copiedIndex.code !== null || copiedIndex.link !== null) {
+      const timer = setTimeout(() => {
+        setCopiedIndex({ code: null, link: null });
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [copiedIndex]);
 
   return (
     <section className="table-section">
@@ -26,11 +44,7 @@ function InviteCodeList({
         <div className="table-section__tit">
           <div className="table-section__tit__tit-button">
             <h2>초대코드 리스트</h2>
-            <button
-              type="button"
-              className="btn-sm"
-              onClick={handleClickInviteBtn}
-            >
+            <button type="button" className="btn-sm" onClick={handleClickInviteBtn}>
               초대코드 생성
             </button>
           </div>
@@ -49,28 +63,30 @@ function InviteCodeList({
         {/* 초대코드 리스트가 있는 경우 */}
         {inviteCodeList.length > 0 ? (
           sliceList5(inviteCodeList, 5).map((item, index) => (
-            <div
-              key={index}
-              className={`list-item ${openIndex === index ? "open" : ""}`}
-            >
+            <div key={index} className={`list-item ${openIndex === index ? "open" : ""}`}>
               <div className="list-item__row">
-                <div className="col">{item.share}</div>
+                <div className="col">{item.share}%</div>
                 <div className="col">{item.invitation_code}</div>
                 <div className="col mobile-del">{item.nick_name}</div>
                 <div className="col mobile-del">{item.allocation_cnt}</div>
-                <div className="col mobile-del">
-                  {formatDate(item.create_dt)}
-                </div>
+                <div className="col mobile-del">{formatDate(item.create_dt)}</div>
                 <div className="col col--action invite-code-button toggle-btn-box">
-                  <button className="btn--line-mini">코드 복사</button>
-                  <button className="btn--line-mini">초대링크 복사</button>
-                  <button className="btn--line-mini">QR코드</button>
                   <button
-                    className={`toggle-btn ${
-                      openIndex === index ? "rotate" : ""
-                    }`}
-                    onClick={() => toggle(index)}
+                    className={`btn--line-mini ${copiedIndex.code === index ? "copied" : ""}`}
+                    onClick={() => handleCopyCode(item.invitation_code, index)}
                   >
+                    {copiedIndex.code === index ? "복사 완료" : "코드 복사"}
+                  </button>
+
+                  <button
+                    className={`btn--line-mini ${copiedIndex.link === index ? "copied" : ""}`}
+                    onClick={() => handleCopyLink(item.invitation_code, index)}
+                  >
+                    {copiedIndex.link === index ? "복사 완료" : "링크 복사"}
+                  </button>
+                  {/* QR코드 주석 처리 (정해진 내용이 없다고 함) */}
+                  {/* <button className="btn--line-mini">QR코드</button> */}
+                  <button className={`toggle-btn ${openIndex === index ? "rotate" : ""}`} onClick={() => toggle(index)}>
                     <img src={arrowDownIcon} alt="토글" />
                   </button>
                 </div>
@@ -80,7 +96,7 @@ function InviteCodeList({
                 <div className="list-item__detail invite-code">
                   {item.user_list.map((user, i) => (
                     <div key={i} className="email-row">
-                      <Link to="/OtherSalesRecord">
+                      <Link to={`/OtherSalesRecord?email=${user.username}`}>
                         <span className="index">{i + 1}</span>
                         <span className="email">{user.username}</span>
                       </Link>

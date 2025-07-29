@@ -42,10 +42,19 @@ function Login() {
       if (res.data?.token) {
         // 로그인 성공 처리
         console.log("✅ 로그인 성공!", res.data);
-        // 로컬 스토리지에 토큰 저장
+        // 1. 토큰 저장
         localStorage.setItem("userToken", res.data.token);
+        // 2. 이메일 저장
+        localStorage.setItem("userEmail", userId.trim());
+        // 3. 역할 저장 (없으면 이메일로 판단)
+        const role = userId.trim() === "nisoft83@naver.com" ? "master" : "user";
+        localStorage.setItem("userRole", role);
         // 메인 (Dashboard 페이지로 이동)
-        navigate("/");
+        if (role == "master") {
+          navigate("/MasterDashboardDoing");
+        } else {
+          navigate("/");
+        }
       } else {
         // 로그인 실패 처리
         console.warn("❌ 로그인 실패. 사용자 정보 불일치.");
@@ -64,7 +73,7 @@ function Login() {
       <div className="login__box">
         <h1 className="login__logo">
           <img src={logoImg} alt="Music On the Block Affiliate Logo" />
-          <span>Welcome to our affiliate service</span>
+          <span>우리의 제휴 서비스에 오신 것을 환영합니다</span>
         </h1>
 
         <form
@@ -78,18 +87,18 @@ function Login() {
           <fieldset>
             <InputField
               id="userId"
-              label="ID"
+              label="아이디"
               type="email"
-              placeholder="Please enter your ID"
+              placeholder="아이디를 입력해주세요"
               required
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
             />
             <InputField
               id="userPw"
-              label="Password"
+              label="비밀번호"
               type="password"
-              placeholder="Please enter your password"
+              placeholder="비밀번호를 입력해주세요"
               required
               withToggle={true}
               value={userPw}
@@ -102,21 +111,21 @@ function Login() {
             disabled={!isFormValid || isLoading}
             onClick={handleIsLogin}
           >
-            Login
+            로그인
             <LoadingDots />
             {/* 비활성화--disabled / 활성화--active / 로딩 중--loading */}
           </button>
         </form>
 
         <Link to="/signup" className="btn btn-signup">
-          Sign Up
+          회원가입
         </Link>
       </div>
       {showFailModal && (
         // 로그인 실패 시 로그인 실패 모달 띄우기
         <ConfirmModal
-          title="Login Failed"
-          message="The ID or password you entered is incorrect."
+          title="로그인 실패"
+          message="회원 정보가 일치하지 않습니다."
           buttonText="OK"
           onClose={() => setShowFailModal(false)}
         />

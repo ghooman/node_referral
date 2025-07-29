@@ -35,9 +35,13 @@ function Dashboard() {
   const [userShare, setUserShare] = useState("");
   const [userWallet, setUserWallet] = useState("");
   const [userOfficeWallet, setUserOfficeWallet] = useState("");
+
   const [userWalletInput, setUserWalletInput] = useState("");
   const [userWalletEdit, setUserWalletEdit] = useState("");
+
   const userToken = localStorage.getItem("userToken");
+  const userRole = localStorage.getItem("userRole");
+  const isMaster = userRole === "master";
 
   // 버튼 로딩 상태
   const [isLoading, setIsLoading] = useState(false);
@@ -47,6 +51,25 @@ function Dashboard() {
   const [isOpenAddWalletModal, setIsOpenAddWalletModal] = useState(false);
   // 지갑주소 수정 모달 오픈
   const [isOpenEditWalletModal, setIsOpenEditWalletModal] = useState(false);
+
+  //---- 대시보드 상태 ----------------------------------------------------
+  // 상단 4개 (total)
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [totalSettlement, setTotalSettlement] = useState(0);
+  const [totalReferrals, setTotalReferrals] = useState(0);
+  const [totalSoldNode, setTotalSoldNode] = useState(0);
+
+  // 중단 4개 (나의)
+  const [myRevenue, setMyRevenue] = useState(0);
+  const [mySettlement, setMySettlement] = useState(0);
+  const [myReferrals, setMyReferrals] = useState(0);
+  const [mySoldNode, setMySoldNode] = useState(0);
+
+  // 하단 4개 (하위)
+  const [downRevenue, setDownRevenue] = useState(0);
+  const [downSettlement, setDownSettlement] = useState(0);
+  const [downReferrals, setDownReferrals] = useState(0);
+  const [downSoldNode, setDownSoldNode] = useState(0);
 
   //---- 새 거래 등록 상태 ----------------------------------------------------
   // 새 거래 등록 정보
@@ -77,8 +100,10 @@ function Dashboard() {
   // 초대코드 생성한 리스트 상태
   const [inviteCodeList, setInviteCodeList] = useState([]);
   // 초대코드 생성 시 성공 모달
-  const [isInviteCodeCreateSuccess, setIsInviteCodeCreateSuccess] =
-    useState(false);
+  const [isInviteCodeCreateSuccess, setIsInviteCodeCreateSuccess] = useState(false);
+
+  //----- 하위 레퍼럴 활동현황 상태 ----------------------------------------------------
+  const [downReferralActive, setDownReferralActive] = useState([]);
 
   //---- 공통 ----------------------------------------------------
   // 사용자 정보 가져오는 함수
@@ -107,8 +132,10 @@ function Dashboard() {
   // 로그인 후 첫 진입 시, 각 리스트 불러오기!
   useEffect(() => {
     if (userToken) {
+      handleGetDashboardData();
       fetchInviteCodeList();
       fetchNewDealList();
+      handleDownReferralActiveList();
     }
   }, []);
   // 날짜 포맷팅
@@ -124,6 +151,18 @@ function Dashboard() {
 
     // "2025. 07. 19. 15:16" → "2025. 07. 19 15:16"
     return raw.replace(/(\d{2})\.\s(\d{2})\.\s(\d{2})\.\s/, "$1. $2. $3 ");
+  };
+  const formatDateRange = (start, end) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    const pad = (num) => String(num).padStart(2, "0");
+
+    const dateStr = `${startDate.getFullYear()}. ${pad(startDate.getMonth() + 1)}. ${pad(startDate.getDate())}`;
+    const startTime = `${pad(startDate.getHours())}:${pad(startDate.getMinutes())}`;
+    const endTime = `${pad(endDate.getHours())}:${pad(endDate.getMinutes())}`;
+
+    return `${dateStr} ${startTime} - ${endTime}`;
   };
   // 각 리스트 5개만 보여주기
   const sliceList5 = (list, count = 5) => {
@@ -176,6 +215,36 @@ function Dashboard() {
   const formatWalletAddress = (address) => {
     if (!address || address.length < 10) return address;
     return `${address.slice(0, 4)}....${address.slice(-4)}`;
+  };
+
+  //---- 대시보드 ----------------------------------------------------
+  // 대시보드 정보 값 가져오는 함수
+  const handleGetDashboardData = async () => {
+    try {
+      const res = await axios.get(`${serverAPI}/api/sales/dashboard`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      console.log("API에서 받아온 대시보드 정보", res.data);
+      // 상단 4개 (total)
+      setTotalRevenue(res.data.total_revenue);
+      setTotalSettlement(res.data.total_settlement);
+      setTotalReferrals(res.data.total_referrals);
+      setTotalSoldNode(res.data.total_sold_nodes);
+      // 중단 4개 (나의)
+      setMyRevenue(res.data.my_sales_revenue);
+      setMySettlement(res.data.my_settlement);
+      setMyReferrals(res.data.my_referrals);
+      setMySoldNode(res.data.my_sold_nodes);
+      // 하단 4개 (하위)
+      setDownRevenue(res.data.downline_sales_revenue);
+      setDownSettlement(res.data.downline_settlement);
+      setDownReferrals(res.data.downline_referrals);
+      setDownSoldNode(res.data.downline_sold_nodes);
+    } catch (error) {
+      console.error("대시보드 정보 값 가져오는 함수 error입니당", error);
+    }
   };
 
   //---- 새 거래등록 ----------------------------------------------------
@@ -353,19 +422,16 @@ function Dashboard() {
   // 초대코드 확인 함수
   const fetchInviteCodeList = async () => {
     try {
-      const res = await axios.get(
-        `${serverAPI}/api/user/invitation/code/list`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-          params: {
-            page: 1,
-            limit: 20,
-            // sort_by: "create_dt" // 선택적으로 사용 가능
-          },
-        }
-      );
+      const res = await axios.get(`${serverAPI}/api/user/invitation/code/list`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+        params: {
+          page: 1,
+          limit: 20,
+          // sort_by: "create_dt" // 선택적으로 사용 가능
+        },
+      });
 
       // 전체 응답 보기
       console.log("전체 응답", res.data);
@@ -381,6 +447,25 @@ function Dashboard() {
       } else {
         console.log("기타 에러:", error.message);
       }
+    }
+  };
+
+  //----- 하위 레퍼럴 활동현황 ----------------------------------------------------
+  const handleDownReferralActiveList = async () => {
+    try {
+      const res = await axios.get(`${serverAPI}/api/sales/referrals/income/list`, {
+        params: {
+          page: 1,
+          limit: 5,
+        },
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+      console.log("하위 레퍼럴 활동현황 받아오기 완료!", res.data.data_list);
+      setDownReferralActive(res.data.data_list);
+    } catch (error) {
+      console.error("하위 레퍼럴 활동현황 error입니당", error);
     }
   };
 
@@ -417,11 +502,7 @@ function Dashboard() {
             <li>
               <span>내 지갑주소</span>
               {!userWallet ? (
-                <button
-                  type="button"
-                  className="btn-register"
-                  onClick={handleClickAddWalletBtn}
-                >
+                <button type="button" className="btn-register" onClick={handleClickAddWalletBtn}>
                   지갑주소 등록
                 </button>
               ) : (
@@ -444,53 +525,53 @@ function Dashboard() {
             <ul className="dash-section__txt__board">
               <li>
                 <h3>전체 수입 (USDT)</h3>
-                <p>13,583,922</p>
+                <p>{totalRevenue}</p>
               </li>
               <li>
                 <h3>전체 정산금 (USDT)</h3>
-                <p>6,753,521</p>
+                <p>{totalSettlement}</p>
               </li>
               <li>
                 <h3>전체 추천인</h3>
-                <p>3,482</p>
+                <p>{totalReferrals}</p>
               </li>
               <li>
                 <h3>전체 판매 노드 수 (NODE)</h3>
-                <p>43,393,203</p>
+                <p>{totalSoldNode}</p>
               </li>
             </ul>
             <ul className="dash-section__txt__list">
               <li>
                 <h3>나의 판매 수입</h3>
-                <p>3,284,224</p>
+                <p>{myRevenue}</p>
               </li>
               <li>
                 <h3>나의 판매 정산금</h3>
-                <p>1,864,392</p>
+                <p>{mySettlement}</p>
               </li>
               <li>
                 <h3>나의 추천인</h3>
-                <p>33</p>
+                <p>{myReferrals}</p>
               </li>
               <li>
                 <h3>나의 판매 노드 수</h3>
-                <p>4,203</p>
+                <p>{mySoldNode}</p>
               </li>
               <li>
                 <h3>하위자 판매 수입</h3>
-                <p>10,305,155</p>
+                <p>{downRevenue}</p>
               </li>
               <li>
                 <h3>하위자 판매 정산금</h3>
-                <p>4,153,552</p>
+                <p>{downSettlement}</p>
               </li>
               <li>
                 <h3>하위자 추천인</h3>
-                <p>3,439</p>
+                <p>{downReferrals}</p>
               </li>
               <li>
                 <h3>하위자 판매 노드 수</h3>
-                <p>43,489,000</p>
+                <p>{downSoldNode}</p>
               </li>
             </ul>
           </div>
@@ -503,6 +584,8 @@ function Dashboard() {
           handleToggle={handleSalesToggle}
           handleClickNewDealBtn={handleClickNewDealBtn}
           newDealList={newDealList}
+          setNewDealList={setNewDealList}
+          fetchNewDealList={fetchNewDealList}
           formatDate={formatDate}
           sliceList5={sliceList5}
         />
@@ -519,6 +602,8 @@ function Dashboard() {
         <ReferralEarnings
           openIndex={openEarningsIndex}
           handleToggle={setOpenEarningsIndex}
+          downReferralActive={downReferralActive}
+          sliceList5={sliceList5}
         />
       </div>
       <Footer />
@@ -529,10 +614,7 @@ function Dashboard() {
             <div className="modal__content">
               <div className="modal__header">
                 <h2>내 지갑주소 등록</h2>
-                <button
-                  type="button"
-                  onClick={() => setIsOpenAddWalletModal(false)}
-                >
+                <button type="button" onClick={() => setIsOpenAddWalletModal(false)}>
                   <img src={closeBtn} alt="팝업 닫기" />
                 </button>
               </div>
@@ -549,9 +631,9 @@ function Dashboard() {
               </div>
               <div className="modal__footer">
                 <button
-                  className={`btn btn-content-modal ${
-                    userWalletInput ? "" : "btn--disabled"
-                  } ${isLoading ? "btn--loading" : ""}`}
+                  className={`btn btn-content-modal ${userWalletInput ? "" : "btn--disabled"} ${
+                    isLoading ? "btn--loading" : ""
+                  }`}
                   disabled={!userWalletInput}
                   onClick={() => handleSaveWallet(userWalletInput)}
                 >
@@ -572,11 +654,7 @@ function Dashboard() {
               <div className="modal__header">
                 <h2>내 지갑주소 수정</h2>
                 <button type="button">
-                  <img
-                    src={closeBtn}
-                    alt="팝업 닫기"
-                    onClick={() => setIsOpenEditWalletModal(false)}
-                  />
+                  <img src={closeBtn} alt="팝업 닫기" onClick={() => setIsOpenEditWalletModal(false)} />
                 </button>
               </div>
               <div className="modal__body">
@@ -595,13 +673,12 @@ function Dashboard() {
               <div className="modal__footer">
                 <button
                   className={`btn btn-content-modal ${
-                    userWalletEdit ? "" : "btn--disabled"
+                    !userWalletEdit || userWalletEdit.trim() === userWallet ? "btn--disabled" : ""
                   } ${isLoading ? "btn--loading" : ""}`}
-                  disabled={!userWalletEdit}
+                  disabled={!userWalletEdit || userWalletEdit.trim() === userWallet}
                   onClick={() => handleSaveWallet(userWalletEdit)}
                 >
-                  {isLoading ? "지갑주소 수정 중" : "지갑주소 수정"}{" "}
-                  <LoadingDots />
+                  {isLoading ? "지갑주소 수정 중" : "지갑주소 수정"} <LoadingDots />
                 </button>
               </div>
             </div>
@@ -698,9 +775,9 @@ function Dashboard() {
               </div>
               <div className="modal__footer">
                 <button
-                  className={`btn btn-content-modal ${
-                    isNewDealValid ? "" : "btn--disabled"
-                  } ${isLoading ? "btn--loading" : ""}`}
+                  className={`btn btn-content-modal ${isNewDealValid ? "" : "btn--disabled"} ${
+                    isLoading ? "btn--loading" : ""
+                  }`}
                   disabled={!isNewDealValid}
                   onClick={handleNewDealSubmit}
                 >
@@ -730,10 +807,7 @@ function Dashboard() {
             <div className="modal__content">
               <div className="modal__header">
                 <h2>초대코드 생성</h2>
-                <button
-                  type="button"
-                  onClick={() => setIsOpenInviteModal(false)}
-                >
+                <button type="button" onClick={() => setIsOpenInviteModal(false)}>
                   <img src={closeBtn} alt="팝업 닫기" />
                 </button>
               </div>
@@ -750,19 +824,13 @@ function Dashboard() {
                 </div>
                 <div className="share-setting">
                   <p className="share-setting__label">지분 설정</p>
-                  <div
-                    className="share-setting__options"
-                    role="radiogroup"
-                    aria-label="지분 설정"
-                  >
+                  <div className="share-setting__options" role="radiogroup" aria-label="지분 설정">
                     <div className="share-setting__left">
                       {[0, 5, 10, 15].map((value) => (
                         <button
                           key={value}
                           type="button"
-                          className={`share-option ${
-                            selectedShare === String(value) ? `is-active` : ""
-                          }`}
+                          className={`share-option ${selectedShare === String(value) ? `is-active` : ""}`}
                           onClick={() => {
                             setSelectedShare(String(value));
                             setCustomShare(""); // 직접 입력값 초기화
@@ -799,9 +867,9 @@ function Dashboard() {
               </div>
               <div className="modal__footer">
                 <button
-                  className={`btn btn-content-modal ${
-                    isFormValid ? "" : "btn--disabled"
-                  } ${isLoading ? "btn--loading" : ""}`}
+                  className={`btn btn-content-modal ${isFormValid ? "" : "btn--disabled"} ${
+                    isLoading ? "btn--loading" : ""
+                  }`}
                   disabled={!isFormValid}
                   onClick={handleCreateInviteBtn}
                 >
