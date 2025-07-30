@@ -61,14 +61,21 @@ function MasterDashboardDone() {
 
   // 하단 리스트 API 함수
   const handleGetDataList = async () => {
+    const isoStart = startDate ? new Date(new Date(startDate).setHours(0, 0, 0, 0)).toISOString() : null;
+
+    const isoEnd = endDate ? new Date(new Date(endDate).setHours(23, 59, 59, 999)).toISOString() : null;
+
+    console.log("📤 서버로 보내는 start_date", isoStart);
+    console.log("📤 서버로 보내는 end_date", isoEnd);
+
     try {
       const res = await axios.get(`${serverAPI}/api/sales/settlement/list`, {
         params: {
           page: currentPage,
           limit: 20,
-          search_keyword: searchKeyword !== "" ? searchKeyword : undefined,
-          start_date: startDate ? startDate.toISOString() : undefined,
-          end_date: endDate ? endDate.toISOString() : undefined,
+          search_keyword: searchKeyword || undefined,
+          ...(isoStart && { start_date: isoStart }),
+          ...(isoEnd && { end_date: isoEnd }),
         },
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -78,7 +85,7 @@ function MasterDashboardDone() {
       const list = res.data.data_list;
       console.log("하단 리스트 가져와따아아아", list);
       setDataList(list);
-      setTotalPages(Math.ceil(res.data.total_cnt / 20)); // 페이지 수 계산 추가
+      setTotalPages(Math.ceil(res.data.total_cnt / 20));
     } catch (error) {
       console.error("하단 리스트 가져오는 API 함수 error입니당", error);
     }
