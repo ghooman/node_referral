@@ -1,425 +1,422 @@
-@import '../variables';
-@import '../mixins';
-@import '../fonts';
-
-
+@import "../variables";
+@import "../mixins";
+@import "../fonts";
 
 // user-section START
-.dashboard-wrapper{
-    padding: 0 2%;
-    @include flex-column;
-    row-gap: 30px;
-    margin: 0 auto important;
-    padding-top: $sp-60;
-    @include lg{
-        padding: $sp-60 2%;
+.dashboard-wrapper {
+  padding: 0 2%;
+  @include flex-column;
+  row-gap: 30px;
+  margin: 0 auto important;
+  padding-top: $sp-60;
+  @include lg {
+    padding: $sp-60 2%;
+  }
+  @include md {
+    padding: 24px 4%;
+  }
+  section {
+    padding: $sp-30 2%;
+    border-radius: 50px;
+    background-color: $color-w-o05;
+    @include md {
+      padding: $sp-16 4%;
     }
-    @include md{
-        padding: 24px 4%
+  }
+  h2 {
+    @include font-h5-eb;
+    color: $color-gray-000;
+    @include md {
+      @include font-md-b;
     }
-    section{
-        padding: $sp-30 2%;
-        border-radius: 50px;
-        background-color: $color-w-o05;
-        @include md{
-            padding: $sp-16 4%;
-        }
-    }
-    h2{
-        @include font-h5-eb;
-        color: $color-gray-000;
-        @include md{
-            @include font-md-b;
-        }
-    }
+  }
 }
 
-.user-section{
-    .user-section__email{
-        @include font-xl-eb;
+.user-section {
+  .user-section__email {
+    @include font-xl-eb;
+    color: $color-gray-000;
+    margin-bottom: $sp-20;
+  }
+  .user-section__wallet {
+    @include flex-start;
+    column-gap: $sp-60;
+    @include md {
+      column-gap: $sp-12;
+    }
+    li {
+      @include flex-column;
+      row-gap: 4px;
+      span {
+        @include font-sm-r;
+        color: $color-gray-600;
+        @include md {
+          @include font-xs-r;
+        }
+      }
+      strong {
+        @include font-h3;
         color: $color-gray-000;
-        margin-bottom: $sp-20;
+        @include md {
+          @include font-md-b;
+        }
+      }
     }
-    .user-section__wallet{
-        @include flex-start;
-        column-gap: $sp-60;
-        @include md{
-            column-gap: $sp-12
-        }
-        li{
-            @include flex-column;
-            row-gap: 4px;
-            span{
-                @include font-sm-r;
-                color: $color-gray-600;
-                @include md{
-                    @include font-xs-r;
-                }
-            }
-            strong{
-                @include font-h3;
-                color: $color-gray-000;
-                @include md{
-                    @include font-md-b;
-                }
-            }
-        }
-        .user-section__wallet__copy-com{
-            @include flex-start;
-            column-gap: 12px;
-        }
-        .btn-register{
-            @include font-sm-b;
-            color: $color-gray-000;
-            padding: 8px 24px;
-            font-size: 14px;
-            background-color: $color-primary;
-            border-radius: 12px;
-            @include md{
-                @include font-xs-b;
-            }
-        }
+    .user-section__wallet__copy-com {
+      @include flex-start;
+      column-gap: 12px;
     }
+    .btn-register {
+      @include font-sm-b;
+      color: $color-gray-000;
+      padding: 8px 24px;
+      font-size: 14px;
+      background-color: $color-primary;
+      border-radius: 12px;
+      @include md {
+        @include font-xs-b;
+      }
+    }
+  }
 }
 // user-section END
 
 // dash-section START
-.dash-section{
-    @include md{
-        padding: $sp-30 4% !important;
+.dash-section {
+  @include md {
+    padding: $sp-30 4% !important;
+  }
+  .dash-section__tit {
+    margin-bottom: $sp-30;
+    @include md {
+      margin-bottom: $sp-16;
     }
-    .dash-section__tit{
-        margin-bottom: $sp-30;
-        @include md{
-            margin-bottom: $sp-16;
+  }
+  .dash-section__txt {
+    @include flex-column;
+    gap: 20px;
+    .dash-section__txt__board {
+      @include flex-between;
+      column-gap: 1.5%;
+      row-gap: 16px;
+      color: white;
+      background-color: $color-w-o05;
+      border-radius: 16px;
+      @include md {
+        flex-wrap: wrap;
+      }
+      li {
+        // flex: 1 1 calc(50% - 1.5%);
+        padding: $sp-20 2%;
+        @include md {
+          width: 48%;
+          padding: $sp-08 4%;
         }
+        h3 {
+          @include font-sm-b;
+          color: $color-gray-600;
+          @include md {
+            @include font-xs-b;
+          }
+        }
+        p {
+          @include font-h5-b;
+          color: $color-gray-000;
+          @include md {
+            @include font-sm-b;
+          }
+        }
+      }
     }
-    .dash-section__txt{
-        @include flex-column;
-        gap: 20px;
-        .dash-section__txt__board{
-            @include flex-between;
-            column-gap: 1.5%;
-            row-gap: 16px;
-            color: white;
-            background-color: $color-w-o05;
-            border-radius: 16px;
-            @include md{
-                flex-wrap: wrap;
-            }
-            li{
-                // flex: 1 1 calc(50% - 1.5%);
-                padding: $sp-20 2%;
-                @include md{
-                    width: 48%;
-                    padding: $sp-08 4%;
-                }
-                h3{
-                    @include font-sm-b;
-                    color: $color-gray-600;
-                    @include md{
-                        @include font-xs-b;
-                    }
-                }
-                p{
-                    @include font-h5-b;
-                    color: $color-gray-000;
-                    @include md{
-                        @include font-sm-b;
-                    }
-                }
-            }
-
+    .dash-section__txt__list {
+      @include flex-between;
+      flex-wrap: wrap;
+      column-gap: 1.5%;
+      row-gap: 16px;
+      li {
+        border-radius: 16px;
+        border: 1px solid $color-w-o20;
+        padding: $sp-20;
+        width: 23.5%;
+        h3 {
+          @include font-sm-r;
+          color: $color-gray-600;
+          @include md {
+            @include font-xs-r;
+          }
         }
-        .dash-section__txt__list{
-            @include flex-between;
-            flex-wrap: wrap;
-            column-gap: 1.5%;
-            row-gap: 16px;
-            li{
-                border-radius: 16px;
-                border: 1px solid $color-w-o20;
-                padding: $sp-20;
-                width: 23.5%;
-                h3{
-                    @include font-sm-r;
-                    color: $color-gray-600;
-                    @include md{
-                        @include font-xs-r;
-                    }
-                }
-                p{
-                    @include font-xl-b;
-                    color: $color-gray-000;
-                    @include md{
-                        @include font-sm-b;
-                    }
-                }
-                @include md{
-                    width: 48%;
-                }
-            }
+        p {
+          @include font-xl-b;
+          color: $color-gray-000;
+          @include md {
+            @include font-sm-b;
+          }
         }
+        @include md {
+          width: 48%;
+        }
+      }
     }
-
+  }
 }
 // dash-section END
 
 // dashboard.scss 안에 포함
-.table-section{
-    padding: $sp-30 2%;
-    @include md{
-        padding: $sp-16 4%;
+.table-section {
+  padding: $sp-30 2%;
+  @include md {
+    padding: $sp-16 4%;
+  }
+
+  .table-section__tit {
+    @include flex-between;
+    margin-bottom: $sp-30;
+    @include md {
+      margin-bottom: $sp-16;
+    }
+    &__tit-button {
+      @include flex-start;
+      gap: 12px;
+
+      // h2{
+      //     @include font-h5-eb;
+      //     color: $color-gray-000;
+      // }
+      .btn-sm {
+        @include font-sm-b;
+        color: $color-gray-000;
+        padding: $sp-08 $sp-16;
+        background-color: $color-primary;
+        border-radius: 12px;
+      }
     }
 
-    .table-section__tit{
-        @include flex-between;
-        margin-bottom: $sp-30;
-        @include md{
-            margin-bottom: $sp-16;
-        }
-        &__tit-button{
-            @include flex-start;
-            gap: 12px;
-
-        // h2{
-        //     @include font-h5-eb;
-        //     color: $color-gray-000;
-        // }
-        .btn-sm{
-            @include font-sm-b;
-            color: $color-gray-000;
-            padding: $sp-08 $sp-16;
-            background-color: $color-primary;
-            border-radius: 12px;
-        }
+    a {
+      @include font-md-b;
+      @include flex-start;
+      gap: 4px;
+      color: $color-gray-400;
+      padding-right: 20px;
+      background: url("../../assets/images/icon-arrow-right.svg") no-repeat
+        right center / 15px;
+      @include md {
+        @include font-sm-b;
+      }
     }
+  }
 
-    a{
-        @include font-md-b;
-        @include flex-start;
-        gap: 4px;
-        color: $color-gray-400;
-        padding-right: 20px;
-        background: url('../../assets/images/icon-arrow-right.svg') no-repeat right center / 15px;
-        @include md{
-            @include font-sm-b;
-        }
-    }
-}         
-
-.table-section__tit__list-head{
+  .table-section__tit__list-head {
     @include flex-between;
     border-bottom: 1px solid $color-w-o20;
     @include font-sm-r;
     color: $color-gray-600;
 
-    .col{
+    .col {
       flex: 1;
       text-align: center;
       @include font-sm-r;
-      @include md{
+      @include md {
         @include font-xs-r;
       }
 
-      &.col--btn{
+      &.col--btn {
         flex: 0 0 auto;
         text-align: center;
       }
     }
 
-    @include md{
-        flex-wrap: wrap;
-        row-gap: $sp-08;
-        font-size: 12px;
+    @include md {
+      flex-wrap: wrap;
+      row-gap: $sp-08;
+      font-size: 12px;
     }
-}
+  }
 
-    .list-item{
+  .list-item {
     @include font-sm-r;
     color: $color-gray-000;
-    @include md{
-        font-size: $fs-12 !important;
+    @include md {
+      font-size: $fs-12 !important;
     }
 
-    &__row{
-        @include flex-start;
-        flex-wrap: wrap;
+    &__row {
+      @include flex-start;
+      flex-wrap: wrap;
 
-        .col{
-            flex: 1;
-            text-align: center;
+      .col {
+        flex: 1;
+        text-align: center;
 
-        &.col--btn{
-            flex: 0 0 auto;
-            text-align: center;
+        &.col--btn {
+          flex: 0 0 auto;
+          text-align: center;
         }
-        }
+      }
 
-        .badge{
+      .badge {
         @include font-sm-b;
         padding: $sp-04 $sp-10;
         border-radius: 8px;
         color: $color-gray-000;
 
-        &--requested{
-            background: $color-primary;
+        &--requested {
+          background: $color-primary;
         }
-        &--ready{
-            color: $color-primary;
+        &--ready {
+          color: $color-primary;
         }
-        &--canxel{
-            color: #FF3E3E;
+        &--canxel {
+          color: #ff3e3e;
         }
-        }
+      }
 
-        .toggle-btn{
+      .toggle-btn {
         background: none;
         border: none;
         cursor: pointer;
-
-        }
+      }
     }
 
-    .list-item__detail{
-        @include flex-between;
-        @include font-sm-r;
-        border-top: 1px solid $color-w-o10;
-        color: $color-gray-400;
-        @include md{
-            @include font-xs-r;
+    .list-item__detail {
+      @include flex-between;
+      @include font-sm-r;
+      border-top: 1px solid $color-w-o10;
+      color: $color-gray-400;
+      @include md {
+        @include font-xs-r;
+      }
+      .list-item__detail__list {
+        width: 50%;
+        @include md {
+          width: 100%;
+          font-size: $fs-12;
         }
-        .list-item__detail__list{
-            width: 50%;
-            @include md{
-                width: 100%;
-                font-size: $fs-12;
-            }
-            }
+      }
+    }
+    p {
+      @include flex-start;
+      row-gap: 8px;
+      column-gap: 10px;
+      b {
+        width: 30%;
+      }
+      span {
+        width: 70%;
+        @include flex-start;
+        column-gap: 8px;
+        img {
+          width: 100%;
+          max-width: 20px;
         }
-        p{
-            @include flex-start;
-            row-gap: 8px;
-            column-gap: 10px;
-            b{
-                width: 30%;
-            }
-            span{
-                width: 70%;
-                @include flex-start;
-                column-gap: 8px;
-                img{
-                    width: 100%;
-                    max-width: 20px;
-                }
-            }
-        }
+      }
     }
   }
-
-.table-empty{
-    @include font-xl-b;
-    margin-top: $sp-16;
-    text-align: center;
-    color: $color-gray-000 !important;
-    padding: $sp-40;
-
-    @include md{
-        @include font-sm-b;
-    }
 }
-.table-section__tit__list-item{
-    .col--action{
-        @include flex-column;
-        gap: 4px;
-    }
-    .btn--line-mini{
+
+.table-empty {
+  @include font-xl-b;
+  margin-top: $sp-16;
+  text-align: center;
+  color: $color-gray-000 !important;
+  padding: $sp-40;
+
+  @include md {
+    @include font-sm-b;
+  }
+}
+.table-section__tit__list-item {
+  .col--action {
+    @include flex-column;
+    gap: 4px;
+  }
+  .btn--line-mini {
     @include font-sm-r;
     color: $color-gray-000;
     background-color: $color-w-o05;
     border: 1px solid $color-w-o20;
     padding: $sp-04 $sp-10;
     border-radius: 8px;
-    @include md{
-        @include font-xs-r;
+    @include md {
+      @include font-xs-r;
     }
-}
+  }
 }
 // accordion toggle button
-.toggle-btn-box{
-    position: relative;
+.toggle-btn-box {
+  position: relative;
 }
-.toggle-btn{
-    position: absolute !important; 
-    right: 0 !important;
-    width: 15px !important;
-    height: 20px !important;
+.toggle-btn {
+  position: absolute !important;
+  right: 0 !important;
+  width: 15px !important;
+  height: 20px !important;
 }
 
 .toggle-btn {
   transition: transform 0.3s ease;
-  
+
   &.rotate {
     transform: rotate(180deg);
   }
 }
 
 // (공통) Content Modal START
-.modal{
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    @include md{
-        min-height: 260px;
+.modal {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  @include md {
+    min-height: 260px;
+  }
+  .modal__content {
+    height: 100%;
+  }
+  .modal__header {
+    @include flex-between;
+    @include font-xl-b;
+    color: $color-gray-000;
+    margin-bottom: $sp-30;
+    @include md {
+      @include font-md-b;
     }
-    .modal__content{
-        height: 100%;
+  }
+  .modal__body {
+    margin-bottom: auto;
+  }
+  .modal__footer {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    .btn-content-modal {
+      width: 100%;
     }
-    .modal__header{
-        @include flex-between;
-        @include font-xl-b;
-        color: $color-gray-000;
-        margin-bottom: $sp-30;
-        @include md{
-            @include font-md-b;
-        }
-    }
-    .modal__body{
-        margin-bottom: auto;
-    }
-    .modal__footer{
-        position: absolute; width: 100%;
-        bottom: 0;
-        .btn-content-modal{
-            width: 100%;
-        }
-    }
+  }
 }
 
 // 개별 modal height 지정
-.modal-wallet{
-    min-height: 550px;
+.modal-wallet {
+  min-height: 550px;
 }
-.modal-transaction{
-    min-height: 630px;
-    .modal__body{
-        @include flex-column;
-        row-gap: 16px;
-    }
+.modal-transaction {
+  min-height: 630px;
+  .modal__body {
+    @include flex-column;
+    row-gap: 16px;
+  }
 }
-.modal-create-code{
-    min-height: 550px;
+.modal-create-code {
+  min-height: 550px;
 }
 
 // twoway-inputField START
-.twoway-inputField{
-    @include flex-between;
-    column-gap: 12px;
-    label{
-        display: block;
-        margin-bottom: 8px;
-    }
-    input{
+.twoway-inputField {
+  @include flex-between;
+  column-gap: 12px;
+  label {
+    display: block;
+    // margin-bottom: 8px;
+  }
+  input {
     padding: $sp-16 $sp-20;
     width: 100%;
     max-width: 500px;
@@ -427,58 +424,58 @@
     border: 1px solid $color-w-o05;
     background-color: $color-w-o05;
     color: $color-gray-000;
-    &:focus{
-        color: $color-gray-000;
-        &::placeholder{
+    &:focus {
+      color: $color-gray-000;
+      &::placeholder {
         color: transparent;
-        @include md{
-            @include font-sm-r;
+        @include md {
+          @include font-sm-r;
         }
-        }
+      }
     }
-    }
+  }
 }
 // twoway-inputField END
 
 // total-amount-field STATT
-.total-amount-field{
-    b{
-        @include font-sm-r;
-        color: $color-gray-600;
-        @include md{
-            @include font-xs-r;
-        }
+.total-amount-field {
+  b {
+    @include font-sm-r;
+    color: $color-gray-600;
+    @include md {
+      @include font-xs-r;
     }
-    p{
-        @include font-xl-b;
-        color: $color-gray-000;
-        @include md{
-            @include font-md-b;
-        }
+  }
+  p {
+    @include font-xl-b;
+    color: $color-gray-000;
+    @include md {
+      @include font-md-b;
     }
+  }
 }
 // total-amount-field END
 
 // modal-create-code START
-.modal-create-code{
-    .modal__body{
-        @include flex-column;
-        row-gap: 24px;
-    }
+.modal-create-code {
+  .modal__body {
+    @include flex-column;
+    row-gap: 24px;
+  }
 }
-.user-share{
-    @include flex-between;
-    > div{
-        width: 50%;
-        b{
-            @include font-md-r;
-            color: $color-gray-600;
-            margin-right: 8px;
-            @include md{
-                @include font-sm-r;
-            }
-        }
+.user-share {
+  @include flex-between;
+  > div {
+    width: 50%;
+    b {
+      @include font-md-r;
+      color: $color-gray-600;
+      margin-right: 8px;
+      @include md {
+        @include font-sm-r;
+      }
     }
+  }
 }
 
 .share-setting {
@@ -488,51 +485,50 @@
     color: $color-gray-500;
   }
 
-  &__options{
+  &__options {
     @include flex-start;
     gap: 8px;
-    @include lg{
-        @include flex-column;
-        align-items: stretch;
+    @include lg {
+      @include flex-column;
+      align-items: stretch;
     }
   }
-  &__left{
+  &__left {
     @include flex-start;
     gap: 8px;
-    .share-option{
-        width: 100%;
-        justify-content: center;
+    .share-option {
+      width: 100%;
+      justify-content: center;
     }
   }
 }
 
-.share-option{
-    @include font-sm-r;
-    @include flex-between;
-    width: 100%;
-    padding: $sp-12 $sp-16;
-    border-radius: 12px;
-    background: transparent;
-    border: 1px solid $color-w-o20;
-    color: $color-gray-000;
-    cursor: pointer;
-    @include md{
-        @include font-xs-r;
-    }
+.share-option {
+  @include font-sm-r;
+  @include flex-between;
+  width: 100%;
+  padding: $sp-12 $sp-16;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid $color-w-o20;
+  color: $color-gray-000;
+  cursor: pointer;
+  @include md {
+    @include font-xs-r;
+  }
 
-    &.is-active {
+  &.is-active {
     background-color: $color-primary;
     border-color: $color-primary;
     color: #fff;
-    }
+  }
 
-    &.is-disabled {
+  &.is-disabled {
     opacity: 0.4;
     cursor: not-allowed;
-    }
+  }
 }
 
 // modal-create-code END
 
 // Modal END
-

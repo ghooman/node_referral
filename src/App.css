@@ -1,36 +1,50 @@
-
 /* ============================================================
    ▶ Reset (초기화)
 ============================================================ */
 
-
 /* 기본 박스 사이징 설정 */
 *,
 *::before,
-*::after{
-    box-sizing: border-box;
+*::after {
+  box-sizing: border-box;
 }
 
 /* 기본 마진, 패딩 제거 */
-body, h1, h2, h3, h4, h5, h6, p, ol, ul, figure, blockquote, dl, dd, fieldset, input{
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: block;
-    font-size: inherit;
-    font-weight: inherit;
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul,
+figure,
+blockquote,
+dl,
+dd,
+fieldset,
+input {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: block;
+  font-size: inherit;
+  font-weight: inherit;
 }
 
 /* 리스트 스타일 제거 */
-ul[role='list'], ol[role='list']{
-    list-style: none;
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
 }
 
 /* 앵커 태그 밑줄 제거 및 기본 색상 초기화 */
-a{
-    text-decoration: none;
-    color: inherit;
-    transition: all .3s ease-out;
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease-out;
 }
 
 /* 이미지, 비디오가 부모 요소 크기를 벗어나지 않도록 설정 */
@@ -38,52 +52,56 @@ img,
 picture,
 video,
 canvas,
-svg{
-    display: block;
-    max-width: 100%;
-    height: auto;
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 /* 입력, 버튼 기본 스타일 초기화 */
-input, button, textarea, select, fieldset{
-    font: inherit;
-    border: none;
-    background: none;
+input,
+button,
+textarea,
+select,
+fieldset {
+  font: inherit;
+  border: none;
+  background: none;
 }
 
 /* button 요소설정*/
-button{
-    cursor: pointer;
-    padding: 0;
-    display: block;
+button {
+  cursor: pointer;
+  padding: 0;
+  display: block;
 }
 
-:focus{
-    outline: none !important;
-    box-shadow: none !important;
+:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
-:focus-visible{
-    outline: 1px solid #5B9BD5;
+:focus-visible {
+  outline: 1px solid #5b9bd5;
 }
 
 /* table 초기화 */
-table{
-    border-collapse: collapse;
-    border-spacing: 0;
-    width: 100%;
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
 }
 
 /* HTML5 요소 기본 레이아웃 설정 */
-html{
-    font-size: 100%; /* 1rem = 16px */
+html {
+  font-size: 100%; /* 1rem = 16px */
 
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-    /* input focusing 자동 확대 방지 */
-}           
-body{
-    line-height: 1.5;
-    font-family: 'Pretendard';
-    font-size: 16px;
-    min-height: 100vh;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* input focusing 자동 확대 방지 */
+}
+body {
+  line-height: 1.5;
+  font-family: "Pretendard";
+  font-size: 16px;
+  min-height: 100vh;
 }

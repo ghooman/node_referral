@@ -1,14 +1,14 @@
-import '../../styles/Main.scss'
-import './ModalWrap.scss';
+import "../../styles/Main.scss";
+import "./ModalWrap.scss";
 
-const ModalWrap = ({children, onClose, disableOverlayClose = false}) => {
+const ModalWrap = ({ children, onClose, disableOverlayClose = false }) => {
   const handleOverlayClick = () => {
-    if (!disableOverlayClose){
-      onClose();
-    }
+    // if (!disableOverlayClose){
+    //   onClose();
+    // }
   };
 
-  return(
+  return (
     <div className="modal-overlay" onClick={handleOverlayClick}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         {children}
