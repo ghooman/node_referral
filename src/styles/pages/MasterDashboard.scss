@@ -1,127 +1,133 @@
 @import '../variables';
 @import '../mixins';
 
+.result-loading {
+  width: 100%;
+  height: 100%;
+  min-height: calc(100vh - 548px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 // MasterDashboardDoing scss START
-.masterdashboard-wrapper{
+.masterdashboard-wrapper {
   padding: $sp-60 2%;
   @include flex-column;
   row-gap: 30px;
 
-  .dash-section{
+  .dash-section {
     padding: 0;
 
-    .dash-section__tit{
+    .dash-section__tit {
       @include font-h5-eb;
       color: $color-gray-000;
     }
   }
-  .table-section{
+  .table-section {
     padding: 0;
-    .list-item{
-        position: relative;
-        .toggle-btn-box{
-            @include flex-start;
-            padding-right: 20px;
-            .twoway-btn-box{
-                @include flex-start;
-                column-gap: 12px;
-            }
-            .twoway-btn{
-                @include font-sm-b;
-                color: $color-gray-000;
-                padding: $sp-04 $sp-20;
-                border-radius: 8px;
-                @include md{
-                    @include font-xs-b;
-                }
-
-                &.btn--blue{
-                    background-color: $color-primary-dark;
-                }
-                &.btn--red{
-                    background-color: #FF4E4E;
-                }
-            }
-            .toway-txt-box{
-                @include flex-column;
-                align-items: center;
-                p{
-                    @include font-xs-b;
-                }
-                small{
-                    @include font-mini;
-                    color: $color-gray-600;
-                }
-            }
+    .list-item {
+      position: relative;
+      .toggle-btn-box {
+        @include flex-start;
+        padding-right: 20px;
+        .twoway-btn-box {
+          @include flex-start;
+          column-gap: 12px;
         }
-    }
-  }
-  
+        .twoway-btn {
+          @include font-sm-b;
+          color: $color-gray-000;
+          padding: $sp-04 $sp-20;
+          border-radius: 8px;
+          @include md {
+            @include font-xs-b;
+          }
 
-  @include md{
-    .dash-section{
-      padding: 0 !important;
-
-      .dash-section__tit{
-        @include font-md-b;
+          &.btn--blue {
+            background-color: $color-primary-dark;
+          }
+          &.btn--red {
+            background-color: #ff4e4e;
+          }
+        }
+        .toway-txt-box {
+          @include flex-column;
+          align-items: center;
+          p {
+            @include font-xs-b;
+          }
+          small {
+            @include font-mini;
+            color: $color-gray-600;
+          }
+        }
       }
     }
   }
 
+  @include md {
+    .dash-section {
+      padding: 0 !important;
 
+      .dash-section__tit {
+        @include font-md-b;
+      }
+    }
+  }
 }
 
-.tab-ui{
-    @include flex-between;
-    @include font-xl-r;
-    color: $color-gray-600;
-    border-bottom: 1px solid $color-w-o20;
-    @include md{
-        @include font-sm-r;
-    }
-    li{
-        flex: 1;
-        text-align: center;
-        padding-bottom: 20px;
-        cursor: pointer;
-        position: relative;
+.tab-ui {
+  @include flex-between;
+  @include font-xl-r;
+  color: $color-gray-600;
+  border-bottom: 1px solid $color-w-o20;
+  @include md {
+    @include font-sm-r;
+  }
+  li {
+    flex: 1;
+    text-align: center;
+    padding-bottom: 20px;
+    cursor: pointer;
+    position: relative;
 
-        &.selected{
-            color: $color-gray-000;
-            font-weight: 700;
-            &::after{
-                content: '';
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 2px;
-                background-color: $color-gray-000;
-            }
-        }
+    &.selected {
+      color: $color-gray-000;
+      font-weight: 700;
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: $color-gray-000;
+      }
     }
+  }
 }
 // filter-section START
-.filter-section{
-    @include flex-start;
-    gap: 20px;
-    @include md{
-        @include flex-column;
-        align-items: flex-start;
-    }
+.filter-section {
+  @include flex-start;
+  gap: 20px;
+  @include md {
+    @include flex-column;
+    align-items: flex-start;
+  }
 }
-.search-bar{
-    display: flex;
-    align-items: center;
-    width: 100%;
-    max-width: 480px;
-    height: 48px;
-    border-radius: 999px;
-    padding: 0 16px;
-    background-color: #1c1c1c;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.node-search-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 480px;
+  height: 48px;
+  border-radius: 999px;
+  padding: 0 16px;
+  background-color: #1c1c1c;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 
-  &__input{
+  &__input {
     flex: 1;
     height: 100%;
     border: none;
@@ -129,16 +135,16 @@
     color: #fff;
     font-size: 14px;
 
-    &::placeholder{
+    &::placeholder {
       color: rgba(255, 255, 255, 0.4);
     }
 
-    &:focus{
+    &:focus {
       outline: none;
     }
   }
 
-  &__btn{
+  &__btn {
     background: none;
     border: none;
     padding: 0;
@@ -148,14 +154,14 @@
     align-items: center;
     justify-content: center;
 
-    .icon-search{
+    .icon-search {
       width: 20px;
       height: 20px;
       display: block;
       filter: brightness(0) invert(1);
     }
 
-    .sr-only{
+    .sr-only {
       position: absolute;
       width: 1px;
       height: 1px;
@@ -170,64 +176,64 @@
 }
 // filter-section END
 
-.wallet-copy-com{
-    @include flex-start;
-    column-gap: 12px;
-    button{
-        width: 20px;
-        height: 20px;
-    }
-    img{
-        width: 100%;
-        max-width: 20px;
-    }
+.wallet-copy-com {
+  @include flex-start;
+  column-gap: 12px;
+  button {
+    width: 20px;
+    height: 20px;
+  }
+  img {
+    width: 100%;
+    max-width: 20px;
+  }
 }
-.settlement-btn-box{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.settlement-btn-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    .btn--blue-line{
-        padding: 2px 20px;
-        border-radius: 8px;
-        border: 1px solid $color-primary-dark;
-        background-color: $color-w-o10;
-        color: $color-gray-000;
-    }
-    span{
-        @include font-sm-r;
-        color: $color-gray-400;
-    }
+  .btn--blue-line {
+    padding: 2px 20px;
+    border-radius: 8px;
+    border: 1px solid $color-primary-dark;
+    background-color: $color-w-o10;
+    color: $color-gray-000;
+  }
+  span {
+    @include font-sm-r;
+    color: $color-gray-400;
+  }
 }
 
-.status--pending{
-    color: $color-primary;
+.status--pending {
+  color: $color-primary;
 }
-.status--cancelled{
-    color: #FF4E4E;
+.status--cancelled {
+  color: #ff4e4e;
 }
 
 // MasterDashboardDoing scss END
 
 // MasterDashboardDone scss START
-.filter-date{
+.filter-date {
+  @include flex-start;
+  gap: 12px;
+  @include md {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  label {
+    @include font-sm-r;
+    color: $color-gray-600;
+    white-space: nowrap;
+  }
+  .date-field {
     @include flex-start;
     gap: 12px;
-    @include md{
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    label{
-        @include font-sm-r;
-        color: $color-gray-600;
-        white-space: nowrap;
-    }
-    .date-field{
-        @include flex-start;
-        gap: 12px;
-    }
+  }
 
-.filter-date__input{
+  .filter-date__input {
     min-width: 160px;
     padding: $sp-10 $sp-16;
     border-radius: 12px;
@@ -235,57 +241,55 @@
     background-color: $color-w-o05;
     color: $color-gray-600;
     @include font-sm-r;
-    @include md{
-        @include font-xs-r;
+    @include md {
+      @include font-xs-r;
     }
 
-    &::placeholder{
-        color: $color-gray-400;
+    &::placeholder {
+      color: $color-gray-400;
     }
 
-    &:focus{
-        border-color: $color-w-o50;
-        // outline: none;
+    &:focus {
+      border-color: $color-w-o50;
+      // outline: none;
     }
 
     // 입력 완료 상태
-    &.is-filled{
-        background-color: $color-gray-000;
-        border-color: $color-primary;
-        color: $color-gray-000;
+    &.is-filled {
+      background-color: $color-gray-000;
+      border-color: $color-primary;
+      color: $color-gray-000;
     }
-}
-    .dash{
-        @include font-sm-r;
-        color: $color-gray-400;
-    }
+  }
+  .dash {
+    @include font-sm-r;
+    color: $color-gray-400;
+  }
 
-    .btn--reset{
-        padding: 10px 16px;
-        background-color: $color-primary;
-        color: $color-gray-000;
-        border-radius: 12px;
-        @include font-sm-b;
-        white-space: nowrap;
-        @include md{
-            @include font-xs-b;
-        }
+  .btn--reset {
+    padding: 10px 16px;
+    background-color: $color-primary;
+    color: $color-gray-000;
+    border-radius: 12px;
+    @include font-sm-b;
+    white-space: nowrap;
+    @include md {
+      @include font-xs-b;
     }
+  }
 }
 
 // 말줄임 해제
-.masterdashboard-wrapper{
-    .col{
+.masterdashboard-wrapper {
+  .col {
     overflow: visible !important;
     text-overflow: unset !important;
+  }
+  .full-content-section {
+    .table-section__tit__list-head,
+    .list-item__row {
+      display: grid;
+      grid-template-columns: 1fr 2fr 3fr 1fr 1fr 1fr 1fr 2fr !important;
     }
-    .full-content-section{
-        .table-section__tit__list-head,
-        .list-item__row{
-            display: grid;
-            grid-template-columns: 1fr 2fr 3fr 1fr 1fr 1fr 1fr 2fr !important;
-        }
-    }
-    
-
+  }
 }

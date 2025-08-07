@@ -62,44 +62,64 @@ function Footer() {
   };
 
   return (
-    <footer className="footer">
-      <div className="footer__inner">
-        <div className="footer__top">
-          <h3 className="footer__top__logo">
-            <Link to="/">
+    <footer className="node-footer">
+      <div className="node-footer__inner">
+        <div className="node-footer__top">
+          <h3 className="node-footer__top__logo">
+            <Link to="/dashboard">
               <img src={logoImg} alt="Music On the Block Affiliate Logo" />
             </Link>
           </h3>
-          <ul className="footer__top__sns">
+          <ul className="node-footer__top__sns">
             <li>
-              <Link to="https://blog.naver.com/musicontheblock" target="_blank" rel="noopener noreferrer">
+              <Link
+                to="https://blog.naver.com/musicontheblock"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img src={iconNaver} alt="Naver Blog Icon" />
               </Link>
             </li>
             <li>
-              <Link to="https://www.threads.com/@musicaiblock?hl=ko" target="_blank" rel="noopener noreferrer">
+              <Link
+                to="https://www.threads.com/@musicaiblock?hl=ko"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img src={iconThread} alt="Thread Icon" />
               </Link>
             </li>
             <li>
-              <Link to="https://medium.com/@musicontheblock." target="_blank" rel="noopener noreferrer">
+              <Link
+                to="https://medium.com/@musicontheblock."
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img src={iconMedium} alt="Mediium Icon" />
               </Link>
             </li>
             <li>
-              <Link to="https://discord.com/invite/7zm6bcn76H" target="_blank" rel="noopener noreferrer">
+              <Link
+                to="https://discord.com/invite/7zm6bcn76H"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img src={iconDiscord} alt="Discord Icon" />
               </Link>
             </li>
             <li>
-              <Link to="https://x.com/musicaiblock" target="_blank" rel="noopener noreferrer">
+              <Link
+                to="https://x.com/musicaiblock"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img src={iconX} alt="X Icon" />
               </Link>
             </li>
           </ul>
         </div>
-        <div className="footer__bottom">
-          <div className="footer__bottom__left">
+        <div className="node-footer__bottom">
+          {/* <div className="node-footer__bottom__left">
             <address className="address-content">
               <p>
                 <b>대표</b>
@@ -134,8 +154,9 @@ function Footer() {
                 마케팅 수신
               </Link>
             </div>
-          </div>
-          <div className="footer__bottom__right">
+          </div> */}
+
+          <div className="node-footer__bottom__right">
             <div className="token-ui mob-token">
               <div className="token-ui__mob-info">
                 <div className="token-ui__mob-info__img-com">
@@ -180,7 +201,10 @@ function Footer() {
                     {({ isActive }) => (
                       <div className="slide-item">
                         <div className="slide-item__img-com">
-                          <img src={isActive ? iconHash : iconPol} alt="Coin Icon" />
+                          <img
+                            src={isActive ? iconHash : iconPol}
+                            alt="Coin Icon"
+                          />
                           <dl className="slide-item__img-com__tit">
                             <dt>
                               hash : <span>{formatHash(item.hash)}</span>

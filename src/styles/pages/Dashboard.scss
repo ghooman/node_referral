@@ -1,6 +1,6 @@
-@import "../variables";
-@import "../mixins";
-@import "../fonts";
+@import '../variables';
+@import '../mixins';
+@import '../fonts';
 
 // user-section START
 .dashboard-wrapper {
@@ -197,8 +197,7 @@
       gap: 4px;
       color: $color-gray-400;
       padding-right: 20px;
-      background: url("../../assets/images/icon-arrow-right.svg") no-repeat
-        right center / 15px;
+      background: url('../../assets/images/icon-arrow-right.svg') no-repeat right center / 15px;
       @include md {
         @include font-sm-b;
       }
@@ -448,9 +447,14 @@
   }
   p {
     @include font-xl-b;
+    font-size: 20px;
     color: $color-gray-000;
     @include md {
       @include font-md-b;
+    }
+    span {
+      @include font-xl-b;
+      font-size: 30px;
     }
   }
 }

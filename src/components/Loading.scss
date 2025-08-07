@@ -1,0 +1,135 @@
+.loading {
+  img {
+    width: 22px;
+    height: 22px;
+    margin: 0 auto;
+  }
+} //loading--END--
+
+.loading-wrap {
+  position: fixed;
+  top: 50%;
+  // left: 50%;
+  left: calc(50% - 0px);
+  transform: translate(-50%,-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-left: 116px;
+} //loading-wrap--END--
+.response {
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid #222;
+  H2 {
+    color: #cf0;
+    font-family:  Pretendard400;
+    font-size: 18px;
+    letter-spacing: 0.54px;
+    margin-bottom: 12px;
+  }
+} //response--END--
+/* From Uiverse.io by elijahgummer */
+.middle__bg {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9;
+  opacity: 0.7;
+}
+.middle__title {
+  text-align: center;
+  z-index: 10;
+  font-size: 12px;
+  color: #cf0;
+  text-align: center;
+  width: 100%;
+}
+.middle {
+  // &::before{
+  //   content: '';
+  //   width: 100%;
+  //   height: 100%;
+  //   background: red;
+  //   position: fixed;
+  //   top: 0;
+  //   left: 0;
+  //   z-index: 1;
+  // }
+}
+
+.bar {
+  width: 10px;
+  height: 70px;
+  margin: 0 4px;
+  display: inline-block;
+  transform-origin: bottom center;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  box-shadow: 5px 10px 20px inset rgba(255, 255, 0, 0.8); /* Yellow box shadow */
+  animation: loader 1.2s linear infinite;
+}
+
+.bar1 {
+  animation-delay: 0.1s;
+}
+
+.bar2 {
+  animation-delay: 0.2s;
+}
+
+.bar3 {
+  animation-delay: 0.3s;
+}
+
+.bar4 {
+  animation-delay: 0.4s;
+}
+
+.bar5 {
+  animation-delay: 0.5s;
+}
+
+.bar6 {
+  animation-delay: 0.6s;
+}
+
+.bar7 {
+  animation-delay: 0.7s;
+}
+
+.bar8 {
+  animation-delay: 0.8s;
+}
+
+@keyframes loader {
+  0% {
+    transform: scaleY(0.1);
+    background: transparent;
+    /* Change background to transparent */
+  }
+
+  50% {
+    transform: scaleY(1);
+    background: linear-gradient(to bottom, #cf0, #ffff00); /* Gradient from gold to yellow */
+  }
+
+  100% {
+    transform: scaleY(0.1);
+    background: transparent;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .middle__title {
+    top: calc(50% + 46px);
+  }
+  .loading-wrap{
+    margin-left: auto !important;
+  }
+}

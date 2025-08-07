@@ -14,15 +14,15 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
 
   return (
     <div className="pagination">
-      <button
+      <span
         className="pagination__arrow"
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
       >
         &lt;
-      </button>
+      </span>
 
-      {pageNumbers.map((number) => (
+      {pageNumbers.map(number => (
         <button
           key={number}
           className={`pagination__number ${number === currentPage ? 'active' : ''}`}
@@ -32,13 +32,13 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
         </button>
       ))}
 
-      <button
+      <span
         className="pagination__arrow"
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
       >
         &gt;
-      </button>
+      </span>
     </div>
   );
 }

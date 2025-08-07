@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import HeaderBack from "../components/unit/HeaderBack";
 import Footer from "../components/unit/Footer";
 import Pagination from "../components/unit/Pagination";
+import Loading from "../components/Loading.jsx";
 
 // img
 import arrowDownIcon from "../assets/images/icon-arrow-down.svg";
@@ -23,6 +24,8 @@ const serverAPI = process.env.REACT_APP_NODE_SERVER_API;
 function OtherSalesRecord() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [isPageLoading, setIsPageLoading] = useState(false);
 
   const [openIndex, setOpenIndex] = useState(null);
   const [activeSettleStatus, setActiveSettleStatus] = useState(null);
@@ -76,14 +79,17 @@ function OtherSalesRecord() {
   // 상단 4개
   const handleSubUserDashboard = async () => {
     try {
-      const res = await axios.get(`${serverAPI}/api/sales/user/income/dashboard`, {
-        params: {
-          username: userEmail,
-        },
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
+      const res = await axios.get(
+        `${serverAPI}/api/sales/user/income/dashboard`,
+        {
+          params: {
+            username: userEmail,
+          },
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
       const list = res.data;
       console.log("하위 레퍼럴 상단 대시보드 가져왔당", list);
       setSubUserDashboard(list);
@@ -95,6 +101,7 @@ function OtherSalesRecord() {
   // 필터랑 리스트
   const handleSubUserData = async () => {
     try {
+      setIsPageLoading(true);
       const res = await axios.get(`${serverAPI}/api/sales/user/income/list`, {
         params: {
           username: userEmail,
@@ -122,6 +129,8 @@ function OtherSalesRecord() {
       });
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsPageLoading(false);
     }
   };
 
@@ -172,6 +181,13 @@ function OtherSalesRecord() {
   const getBadgeClassName = (state) => {
     return state; // 상태명이 곧 className과 동일함
   };
+
+  // 숫자 포맷 함수
+  const formatNumber = (num) => {
+    if (isNaN(num)) return 0;
+    return Number(num).toLocaleString("en-US"); // "1,000", "50,000" 형태
+  };
+
   return (
     <>
       <div className="layout">
@@ -200,19 +216,19 @@ function OtherSalesRecord() {
             <ul className="sales-section__record-list referral-record-list">
               <li>
                 <h3>판매 수입</h3>
-                <p>{subUserDashboard.sales_revenue}</p>
+                <p>{formatNumber(subUserDashboard.sales_revenue)}</p>
               </li>
               <li>
                 <h3>판매 정산금</h3>
-                <p>{subUserDashboard.settlement}</p>
+                <p>{formatNumber(subUserDashboard.settlement)}</p>
               </li>
               <li>
                 <h3>추천인</h3>
-                <p>{subUserDashboard.referrals}</p>
+                <p>{formatNumber(subUserDashboard.referrals)}</p>
               </li>
               <li>
                 <h3>판매 노드 수</h3>
-                <p>{subUserDashboard.sold_nodes}</p>
+                <p>{formatNumber(subUserDashboard.sold_nodes)}</p>
               </li>
             </ul>
           </div>
@@ -220,7 +236,11 @@ function OtherSalesRecord() {
           <div className="filter-group">
             <div className="filter-group__title">필터링</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-              <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
+              <button
+                type="button"
+                className="custom-select__btn"
+                onClick={() => setIsFilterOpen((prev) => !prev)}
+              >
                 <span>{statusMap[selectedStatus]}</span>
                 <i className="custom-select__arrow"></i>
               </button>
@@ -239,40 +259,67 @@ function OtherSalesRecord() {
           </div>
           <section className="table-section">
             <div className="table-section-inner">
-              <div className="table-section__tit__list-head">
-                <div className="col">상태</div>
-                <div className="col">객단가</div>
-                <div className="col">개수</div>
-                <div className="col">총금액</div>
-                <div className="col">정산금</div>
-                <div className="col">등록일시</div>
-                <div className="col">구매자</div>
-              </div>
+              {isPageLoading && (
+                <div className="result-loading">
+                  <Loading />
+                </div>
+              )}
 
-              {/*  하위 판매자가 없는 경우 */}
-              {subUserData.data_list.length === 0 ? (
-                <div className="table-empty">판매 기록이 없습니다.</div>
-              ) : (
-                subUserData.data_list.map((item, index) => (
-                  <div key={item.id} className={`list-item ${openIndex === index ? "open" : ""}`}>
-                    <div className="list-item__row">
-                      <div className="col">
-                        <span className={`status status--${item.state}`}>{getKoreanState(item.state)}</span>
-                      </div>
-                      <div className="col">{item.unit_price}</div>
-                      <div className="col">{item.cnt}</div>
-                      <div className="col">{item.amount}</div>
-                      <div className="col">{item.settlement_amount}</div>
-                      <div className="col">{formatDate(item.create_dt)}</div>
-                      <div className="col">{item.buyer_name}</div>
-                    </div>
+              {!isPageLoading && (
+                <>
+                  <div className="table-section__tit__list-head">
+                    <div className="col">상태</div>
+                    <div className="col">객단가</div>
+                    <div className="col">개수</div>
+                    <div className="col">총금액</div>
+                    <div className="col">정산금</div>
+                    <div className="col">등록일시</div>
+                    <div className="col">구매자</div>
                   </div>
-                ))
+
+                  {/*  하위 판매자가 없는 경우 */}
+                  {subUserData.data_list.length === 0 ? (
+                    <div className="table-empty">판매 기록이 없습니다.</div>
+                  ) : (
+                    subUserData.data_list.map((item, index) => (
+                      <div
+                        key={item.id}
+                        className={`list-item ${
+                          openIndex === index ? "open" : ""
+                        }`}
+                      >
+                        <div className="list-item__row">
+                          <div className="col">
+                            <span className={`status status--${item.state}`}>
+                              {getKoreanState(item.state)}
+                            </span>
+                          </div>
+                          <div className="col">
+                            {formatNumber(item.unit_price)}
+                          </div>
+                          <div className="col">{formatNumber(item.cnt)}</div>
+                          <div className="col">{formatNumber(item.amount)}</div>
+                          <div className="col">
+                            {formatNumber(item.settlement_amount)}
+                          </div>
+                          <div className="col">
+                            {formatDate(item.create_dt)}
+                          </div>
+                          <div className="col">{item.buyer_name}</div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </>
               )}
             </div>
           </section>
 
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
         </div>
         <Footer />
       </div>

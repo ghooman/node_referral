@@ -15,7 +15,7 @@ function App() {
       <ScrollToTop />
       <Routes>
         {/* 공개 접근 가능한 페이지 */}
-        <Route path="/Login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         {/* 보호된 페이지는 모두 여기 아래에서 감쌈 */}
         <Route

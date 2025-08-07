@@ -2,8 +2,8 @@
 @import '../../styles/mixins';
 @import '../../styles/fonts';
 
-.header--back{
-  .header__inner__logo{
+.node-header--back {
+  .node-header__inner__logo {
     position: relative;
     @include flex-start;
     gap: 12px;
@@ -19,14 +19,14 @@
       }
     }
 
-    .header-back__btn-back{
+    .node-header-back__btn-back {
       position: absolute;
       left: 0;
       opacity: 0;
       transform: translateY(-5px);
       pointer-events: none;
 
-      @include md{
+      @include md {
         opacity: 1;
         transform: translateY(0);
         pointer-events: auto;

@@ -2,11 +2,12 @@
 @import '../mixins';
 @import '../fonts';
 
-html, body{
+html,
+body {
   height: 100%;
 }
 
-.login__wrapper{
+.login__wrapper {
   width: 100%;
   min-height: 100dvh;
   display: flex;
@@ -14,37 +15,37 @@ html, body{
   align-items: center;
 }
 
-.login__box{
+.login__box {
   width: 100%;
   max-width: 500px;
   padding: $sp-40 0 $sp-20;
 }
 
-.login__logo{
+.login__logo {
   text-align: center;
   margin-bottom: $sp-80;
 
-  img{
+  img {
     width: 100%;
     max-width: 370px;
     margin: 0 auto $sp-24;
   }
-  span{
+  span {
     @include font-h5-eb;
     color: $color-gray-000;
   }
 }
 
-.login__form{
+.login__form {
   display: flex;
   flex-direction: column;
 
-  fieldset{
+  fieldset {
     margin-bottom: $sp-40;
   }
 }
 
-.btn{
+.btn {
   @include font-md-b;
   display: flex;
   padding: $sp-16;
@@ -52,35 +53,35 @@ html, body{
   align-items: center;
   flex: 1 0 0;
   border-radius: 12px;
-  color: $color-gray-000;
-  background-color: $color-primary;
+  color: $color-gray-000 !important;
+  background-color: $color-primary !important;
 
-  &-login{
-    background-color: $color-primary;
+  &-login {
+    background-color: $color-primary !important;
     border: none;
   }
 
-  &-signup{
-    background-color: transparent;
+  &-signup {
+    background-color: transparent !important;
     border: 1px solid $color-w-o20;
     margin-top: $sp-12;
   }
 
   // 평상시에는 안 보이게
-  .loading-dots{
+  .loading-dots {
     display: none;
   }
   // 버튼 초기 비활성화 상태
-  &--disabled{
+  &--disabled {
     opacity: 0.2;
     pointer-events: none;
   }
   // 버튼 활성화 상태
-  &--active{
+  &--active {
     opacity: 1;
   }
   // 로딩 상태
-  &--loading{
+  &--loading {
     background-color: rgba(58, 157, 227, 0.5);
     position: relative;
     pointer-events: none;
@@ -90,23 +91,23 @@ html, body{
   }
 }
 
-@media (max-width: $responsive-md){
-  .login__wrapper{
+@media (max-width: $responsive-md) {
+  .login__wrapper {
     align-items: flex-start;
     padding: 0 4% $sp-20;
   }
-  .login__box{
+  .login__box {
     padding-top: $sp-40 0 0;
   }
-  .login__logo{
-    img{
+  .login__logo {
+    img {
       max-width: 300px;
     }
-    span{
-      @include font-md-b
+    span {
+      @include font-md-b;
     }
   }
-  .login__form fieldset{
+  .login__form fieldset {
     margin-bottom: 0;
   }
   .login {

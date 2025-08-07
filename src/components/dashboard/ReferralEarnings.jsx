@@ -5,8 +5,16 @@ import arrowRightIcon from "../../assets/images/icon-arrow-right.svg";
 import OtherSalesRecord from "../../pages/OtherSalesRecord";
 import { Link } from "react-router-dom";
 import "./ReferralEarnings.scss";
+import Loading from "../Loading.jsx";
 
-function ReferralEarnings({ openIndex, handleToggle, downReferralActive, sliceList5 }) {
+function ReferralEarnings({
+  openIndex,
+  handleToggle,
+  downReferralActive,
+  sliceList5,
+  isPageLoading,
+  formatNumber,
+}) {
   const dummyDataList = [
     {
       state: "requested", // ← 문자열
@@ -88,79 +96,118 @@ function ReferralEarnings({ openIndex, handleToggle, downReferralActive, sliceLi
   return (
     <section className="table-section">
       <div className="table-section-inner">
-        <div className="table-section__tit">
-          <h2>하위자 수입 리스트</h2>
-          <Link to="/ReferralEarningList">전체보기</Link>
-        </div>
+        {isPageLoading && (
+          <div className="result-loading">
+            <Loading />
+          </div>
+        )}
 
-        <div className="table-section__tit__list-head">
-          <div className="col">상태</div>
-          <div className="col">객단가</div>
-          <div className="col">개수</div>
-          <div className="col">총금액</div>
-          <div className="col">내 정산금</div>
-          <div className="col col--btn"></div>
-        </div>
-
-        {/*  하위 판매자가 없는 경우 */}
-        {slicedData.length === 0 ? (
-          <div className="table-empty">하위자의 판매 기록이 없습니다.</div>
-        ) : (
-          slicedData.map((item, index) => (
-            <div key={index} className={`list-item ${openIndex === index ? "open" : ""}`}>
-              <div className="list-item__row">
-                <div className="col">
-                  <span className={`status status--${item.state}`}>{getStateLabel(item.state)}</span>
-                </div>
-                <div className="col">{item.unit_price}</div>
-                <div className="col">{item.cnt}</div>
-                <div className="col">{item.amount}</div>
-                <div className="col">{item.my_settlement_amount}</div>
-                <div className="col col--btn toggle-btn-box" style={{ width: "15px", height: "20px" }}>
-                  <button className={`toggle-btn ${openIndex === index ? "rotate" : ""}`} onClick={() => toggle(index)}>
-                    <img src={arrowDownIcon} alt="토글" />
-                  </button>
-                </div>
-              </div>
-
-              {openIndex === index && (
-                <div className="list-item__detail">
-                  <div className="info-table">
-                    <div className="info-header">
-                      <div className="col col--email">이메일 주소</div>
-                      <div className="col">지분</div>
-                      <div className="col">정산금</div>
-                      <div className="col">정산상태</div>
-                    </div>
-
-                    {item.referrals.map((user, i) => (
-                      <div className="info-row" key={i}>
-                        <div className="col col--email">
-                          {i === 0 ? (
-                            <strong>{user.username}</strong>
-                          ) : (
-                            <>
-                              <Link to={`/OtherSalesRecord?email=${user.username}`}>
-                                <span>{user.username}</span>
-                                <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
-                              </Link>
-                            </>
-                          )}
-                        </div>
-                        <div className="col">{user.share}%</div>
-                        <div className="col">{user.settlement_amount}</div>
-                        <div className="col">
-                          <span className={`status ${user.is_complt ? "status--success" : "status--failed"}`}>
-                            {user.is_complt ? "완료" : "대기"}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+        {!isPageLoading && (
+          <>
+            <div className="table-section__tit">
+              <h2>하위자 수입 리스트</h2>
+              <Link to="/referral-earning-list">전체보기</Link>
             </div>
-          ))
+
+            <div className="table-section__tit__list-head">
+              <div className="col">상태</div>
+              <div className="col">객단가</div>
+              <div className="col">개수</div>
+              <div className="col">총금액</div>
+              <div className="col">내 정산금</div>
+              <div className="col col--btn"></div>
+            </div>
+
+            {/*  하위 판매자가 없는 경우 */}
+            {slicedData.length === 0 ? (
+              <div className="table-empty">하위자의 판매 기록이 없습니다.</div>
+            ) : (
+              slicedData.map((item, index) => (
+                <div
+                  key={index}
+                  className={`list-item ${openIndex === index ? "open" : ""}`}
+                >
+                  <div className="list-item__row">
+                    <div className="col">
+                      <span className={`status status--${item.state}`}>
+                        {getStateLabel(item.state)}
+                      </span>
+                    </div>
+                    <div className="col">{formatNumber(item.unit_price)}</div>
+                    <div className="col">{formatNumber(item.cnt)}</div>
+                    <div className="col">{formatNumber(item.amount)}</div>
+                    <div className="col">
+                      {formatNumber(item.my_settlement_amount)}
+                    </div>
+                    <div
+                      className="col col--btn toggle-btn-box"
+                      style={{ width: "15px", height: "20px" }}
+                    >
+                      <button
+                        className={`toggle-btn ${
+                          openIndex === index ? "rotate" : ""
+                        }`}
+                        onClick={() => toggle(index)}
+                      >
+                        <img src={arrowDownIcon} alt="토글" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {openIndex === index && (
+                    <div className="list-item__detail">
+                      <div className="info-table">
+                        <div className="info-header">
+                          <div className="col col--email">이메일 주소</div>
+                          <div className="col">지분</div>
+                          <div className="col">정산금</div>
+                          <div className="col">정산상태</div>
+                        </div>
+
+                        {item.down_referrals.map((user, i) => (
+                          <div className="info-row" key={i}>
+                            <div className="col col--email">
+                              {i === 0 ? (
+                                <strong>{user.username}</strong>
+                              ) : (
+                                <>
+                                  <Link
+                                    to={`/other-sales-record?email=${user.username}`}
+                                  >
+                                    <span>{user.username}</span>
+                                    <img
+                                      src={arrowRightIcon}
+                                      alt="자세히 보기"
+                                      className="arrow-icon"
+                                    />
+                                  </Link>
+                                </>
+                              )}
+                            </div>
+                            <div className="col">{user.share}%</div>
+                            <div className="col">
+                              {formatNumber(user.settlement_amount)}
+                            </div>
+                            <div className="col">
+                              <span
+                                className={`status ${
+                                  user.is_complt
+                                    ? "status--success"
+                                    : "status--failed"
+                                }`}
+                              >
+                                {user.is_complt ? "완료" : "대기"}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </>
         )}
       </div>
     </section>
