@@ -26,7 +26,7 @@ const ProtectedRoutes = () => {
       <Route path="/master-dashboard-done" element={<MasterDashboardDone />} />
     </Routes>
   ) : (
-    <Navigate to="/login" replace />
+    <Navigate to="/" replace />
   );
 };
 

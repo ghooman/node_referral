@@ -13,7 +13,7 @@ function Header() {
     localStorage.removeItem("userRole");
     localStorage.removeItem("userToken");
 
-    navigate("/login"); // 로그인 페이지 경로에 맞게 변경
+    navigate("/"); // 로그인 페이지 경로에 맞게 변경
   };
 
   // ✅ 유저 역할에 따라 메인 이동 경로 분기
