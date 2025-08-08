@@ -63,9 +63,9 @@ function Footer() {
 
   return (
     <footer className="node-footer">
-      <div className="footer__inner">
-        <div className="footer__top">
-          <h3 className="footer__top__logo">
+      <div className="node-footer__inner">
+        <div className="node--footer__top">
+          <h3 className="node-footer__top__logo">
             <Link to="/affiliate/dashboard">
               <img src={logoImg} alt="Music On the Block Affiliate Logo" />
             </Link>
