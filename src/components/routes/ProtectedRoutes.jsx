@@ -14,19 +14,16 @@ const isAuthenticated = () => {
 const ProtectedRoutes = () => {
   return isAuthenticated() ? (
     <Routes>
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/sales-record" element={<SalesRecord />} />
-      <Route path="/recommender-list" element={<RecommenderList />} />
-      <Route path="/referral-earning-list" element={<ReferralEarningList />} />
-      <Route path="/other-sales-record" element={<OtherSalesRecord />} />
-      <Route
-        path="/master-dashboard-doing"
-        element={<MasterDashboardDoing />}
-      />
-      <Route path="/master-dashboard-done" element={<MasterDashboardDone />} />
+      <Route path="/affiliate/dashboard" element={<Dashboard />} />
+      <Route path="/affiliate/sales-record" element={<SalesRecord />} />
+      <Route path="/affiliate/recommender-list" element={<RecommenderList />} />
+      <Route path="/affiliate/referral-earning-list" element={<ReferralEarningList />} />
+      <Route path="/affiliate/other-sales-record" element={<OtherSalesRecord />} />
+      <Route path="/affiliate/master-dashboard-doing" element={<MasterDashboardDoing />} />
+      <Route path="/affiliate/master-dashboard-done" element={<MasterDashboardDone />} />
     </Routes>
   ) : (
-    <Navigate to="/" replace />
+    <Navigate to="/affiliate/login" replace />
   );
 };
 

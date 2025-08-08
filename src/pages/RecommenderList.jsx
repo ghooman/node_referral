@@ -393,31 +393,25 @@ function RecommenderList() {
                           </div>
                         </div>
 
-                        {openIndex === index && item.user_list?.length > 0 && (
-                          <div className="list-item__detail invite-code">
-                            {item.user_list.map((user, i) => (
-                              <div key={i} className="email-row">
-                                <Link
-                                  to={`/other-sales-record?email=${user.username}`}
-                                >
-                                  <span className="index">{i + 1}</span>
-                                  <span className="email">{user.username}</span>
-                                </Link>
-                                <button className="arrow">
-                                  <img src={arrowRightIcon} alt="더보기" />
-                                </button>
-                              </div>
-                            ))}
+                    {openIndex === index && item.user_list?.length > 0 && (
+                      <div className="list-item__detail invite-code">
+                        {item.user_list.map((user, i) => (
+                          <div key={i} className="email-row">
+                            <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
+                              <span className="index">{i + 1}</span>
+                              <span className="email">{user.username}</span>
+                            </Link>
+                            <button className="arrow">
+                              <img src={arrowRightIcon} alt="더보기" />
+                            </button>
                           </div>
-                        )}
+                        ))}
                       </div>
-                    ))
-                  ) : (
-                    <div className="table-empty">
-                      생성한 초대코드 리스트가 없습니다.
-                    </div>
-                  )}
-                </>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div className="table-empty">생성한 초대코드 리스트가 없습니다.</div>
               )}
             </div>
           </section>

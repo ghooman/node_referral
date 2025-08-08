@@ -51,9 +51,9 @@ function Login() {
         localStorage.setItem("userRole", role);
         // 메인 (Dashboard 페이지로 이동)
         if (role == "master") {
-          navigate("/master-dashboard-doing");
+          navigate("/affiliate/master-dashboard-doing");
         } else {
-          navigate("/dashboard");
+          navigate("/affiliate/dashboard");
         }
       } else {
         // 로그인 실패 처리
@@ -119,8 +119,8 @@ function Login() {
           </button>
         </form>
 
-        <Link to="/signup" className="btn btn-signup">
-          Sign Up
+        <Link to="/affiliate/signup" className="btn btn-signup">
+          회원가입
         </Link>
       </div>
       {showFailModal && (

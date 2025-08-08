@@ -365,50 +365,34 @@ function ReferralEarningList() {
                                 <div className="col">정산상태</div>
                               </div>
 
-                              {item.down_referrals.map((user, i) => (
-                                <div className="info-row" key={i}>
-                                  <div className="col col--email">
-                                    {i === 0 ? (
-                                      <strong>{user.username}</strong>
-                                    ) : (
-                                      <>
-                                        <Link
-                                          to={`/other-sales-record?email=${user.username}`}
-                                        >
-                                          <span>{user.username}</span>
-                                          <img
-                                            src={arrowRightIcon}
-                                            alt="자세히 보기"
-                                            className="arrow-icon"
-                                          />
-                                        </Link>
-                                      </>
-                                    )}
-                                  </div>
-                                  <div className="col">{user.share}</div>
-                                  <div className="col">
-                                    {formatNumber(user.settlement_amount)}
-                                  </div>
-                                  <div className="col">
-                                    <span
-                                      className={`status ${
-                                        user.is_complt
-                                          ? "status--success"
-                                          : "status--failed"
-                                      }`}
-                                    >
-                                      {user.is_complt ? "완료" : "대기"}
-                                    </span>
-                                  </div>
-                                </div>
-                              ))}
+                          {item.referrals.map((user, i) => (
+                            <div className="info-row" key={i}>
+                              <div className="col col--email">
+                                {i === 0 ? (
+                                  <strong>{user.username}</strong>
+                                ) : (
+                                  <>
+                                    <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
+                                      <span>{user.username}</span>
+                                      <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
+                                    </Link>
+                                  </>
+                                )}
+                              </div>
+                              <div className="col">{user.share}</div>
+                              <div className="col">{user.settlement_amount}</div>
+                              <div className="col">
+                                <span className={`status ${user.is_complt ? "status--success" : "status--failed"}`}>
+                                  {user.is_complt ? "완료" : "대기"}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          ))}
+                        </div>
                       </div>
-                    ))
-                  )}
-                </>
+                    )}
+                  </div>
+                ))
               )}
             </div>
           </section>
