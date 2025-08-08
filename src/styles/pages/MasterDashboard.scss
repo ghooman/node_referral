@@ -1,5 +1,5 @@
-@import '../variables';
-@import '../mixins';
+@import "../variables";
+@import "../mixins";
 
 .result-loading {
   width: 100%;
@@ -28,9 +28,9 @@
     padding: 0;
     .list-item {
       position: relative;
-      &__row{
+      &__row {
         flex-wrap: nowrap;
-        .col{
+        .col {
           padding: 0;
           font-size: clamp(12px, 0.9vw, 13px) !important;
         }
@@ -39,6 +39,7 @@
       .toggle-btn-box {
         @include flex-start;
         padding-right: 20px !important;
+        padding-left: 4px;
         .twoway-btn-box {
           @include flex-start;
           column-gap: 12px;
@@ -76,8 +77,8 @@
       }
     }
   }
-  .table-section.master{
-    .table-section-inner{
+  .table-section.master {
+    .table-section-inner {
       min-width: 1300px !important;
     }
   }
@@ -112,7 +113,7 @@
       color: $color-gray-000;
       font-weight: 700;
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         bottom: 0;
         left: 0;
@@ -258,7 +259,6 @@
     color: $color-gray-600;
     font-weight: 400;
     font-size: clamp(10px, 0.9vw, 14px);
-
 
     &::placeholder {
       color: $color-gray-400;
