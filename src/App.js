@@ -1,10 +1,12 @@
+// src/App.jsx
+// 로그인이랑 회원가입을 GuestOnly로 감싸기!
+
 import { Routes, Route } from "react-router-dom";
 import PrivateRoute from "./components/routes/PrivateRoute";
 import ProtectedRoutes from "./components/routes/ProtectedRoutes";
-// style
+import GuestOnly from "./components/routes/GuestOnly";
 import "./App.css";
 import "./styles/Main.scss";
-// Route
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import ScrollToTop from "./components/ScrollToTop";
@@ -14,10 +16,22 @@ function App() {
     <div className="App">
       <ScrollToTop />
       <Routes>
-        {/* 공개 접근 가능한 페이지 */}
-        <Route path="/affiliate/login" element={<Login />} />
-        <Route path="/affiliate/signup" element={<SignUp />} />
-        {/* 보호된 페이지는 모두 여기 아래에서 감쌈 */}
+        <Route
+          path="/affiliate/login"
+          element={
+            <GuestOnly>
+              <Login />
+            </GuestOnly>
+          }
+        />
+        <Route
+          path="/affiliate/signup"
+          element={
+            <GuestOnly>
+              <SignUp />
+            </GuestOnly>
+          }
+        />
         <Route
           path="/*"
           element={
