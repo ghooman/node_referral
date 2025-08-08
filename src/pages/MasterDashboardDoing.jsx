@@ -321,11 +321,11 @@ function MasterDashboardDoing() {
                 </ul>
               </div>
             </div>
-            <div className="search-bar">
+            <div className="node-search-bar">
               <input
                 type="text"
                 placeholder="이메일 및 지갑주소로 검색"
-                className="search-bar__input"
+                className="node-search-bar__input"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 onKeyDown={(e) => {
@@ -337,7 +337,7 @@ function MasterDashboardDoing() {
               />
               <button
                 type="button"
-                className="search-bar__btn"
+                className="node-search-bar__btn"
                 onClick={() => {
                   setCurrentPage(1);
                   handleGetDataList();
@@ -348,17 +348,17 @@ function MasterDashboardDoing() {
               </button>
             </div>
           </div>
-          <div className="table-section">
+          <div className="table-section master">
             <div className="table-section-inner">
               {/* table head */}
               <div className="table-section__tit__list-head">
-                <div className="col">상태</div>
-                <div className="col">입금된 지갑주소</div>
-                <div className="col">객단가</div>
-                <div className="col">개수</div>
-                <div className="col">총금액</div>
-                <div className="col">전송할 지갑주소</div>
-                <div className="col">액션</div>
+                <div className="col" style={{flex: "0 0 10%"}}>상태</div>
+                <div className="col" style={{flex: "0 0 25%"}}>입금된 지갑주소</div>
+                <div className="col" style={{flex: "0 0 10%"}}>객단가</div>
+                <div className="col" style={{flex: "0 0 5%"}}>개수</div>
+                <div className="col" style={{flex: "0 0 10%"}}>총금액</div>
+                <div className="col" style={{flex: "0 0 25%"}}>전송할 지갑주소</div>
+                <div className="col" style={{flex: "0 0 15%"}}>액션</div>
               </div>
               {/* table body */}
               {dataList.map((item, index) => (
@@ -366,25 +366,25 @@ function MasterDashboardDoing() {
                   <div className="list-item__row">
                     <div
                       className={`col status-col
-      ${item.state === "pending" ? "status--pending" : ""}
-      ${item.state === "cancelled" ? "status--cancelled" : ""}
-  `}
+                          ${item.state === "pending" ? "status--pending" : ""}
+                          ${item.state === "cancelled" ? "status--cancelled" : ""}
+                      `} style={{flex: "0 0 10%"}}
                     >
                       {getKoreanState(item.state)}
                     </div>
 
-                    <div className="col wallet-copy-com">
+                    <div className="col wallet-copy-com" style={{flex: "0 0 25%"}}>
                       {item.deposit_wallet_address}
                       <CopyButton textToCopy={item.deposit_wallet_address} />
                     </div>
-                    <div className="col">{item.unit_price}</div>
-                    <div className="col">{item.cnt}</div>
-                    <div className="col">{item.amount}</div>
-                    <div className="col wallet-copy-com">
+                    <div className="col" style={{flex: "0 0 10%"}}>{item.unit_price}</div>
+                    <div className="col" style={{flex: "0 0 5%"}}>{item.cnt}</div>
+                    <div className="col" style={{flex: "0 0 10%"}}>{item.amount}</div>
+                    <div className="col wallet-copy-com" style={{flex: "0 0 25%"}}>
                       {item.buyer_wallet_address}
                       <CopyButton textToCopy={item.buyer_wallet_address} />
                     </div>
-                    <div className="col col--action toggle-btn-box">
+                    <div className="col col--action toggle-btn-box" style={{flex: "0 0 15%"}}>
                       {/* 상태값 승인대기인 경우 twoway-btn 노출 */}
                       {item.state === "pending" && (
                         <div className="twoway-btn-box --pending">
@@ -429,25 +429,25 @@ function MasterDashboardDoing() {
                     <div className="list-item__detail">
                       <div className="info-table">
                         <div className="info-header">
-                          <div className="col col--email">이메일 주소</div>
-                          <div className="col">지분</div>
-                          <div className="col">정산금</div>
-                          <div className="col">지갑주소</div>
-                          <div className="col">정산상태</div>
+                          <div className="col col--email" style={{flex: "0 0 20%"}}>이메일 주소</div>
+                          <div className="col" style={{flex: "0 0 10%"}}>지분</div>
+                          <div className="col" style={{flex: "0 0 20%"}}>정산금</div>
+                          <div className="col" style={{flex: "0 0 30%"}}>지갑주소</div>
+                          <div className="col" style={{flex: "0 0 20%"}}>정산상태</div>
                         </div>
 
                         {item.referrals?.map((user, i) => (
                           <div className="info-row" key={i}>
-                            <div className="col col--email">
+                            <div className="col col--email" style={{flex: "0 0 20%"}}>
                               <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
                                 <span>{user.username}</span>
                                 <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
                               </Link>
                             </div>
-                            <div className="col">{user.share}%</div>
-                            <div className="col">{user.settlement_amount}</div>
-                            <div className="col">{user.wallet_address ? user.wallet_address : "-"}</div>
-                            <div className="col settlement-btn-box">
+                            <div className="col" style={{flex: "0 0 10%"}}>{user.share}%</div>
+                            <div className="col" style={{flex: "0 0 20%"}}>{user.settlement_amount}</div>
+                            <div className="col" style={{flex: "0 0 30%"}}>{user.wallet_address ? user.wallet_address : "-"}</div>
+                            <div className="col settlement-btn-box" style={{flex: "0 0 20%"}}>
                               {user.is_complt === false ? (
                                 <button className="btn--blue-line" onClick={() => handleSettlement(user.id)}>
                                   정산

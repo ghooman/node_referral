@@ -28,9 +28,17 @@
     padding: 0;
     .list-item {
       position: relative;
+      &__row{
+        flex-wrap: nowrap;
+        .col{
+          padding: 0;
+          font-size: clamp(12px, 0.9vw, 13px) !important;
+        }
+      }
+
       .toggle-btn-box {
         @include flex-start;
-        padding-right: 20px;
+        padding-right: 20px !important;
         .twoway-btn-box {
           @include flex-start;
           column-gap: 12px;
@@ -38,7 +46,7 @@
         .twoway-btn {
           @include font-sm-b;
           color: $color-gray-000;
-          padding: $sp-04 $sp-20;
+          padding: $sp-04 $sp-16;
           border-radius: 8px;
           @include md {
             @include font-xs-b;
@@ -62,7 +70,15 @@
             color: $color-gray-600;
           }
         }
+        .toggle-btn{
+          right: 15px !important;
+        }
       }
+    }
+  }
+  .table-section.master{
+    .table-section-inner{
+      min-width: 1300px !important;
     }
   }
 
@@ -178,14 +194,14 @@
 
 .wallet-copy-com {
   @include flex-start;
-  column-gap: 12px;
+  column-gap: 10px;
   button {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
   img {
     width: 100%;
-    max-width: 20px;
+    max-width: 28px;
   }
 }
 .settlement-btn-box {
@@ -234,16 +250,15 @@
   }
 
   .filter-date__input {
-    min-width: 160px;
-    padding: $sp-10 $sp-16;
+    min-width: clamp(120px, 11vw, 160px);
+    padding: $sp-10 clamp(10px, 1.1vw, 16px);
     border-radius: 12px;
     border: 1px solid $color-w-o05;
     background-color: $color-w-o05;
     color: $color-gray-600;
-    @include font-sm-r;
-    @include md {
-      @include font-xs-r;
-    }
+    font-weight: 400;
+    font-size: clamp(10px, 0.9vw, 14px);
+
 
     &::placeholder {
       color: $color-gray-400;
@@ -267,7 +282,7 @@
   }
 
   .btn--reset {
-    padding: 10px 16px;
+    padding: 10px clamp(12px, 1.1vw, 16px);
     background-color: $color-primary;
     color: $color-gray-000;
     border-radius: 12px;
@@ -289,7 +304,11 @@
     .table-section__tit__list-head,
     .list-item__row {
       display: grid;
-      grid-template-columns: 1fr 2fr 3fr 1fr 1fr 1fr 1fr 2fr !important;
+      grid-template-columns: 1.5fr 2.5fr 2fr 1fr 1fr 1fr 1fr 2fr !important;
+    }
+    .col {
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
     }
   }
 }

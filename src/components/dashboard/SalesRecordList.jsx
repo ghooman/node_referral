@@ -205,8 +205,6 @@ function SalesRecordList({
                 </div>
               ))
             )}
-          </>
-        )}
       </div>
 
       {showConfirmModalIndex !== null && (

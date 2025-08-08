@@ -12,7 +12,7 @@
         }
         span{
             overflow: hidden;
-            text-overflow: ellipsis;
+            text-overflow: ellipsis !important;
             white-space: nowrap;
             color: $color-gray-000;
         }

@@ -62,7 +62,7 @@ function Footer() {
   };
 
   return (
-    <footer className="footer">
+    <footer className="node-footer">
       <div className="footer__inner">
         <div className="footer__top">
           <h3 className="footer__top__logo">
