@@ -358,7 +358,7 @@ function MasterDashboardDoing() {
                 <div className="col" style={{flex: "0 0 5%"}}>개수</div>
                 <div className="col" style={{flex: "0 0 10%"}}>총금액</div>
                 <div className="col" style={{flex: "0 0 25%"}}>전송할 지갑주소</div>
-                <div className="col" style={{flex: "0 0 15%"}}>액션</div>
+                <div className="col">액션</div>
               </div>
               {/* table body */}
               {dataList.map((item, index) => (
@@ -384,7 +384,7 @@ function MasterDashboardDoing() {
                       {item.buyer_wallet_address}
                       <CopyButton textToCopy={item.buyer_wallet_address} />
                     </div>
-                    <div className="col col--action toggle-btn-box" style={{flex: "0 0 15%"}}>
+                    <div className="col col--action toggle-btn-box">
                       {/* 상태값 승인대기인 경우 twoway-btn 노출 */}
                       {item.state === "pending" && (
                         <div className="twoway-btn-box --pending">
