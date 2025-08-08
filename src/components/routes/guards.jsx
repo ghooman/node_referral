@@ -5,7 +5,7 @@ import { isAuthenticated, getRole, redirectPathByRole } from "../utils/auth";
 // 로그인 필요: 미인증이면 로그인으로
 export function ProtectedRoute() {
   if (!isAuthenticated()) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
   return <Outlet />;
 }

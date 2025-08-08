@@ -17,7 +17,7 @@ function App() {
       <ScrollToTop />
       <Routes>
         <Route
-          path="/login"
+          path="/"
           element={
             <GuestOnly>
               <Login />
