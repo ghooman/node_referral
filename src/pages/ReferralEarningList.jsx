@@ -326,7 +326,7 @@ function ReferralEarningList() {
                                   <strong>{user.username}</strong>
                                 ) : (
                                   <>
-                                    <Link to={`/OtherSalesRecord?email=${user.username}`}>
+                                    <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
                                       <span>{user.username}</span>
                                       <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
                                     </Link>

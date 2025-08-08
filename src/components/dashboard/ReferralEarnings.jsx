@@ -90,7 +90,7 @@ function ReferralEarnings({ openIndex, handleToggle, downReferralActive, sliceLi
       <div className="table-section-inner">
         <div className="table-section__tit">
           <h2>하위자 수입 리스트</h2>
-          <Link to="/ReferralEarningList">전체보기</Link>
+          <Link to="/affiliate/referral-earning-list">전체보기</Link>
         </div>
 
         <div className="table-section__tit__list-head">
@@ -140,7 +140,7 @@ function ReferralEarnings({ openIndex, handleToggle, downReferralActive, sliceLi
                             <strong>{user.username}</strong>
                           ) : (
                             <>
-                              <Link to={`/OtherSalesRecord?email=${user.username}`}>
+                              <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
                                 <span>{user.username}</span>
                                 <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
                               </Link>

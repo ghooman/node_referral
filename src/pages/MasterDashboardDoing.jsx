@@ -260,10 +260,10 @@ function MasterDashboardDoing() {
         <div className="page-wrapper masterdashboard-wrapper">
           <ul className="tab-ui">
             <li className="selected">
-              <Link to="/MasterDashboardDoing">판매승인/정산</Link>
+              <Link to="/affiliate/master-dashboard-doing">판매승인/정산</Link>
             </li>
             <li>
-              <Link to="/MasterDashboardDone">정산기록</Link>
+              <Link to="/affiliate/master-dashboard-done">정산기록</Link>
             </li>
           </ul>
 
@@ -439,7 +439,7 @@ function MasterDashboardDoing() {
                         {item.referrals?.map((user, i) => (
                           <div className="info-row" key={i}>
                             <div className="col col--email">
-                              <Link to={`/OtherSalesRecord?email=${user.username}`}>
+                              <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
                                 <span>{user.username}</span>
                                 <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
                               </Link>

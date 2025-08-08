@@ -334,7 +334,7 @@ function RecommenderList() {
                       <div className="list-item__detail invite-code">
                         {item.user_list.map((user, i) => (
                           <div key={i} className="email-row">
-                            <Link to={`/OtherSalesRecord?email=${user.username}`}>
+                            <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
                               <span className="index">{i + 1}</span>
                               <span className="email">{user.username}</span>
                             </Link>

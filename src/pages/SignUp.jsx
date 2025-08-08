@@ -155,7 +155,7 @@ function SignUp() {
         invitation_code: inviteCode,
       });
       console.log("회원가입 성공~!");
-      navigate("/Login");
+      navigate("/affiliate/login");
     } catch (error) {
       console.error("회원가입 error입니당", error);
     }

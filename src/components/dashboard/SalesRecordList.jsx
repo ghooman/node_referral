@@ -73,7 +73,7 @@ function SalesRecordList({
               새 거래 등록
             </button>
           </div>
-          <Link to="/SalesRecord">전체보기</Link>
+          <Link to="/affiliate/sales-record">전체보기</Link>
         </div>
 
         <div className="table-section__tit__list-head sales-record">

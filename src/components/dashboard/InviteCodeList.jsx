@@ -48,7 +48,7 @@ function InviteCodeList({ handleClickInviteBtn, inviteCodeList, formatDate, slic
               초대코드 생성
             </button>
           </div>
-          <Link to="/RecommenderList">전체보기</Link>
+          <Link to="/affiliate/recommender-list">전체보기</Link>
         </div>
 
         <div className="table-section__tit__list-head">
@@ -96,7 +96,7 @@ function InviteCodeList({ handleClickInviteBtn, inviteCodeList, formatDate, slic
                 <div className="list-item__detail invite-code">
                   {item.user_list.map((user, i) => (
                     <div key={i} className="email-row">
-                      <Link to={`/OtherSalesRecord?email=${user.username}`}>
+                      <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
                         <span className="index">{i + 1}</span>
                         <span className="email">{user.username}</span>
                       </Link>
