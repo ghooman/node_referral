@@ -1,8 +1,8 @@
-@import "../../styles/variables";
-@import "../../styles/mixins";
-@import "../../styles/fonts";
+@import '../../styles/variables';
+@import '../../styles/mixins';
+@import '../../styles/fonts';
 
-.input-field {
+.node-input-field {
   @include flex-column;
   row-gap: 8px;
   // 하늘 feat: SignUp 비밀번호 확인에 토글 기능 추가되면서 input 가로 꽉채우기 위함!
@@ -26,13 +26,14 @@
 
   input {
     @include font-sm-r;
-    padding: $sp-16 $sp-20;
-    width: 100%;
-    max-width: 500px;
-    border-radius: 12px;
-    border: 1px solid $color-w-o05;
-    background-color: $color-w-o05;
-    color: $color-gray-000;
+    padding: $sp-16 $sp-20 !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    border-radius: 12px !important;
+    border: 1px solid $color-w-o05 !important;
+    background-color: $color-w-o05 !important;
+    color: $color-gray-000 !important;
+    height: auto !important;
     &:focus {
       color: $color-gray-000;
       &::placeholder {
@@ -43,7 +44,7 @@
   }
 
   // eyeIcon 있을 때
-  .has-icon input {
+  .node-has-icon input {
     padding-right: 44px;
   }
 
@@ -53,7 +54,7 @@
     top: 50%;
     right: 12px;
     transform: translateY(-50%);
-    background: none;
+    background-color: transparent !important;
     border: none;
     padding: 0;
     cursor: pointer;

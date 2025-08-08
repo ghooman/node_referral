@@ -42,10 +42,19 @@ function Login() {
       if (res.data?.token) {
         // 로그인 성공 처리
         console.log("✅ 로그인 성공!", res.data);
-        // 로컬 스토리지에 토큰 저장
+        // 1. 토큰 저장
         localStorage.setItem("userToken", res.data.token);
+        // 2. 이메일 저장
+        localStorage.setItem("userEmail", userId.trim());
+        // 3. 역할 저장 (없으면 이메일로 판단)
+        const role = userId.trim() === "nisoft83@naver.com" ? "master" : "user";
+        localStorage.setItem("userRole", role);
         // 메인 (Dashboard 페이지로 이동)
-        navigate("/");
+        if (role == "master") {
+          navigate("/master-dashboard-doing");
+        } else {
+          navigate("/dashboard");
+        }
       } else {
         // 로그인 실패 처리
         console.warn("❌ 로그인 실패. 사용자 정보 불일치.");
@@ -89,7 +98,7 @@ function Login() {
               id="userPw"
               label="Password"
               type="password"
-              placeholder="Please enter your password"
+              placeholder="Please enter your Password"
               required
               withToggle={true}
               value={userPw}
@@ -98,7 +107,9 @@ function Login() {
           </fieldset>
           <button
             type="submit"
-            className={`btn btn-login ${isFormValid ? `btn--active` : `btn--disabled`}`}
+            className={`btn btn-login ${
+              isFormValid ? `btn--active` : `btn--disabled`
+            }`}
             disabled={!isFormValid || isLoading}
             onClick={handleIsLogin}
           >
@@ -116,7 +127,7 @@ function Login() {
         // 로그인 실패 시 로그인 실패 모달 띄우기
         <ConfirmModal
           title="Login Failed"
-          message="The ID or password you entered is incorrect."
+          message="The account information does not match our records."
           buttonText="OK"
           onClose={() => setShowFailModal(false)}
         />

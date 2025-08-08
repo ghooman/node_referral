@@ -1,20 +1,29 @@
-import { useState } from "react";
+import { useState } from 'react';
 // img
-import eyeIcon from "../../assets/images/icon-eye.svg";
-import eyeOffIcon from "../../assets/images/icon-eye-off.svg";
+import eyeIcon from '../../assets/images/icon-eye.svg';
+import eyeOffIcon from '../../assets/images/icon-eye-off.svg';
 // style
-import "./InputField.scss";
+import './InputField.scss';
 
-function InputField({ id, label, type = "text", placeholder, required, value, onChange, withToggle = false }) {
+function InputField({
+  id,
+  label,
+  type = 'text',
+  placeholder,
+  required,
+  value,
+  onChange,
+  withToggle = false,
+}) {
   const [showPassword, setShowPassword] = useState(false);
-  const isPassword = type === "password";
+  const isPassword = type === 'password';
 
-  const inputType = isPassword && withToggle ? (showPassword ? "text" : "password") : type;
+  const inputType = isPassword && withToggle ? (showPassword ? 'text' : 'password') : type;
 
   return (
-    <div className="input-field">
+    <div className="node-input-field">
       <label htmlFor={id}>{label}</label>
-      <div className={`input-field__box ${isPassword && withToggle ? "has-icon" : ""}`}>
+      <div className={`node-input-field__box ${isPassword && withToggle ? 'node-has-icon' : ''}`}>
         <input
           id={id}
           type={inputType}
@@ -24,9 +33,13 @@ function InputField({ id, label, type = "text", placeholder, required, value, on
           onChange={onChange}
         />
         {isPassword && withToggle && (
-          <button type="button" className="input-field__icon-btn" onClick={() => setShowPassword(!showPassword)}>
+          <span
+            className="node-input-field__icon-btn"
+            // style={{ backgroundColor: 'none !important' }}
+            onClick={() => setShowPassword(!showPassword)}
+          >
             <img src={showPassword ? eyeIcon : eyeOffIcon} alt="비밀번호 보기 전환" />
-          </button>
+          </span>
         )}
       </div>
     </div>
@@ -34,3 +47,4 @@ function InputField({ id, label, type = "text", placeholder, required, value, on
 }
 
 export default InputField;
+

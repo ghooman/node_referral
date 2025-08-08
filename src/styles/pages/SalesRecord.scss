@@ -2,175 +2,199 @@
 @import '../../styles/mixins';
 @import '../../styles/fonts';
 
-@include md{
-    .padding-del{
-        padding-top: 24px;
+.result-loading {
+  width: 100%;
+  height: 100%;
+  min-height: calc(100vh - 548px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+@include md {
+  .padding-del {
+    padding-top: 24px;
+  }
 }
-.sales-section{
-    @include flex-column;
-    row-gap: 20px;
-    padding: 0 2%;
-    margin-bottom: $sp-30;
+.sales-section {
+  @include flex-column;
+  row-gap: 20px;
+  padding: 0 2%;
+  margin-bottom: $sp-30;
 
-    &__record-tit{
-        width: 100%;
-        @include flex-between;
-        h2{
-            @include font-h5-eb;
-            color: $color-gray-000;
-            @include md{
-                @include font-sm-b;
-            }
-        }
-        span{
-            @include font-md-r;
-            color: $color-gray-600;
-            @include md{
-                @include font-xs-r;
-            }
-        }
+  &__record-tit {
+    width: 100%;
+    @include flex-between;
+    h2 {
+      @include font-h5-eb;
+      color: $color-gray-000;
+      @include md {
+        @include font-sm-b;
+      }
     }
-    &__record-list{
-        @include flex-between;
-        gap: 16px;
-        @include md{
-            gap: 4px;
-        }
-        li{
-            border: 1px solid $color-w-o20;
-            padding: 20px;
-            width: 32%;
-            border-radius: 20px;
+    span {
+      @include font-md-r;
+      color: $color-gray-600;
+      @include md {
+        @include font-xs-r;
+      }
+    }
+  }
+  &__record-list {
+    @include flex-between;
+    gap: 16px;
+    @include md {
+      gap: 4px;
+    }
+    li {
+      border: 1px solid $color-w-o20;
+      padding: 20px;
+      width: 32%;
+      border-radius: 20px;
 
-            h3{
-                @include font-sm-r;
-                color: $color-gray-600;
-                @include md{
-                    @include font-xs-r;
-                }
-            }
-            p{
-                @include font-xl-b;
-                color: $color-gray-000;
-                @include md{
-                    @include font-sm-b;
-                }
-            }
+      h3 {
+        @include font-sm-r;
+        color: $color-gray-600;
+        @include md {
+          @include font-xs-r;
         }
-    }
-    &__btn{
-        @include font-md-b;
+      }
+      p {
+        @include font-xl-b;
         color: $color-gray-000;
-        background-color: $color-primary-dark;
-        border-radius: 12px;
-        padding: 16px;
-        max-width: 240px;
-        @include md{
-            @include font-xs-b;
+        @include md {
+          @include font-sm-b;
         }
+      }
     }
+  }
+  &__btn {
+    @include font-md-b;
+    color: $color-gray-000;
+    background-color: $color-primary-dark;
+    border-radius: 12px;
+    padding: 16px;
+    max-width: 240px;
+    @include md {
+      @include font-xs-b;
+    }
+  }
 }
 
 // filter-group START
-.filter-group{
+.filter-group {
   @include flex-start;
   column-gap: 12px;
   padding-left: 2%;
 
-  &__title{
+  &__title {
     @include font-md-r;
     color: $color-gray-600;
     white-space: nowrap;
-    @include md{
-        @include font-sm-r;
+    @include md {
+      @include font-sm-r;
     }
   }
 }
 
-.custom-select{
-    position: relative;
-    min-width: 120px;
+.custom-select {
+  position: relative;
+  min-width: 120px;
 
-    &.is-open {
-        .custom-select__arrow {
-        transform: rotate(180deg);
+  &.is-open {
+    .custom-select__arrow {
+      transform: rotate(180deg);
     }
 
     .custom-select__list {
-        display: block;
+      display: block;
     }
-}
-
-    &__btn{
-        @include font-sm-r;
-        @include flex-between;
-        width: 100%;
-        padding: 8px 20px;
-        border: 1px solid $color-w-o20;
-        border-radius: 40px;
-        min-width: 180px;
-        background-color: rgba(0, 0, 0, 0.9);
-        color: $color-gray-000;
-        cursor: pointer;
-
-    .custom-select__arrow{
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        background: url('../../assets/images/icon-arrow-down.svg') no-repeat center / contain;
-        transition: transform 0.3s ease;
-    }
-
   }
 
-    &__list{
-        position: absolute;
-        top: calc(100% + 4px);
-        left: 0;
-        z-index: 10;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.9);
-        border: 1px solid $color-gray-000;
-        border-radius: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        overflow: hidden;
-        display: none;
+  &__btn {
+    @include font-sm-r;
+    @include flex-between;
+    width: 100%;
+    padding: 8px 20px;
+    border: 1px solid $color-w-o20;
+    border-radius: 40px;
+    min-width: 180px;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: $color-gray-000;
+    cursor: pointer;
 
-    li{
-        @include font-sm-r;
-        padding: 8px 12px;
-        cursor: pointer;
-        color: $color-gray-600;
-
-    &:hover{
-        background-color: $color-w-o10;
+    .custom-select__arrow {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background: url('../../assets/images/icon-arrow-down.svg') no-repeat center / contain;
+      transition: transform 0.3s ease;
     }
+  }
 
-    &.is-selected{
+  &__list {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 1px solid $color-gray-000;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    display: none;
+
+    li {
+      @include font-sm-r;
+      padding: 8px 12px;
+      cursor: pointer;
+      color: $color-gray-600;
+
+      &:hover {
+        background-color: $color-w-o10;
+      }
+
+      &.is-selected {
         background-color: $color-w-o05;
         font-weight: 600;
         color: $color-gray-000;
-        }
+      }
     }
   }
 
-    &.is-open{
-    .custom-select__list{
-        display: block;
+  &.is-open {
+    .custom-select__list {
+      display: block;
     }
-    }
+  }
 }
 
-.btn-line-cancel{
-    @include font-sm-b;
-    color: $color-gray-000;
-    border: 1px solid $color-w-o20;
-    background-color: $color-w-o05;
-    border-radius: 8px;
-    padding: 4px 20px;
-    @include md{
-        @include font-xs-b;
-    }
+.btn-line-cancel {
+  @include font-sm-b;
+  color: $color-gray-000;
+  border: 1px solid $color-w-o20;
+  background-color: $color-w-o05;
+  border-radius: 8px;
+  padding: 4px 20px;
+  @include md {
+    @include font-xs-b;
+  }
+}
+
+.toggle-btn-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px; // 버튼 사이 거리
+
+  .cancel-wrap,
+  .arrow-wrap {
+    display: flex;
+    align-items: center;
+  }
+
+  .cancel-wrap {
+    min-width: 60px; // 버튼 없어도 공간 유지
+  }
 }
