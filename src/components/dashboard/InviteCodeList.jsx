@@ -49,27 +49,15 @@ function InviteCodeList({
   return (
     <section className="table-section">
       <div className="table-section-inner">
-        {isPageLoading && (
-          <div className="result-loading">
-            <Loading />
+        <div className="table-section__tit">
+          <div className="table-section__tit__tit-button">
+            <h2>초대코드 리스트</h2>
+            <button type="button" className="btn-sm" onClick={handleClickInviteBtn}>
+              초대코드 생성
+            </button>
           </div>
-        )}
-
-        {!isPageLoading && (
-          <>
-            <div className="table-section__tit">
-              <div className="table-section__tit__tit-button">
-                <h2>초대코드 리스트</h2>
-                <button
-                  type="button"
-                  className="btn-sm"
-                  onClick={handleClickInviteBtn}
-                >
-                  초대코드 생성
-                </button>
-              </div>
-              <Link to="/recommender-list">전체보기</Link>
-            </div>
+          <Link to="/affiliate/recommender-list">전체보기</Link>
+        </div>
 
             <div className="table-section__tit__list-head">
               <div className="col">지분</div>
@@ -132,31 +120,25 @@ function InviteCodeList({
                     </div>
                   </div>
 
-                  {openIndex === index && item.user_list?.length > 0 && (
-                    <div className="list-item__detail invite-code">
-                      {item.user_list.map((user, i) => (
-                        <div key={i} className="email-row">
-                          <Link
-                            to={`/other-sales-record?email=${user.username}`}
-                          >
-                            <span className="index">{i + 1}</span>
-                            <span className="email">{user.username}</span>
-                          </Link>
-                          <button className="arrow">
-                            <img src={arrowRightIcon} alt="더보기" />
-                          </button>
-                        </div>
-                      ))}
+              {openIndex === index && item.user_list?.length > 0 && (
+                <div className="list-item__detail invite-code">
+                  {item.user_list.map((user, i) => (
+                    <div key={i} className="email-row">
+                      <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
+                        <span className="index">{i + 1}</span>
+                        <span className="email">{user.username}</span>
+                      </Link>
+                      <button className="arrow">
+                        <img src={arrowRightIcon} alt="더보기" />
+                      </button>
                     </div>
-                  )}
+                  ))}
                 </div>
-              ))
-            ) : (
-              <div className="table-empty">
-                생성한 초대코드 리스트가 없습니다.
-              </div>
-            )}
-          </>
+              )}
+            </div>
+          ))
+        ) : (
+          <div className="table-empty">생성한 초대코드 리스트가 없습니다.</div>
         )}
       </div>
     </section>

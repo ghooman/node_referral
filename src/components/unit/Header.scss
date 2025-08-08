@@ -9,21 +9,25 @@
   width: 100%;
   padding: $sp-24 2%;
   background-color: rgba(#181818, 0.7);
+  z-index: 1;
 
   @include md {
-    padding: $sp-08 4%;
+    padding: $sp-16 4%;
   }
 
   &__inner {
     max-width: 1440px;
     margin: 0 auto;
     @include flex-between;
+    &__logo{
+      cursor: pointer;
+      img {
+        width: 100%;
+        max-width: clamp(200px, 20vw, 300px);
+      }
+    } 
   }
 
-  &__logo img {
-    width: 100%;
-    max-width: 300px;
-  }
 
   &__actions {
     display: flex;

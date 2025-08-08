@@ -7,7 +7,7 @@
     margin-bottom: $sp-16;
 
     a {
-      font-size: 14px;
+      font-size: clamp(12px, 0.8vw, 14px);
       color: $color-primary;
     }
   }
@@ -42,7 +42,7 @@
 
       .col {
         overflow: hidden;
-        text-overflow: ellipsis;
+        text-overflow: ellipsis !important;
         white-space: nowrap;
       }
 

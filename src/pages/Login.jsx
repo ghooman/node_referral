@@ -11,6 +11,8 @@ import "../styles/pages/Login.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+// Login.jsx 내 성공 시
+import { redirectPathByRole } from "../utils/auth";
 
 const serverAPI = process.env.REACT_APP_NODE_SERVER_API;
 
@@ -50,11 +52,13 @@ function Login() {
         const role = userId.trim() === "nisoft83@naver.com" ? "master" : "user";
         localStorage.setItem("userRole", role);
         // 메인 (Dashboard 페이지로 이동)
-        if (role == "master") {
-          navigate("/master-dashboard-doing");
-        } else {
-          navigate("/dashboard");
-        }
+        // if (role == "master") {
+        //   navigate("/affiliate/master-dashboard-doing");
+        // } else {
+        //   navigate("/affiliate/dashboard");
+        // }
+        // ✅ replace: true로 뒤로가기 방지
+        navigate(redirectPathByRole(role), { replace: true });
       } else {
         // 로그인 실패 처리
         console.warn("❌ 로그인 실패. 사용자 정보 불일치.");
@@ -107,9 +111,7 @@ function Login() {
           </fieldset>
           <button
             type="submit"
-            className={`btn btn-login ${
-              isFormValid ? `btn--active` : `btn--disabled`
-            }`}
+            className={`btn btn-login ${isFormValid ? `btn--active` : `btn--disabled`}`}
             disabled={!isFormValid || isLoading}
             onClick={handleIsLogin}
           >
@@ -119,8 +121,8 @@ function Login() {
           </button>
         </form>
 
-        <Link to="/signup" className="btn btn-signup">
-          Sign Up
+        <Link to="/affiliate/signup" className="btn btn-signup">
+          회원가입
         </Link>
       </div>
       {showFailModal && (

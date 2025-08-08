@@ -5,7 +5,6 @@ import HeaderBack from "../components/unit/HeaderBack";
 import Footer from "../components/unit/Footer";
 import InputField from "../components/unit/InputField";
 import Pagination from "../components/unit/Pagination";
-import Loading from "../components/Loading";
 
 // img
 import arrowDownIcon from "../assets/images/icon-arrow-down.svg";
@@ -21,7 +20,6 @@ const serverAPI = process.env.REACT_APP_NODE_SERVER_API;
 
 function ReferralEarningList() {
   const userToken = localStorage.getItem("userToken");
-  const [isPageLoading, setIsPageLoading] = useState(false);
 
   const handleToggle = (callback) => {
     setOpenIndex(typeof callback === "function" ? callback : callback);
@@ -96,14 +94,11 @@ function ReferralEarningList() {
   // 상단 4개
   const handleDownDashboard = async () => {
     try {
-      const res = await axios.get(
-        `${serverAPI}/api/sales/referrals/income/dashboard`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const res = await axios.get(`${serverAPI}/api/sales/referrals/income/dashboard`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       const list = res.data;
       console.log("하위자 레퍼럴 상단 대시보드 가져오기 완료~!", list);
       setDownRevenue(list.downline_sales_revenue);
@@ -118,37 +113,32 @@ function ReferralEarningList() {
   //----- 하위 레퍼럴 활동현황 ----------------------------------------------------
   const handleDownReferralActiveList = async () => {
     try {
-      setIsPageLoading(true);
-      const res = await axios.get(
-        `${serverAPI}/api/sales/referrals/income/list`,
-        {
-          params: {
-            page: currentPage,
-            limit: 20,
-            state: selectedStatus === "all" ? undefined : selectedStatus,
-          },
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const isCompltParam = filterState === "all" ? undefined : filterState === "success" ? true : false;
 
+      const res = await axios.get(`${serverAPI}/api/sales/referrals/income/list`, {
+        params: {
+          page: currentPage,
+          limit: 20,
+          state: selectedStatus === "all" ? undefined : selectedStatus,
+        },
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       const list = res.data.data_list;
       const totalCount = res.data.total_cnt || list.length;
-
+      console.log("하위 레퍼럴 활동현황 받아오기 완료!", res.data);
       setDownReferralActive(list);
-      setTotalCnt(totalCount);
+      setTotalCnt(res.data.total_cnt);
       setTotalPages(Math.ceil(totalCount / 20));
     } catch (error) {
       console.error("하위 레퍼럴 활동현황 error입니당", error);
-    } finally {
-      setIsPageLoading(false);
     }
   };
 
   useEffect(() => {
     handleDownReferralActiveList();
-  }, [currentPage, filterState, selectedStatus]);
+  }, [currentPage, filterState]);
 
   useEffect(() => {
     handleDownDashboard();
@@ -171,7 +161,6 @@ function ReferralEarningList() {
 
   // 필터 정렬 함수
   const handleStatusFilter = (value) => {
-    if (selectedStatus === value) return; // 이미 선택된 상태면 무시
     setSelectedStatus(value);
     setCurrentPage(1); // 필터 바뀌면 1페이지부터 보기
   };
@@ -185,15 +174,18 @@ function ReferralEarningList() {
   const getFilteredRealData = () => {
     if (!Array.isArray(downReferralActive)) return [];
     if (selectedStatus === "all") return downReferralActive;
-    return downReferralActive.filter((item) => item.state === selectedStatus);
+    return downReferralActive.filter((item) => String(item.is_complt).toLowerCase() === selectedStatus);
   };
 
   const mapReferralListWithStatus = (list) => {
     if (!Array.isArray(list)) return [];
-    return list.map((item) => ({
-      ...item,
-      settleStatusType: item.is_complt ? "success" : "failed",
-    }));
+    return list.map((item) => {
+      const isComplete = String(item.is_complt).toLowerCase() === "true";
+      return {
+        ...item,
+        settleStatusType: isComplete ? "success" : "failed",
+      };
+    });
   };
 
   const dummyData = mapReferralListWithStatus(getFilteredDummyData());
@@ -222,12 +214,6 @@ function ReferralEarningList() {
     settled: "정산완료",
   };
 
-  // 숫자 포맷 함수
-  const formatNumber = (num) => {
-    if (isNaN(num)) return 0;
-    return Number(num).toLocaleString("en-US"); // "1,000", "50,000" 형태
-  };
-
   return (
     <>
       <div className="layout">
@@ -244,19 +230,19 @@ function ReferralEarningList() {
             <ul className="sales-section__record-list referral-record-list">
               <li>
                 <h3>하위자 활동 수입</h3>
-                <p>{formatNumber(downRevenue)}</p>
+                <p>{downRevenue}</p>
               </li>
               <li>
                 <h3>하위자 활동 정산금</h3>
-                <p>{formatNumber(downSettlement)}</p>
+                <p>{downSettlement}</p>
               </li>
               <li>
                 <h3>하위자 Affiliate 추천인</h3>
-                <p>{formatNumber(downReferrals)}</p>
+                <p>{downReferrals}</p>
               </li>
               <li>
                 <h3>하위자 Referral 추천인</h3>
-                <p>{formatNumber(downSoldNode)}</p>
+                <p>{downSoldNode}</p>
               </li>
             </ul>
           </div>
@@ -265,11 +251,7 @@ function ReferralEarningList() {
           <div className="filter-group">
             <div className="filter-group__title">필터링</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-              <button
-                type="button"
-                className="custom-select__btn"
-                onClick={() => setIsFilterOpen((prev) => !prev)}
-              >
+              <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
                 <span>{statusMap[selectedStatus]}</span>
                 <i className="custom-select__arrow"></i>
               </button>
@@ -293,131 +275,83 @@ function ReferralEarningList() {
 
           <section className="table-section">
             <div className="table-section-inner">
-              {isPageLoading && (
-                <div className="result-loading">
-                  <Loading />
-                </div>
-              )}
+              <div className="table-section__tit__list-head">
+                <div className="col">상태</div>
+                <div className="col">객단가</div>
+                <div className="col">개수</div>
+                <div className="col">총금액</div>
+                <div className="col">내 정산금</div>
+                <div className="col col--btn"></div>
+              </div>
 
-              {!isPageLoading && (
-                <>
-                  <div className="table-section__tit__list-head">
-                    <div className="col">상태</div>
-                    <div className="col">객단가</div>
-                    <div className="col">개수</div>
-                    <div className="col">총금액</div>
-                    <div className="col">내 정산금</div>
-                    <div className="col col--btn"></div>
-                  </div>
-
-                  {/*  하위 판매자가 없는 경우 */}
-                  {safeRealData.length === 0 ? (
-                    <div className="table-empty">
-                      하위자의 판매 기록이 없습니다.
-                    </div>
-                  ) : (
-                    safeRealData.map((item, index) => (
-                      <div
-                        key={item.state}
-                        className={`list-item ${
-                          openIndex === index ? "open" : ""
-                        }`}
-                      >
-                        <div className="list-item__row">
-                          <div className="col">
-                            <span className={`status status--${item.state}`}>
-                              {getStateLabel(item.state)}
-                            </span>
-                          </div>
-                          <div className="col">
-                            {formatNumber(item.unit_price)}
-                          </div>
-                          <div className="col">{formatNumber(item.cnt)}</div>
-                          <div className="col">{formatNumber(item.amount)}</div>
-                          <div className="col">
-                            {formatNumber(item.my_settlement_amount)}
-                          </div>
-
-                          <div
-                            className="col col--btn toggle-btn-box"
-                            style={{ width: "15px", height: "20px" }}
-                          >
-                            <button
-                              className={`toggle-btn ${
-                                openIndex === index ? "rotate" : ""
-                              }`}
-                              onClick={() => toggle(index)}
-                            >
-                              <img src={arrowDownIcon} alt="토글" />
-                            </button>
-                          </div>
-                        </div>
-
-                        {openIndex === index && (
-                          <div className="list-item__detail">
-                            <div className="info-table">
-                              <div className="info-header">
-                                <div className="col col--email">
-                                  이메일 주소
-                                </div>
-                                <div className="col">지분</div>
-                                <div className="col">정산금</div>
-                                <div className="col">정산상태</div>
-                              </div>
-
-                              {item.down_referrals.map((user, i) => (
-                                <div className="info-row" key={i}>
-                                  <div className="col col--email">
-                                    {i === 0 ? (
-                                      <strong>{user.username}</strong>
-                                    ) : (
-                                      <>
-                                        <Link
-                                          to={`/other-sales-record?email=${user.username}`}
-                                        >
-                                          <span>{user.username}</span>
-                                          <img
-                                            src={arrowRightIcon}
-                                            alt="자세히 보기"
-                                            className="arrow-icon"
-                                          />
-                                        </Link>
-                                      </>
-                                    )}
-                                  </div>
-                                  <div className="col">{user.share}</div>
-                                  <div className="col">
-                                    {formatNumber(user.settlement_amount)}
-                                  </div>
-                                  <div className="col">
-                                    <span
-                                      className={`status ${
-                                        user.is_complt
-                                          ? "status--success"
-                                          : "status--failed"
-                                      }`}
-                                    >
-                                      {user.is_complt ? "완료" : "대기"}
-                                    </span>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
+              {/*  하위 판매자가 없는 경우 */}
+              {safeRealData.length === 0 ? (
+                <div className="table-empty">하위자의 판매 기록이 없습니다.</div>
+              ) : (
+                safeRealData.map((item, index) => (
+                  <div key={item.state} className={`list-item ${openIndex === index ? "open" : ""}`}>
+                    <div className="list-item__row">
+                      <div className="col">
+                        <span className={`status status--${item.state}`}>{getStateLabel(item.state)}</span>
                       </div>
-                    ))
-                  )}
-                </>
+                      <div className="col">{item.unit_price}</div>
+                      <div className="col">{item.cnt}</div>
+                      <div className="col">{item.amount}</div>
+                      <div className="col">{item.my_settlement_amount}</div>
+
+                      <div className="col col--btn toggle-btn-box" style={{ width: "15px", height: "20px" }}>
+                        <button
+                          className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
+                          onClick={() => toggle(index)}
+                        >
+                          <img src={arrowDownIcon} alt="토글" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {openIndex === index && (
+                      <div className="list-item__detail">
+                        <div className="info-table">
+                          <div className="info-header">
+                            <div className="col col--email">이메일 주소</div>
+                            <div className="col">지분</div>
+                            <div className="col">정산금</div>
+                            <div className="col">정산상태</div>
+                          </div>
+
+                          {item.referrals.map((user, i) => (
+                            <div className="info-row" key={i}>
+                              <div className="col col--email">
+                                {i === 0 ? (
+                                  <strong>{user.username}</strong>
+                                ) : (
+                                  <>
+                                    <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
+                                      <span>{user.username}</span>
+                                      <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
+                                    </Link>
+                                  </>
+                                )}
+                              </div>
+                              <div className="col">{user.share}</div>
+                              <div className="col">{user.settlement_amount}</div>
+                              <div className="col">
+                                <span className={`status ${user.is_complt ? "status--success" : "status--failed"}`}>
+                                  {user.is_complt ? "완료" : "대기"}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))
               )}
             </div>
           </section>
 
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
         </div>
         <Footer />
       </div>

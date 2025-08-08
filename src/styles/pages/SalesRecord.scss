@@ -45,12 +45,16 @@
     gap: 16px;
     @include md {
       gap: 4px;
+      flex-wrap: wrap;
     }
     li {
       border: 1px solid $color-w-o20;
       padding: 20px;
       width: 32%;
       border-radius: 20px;
+      @include md {
+        width: 49%;
+      }
 
       h3 {
         @include font-sm-r;

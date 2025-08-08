@@ -75,27 +75,15 @@ function SalesRecordList({
   return (
     <section className="table-section">
       <div className="table-section-inner">
-        {isPageLoading && (
-          <div className="result-loading">
-            <Loading />
+        <div className="table-section__tit">
+          <div className="table-section__tit__tit-button">
+            <h2>내 판매기록</h2>
+            <button type="button" className="btn-sm" onClick={handleClickNewDealBtn}>
+              새 거래 등록
+            </button>
           </div>
-        )}
-
-        {!isPageLoading && (
-          <>
-            <div className="table-section__tit">
-              <div className="table-section__tit__tit-button">
-                <h2>내 판매기록</h2>
-                <button
-                  type="button"
-                  className="btn-sm"
-                  onClick={handleClickNewDealBtn}
-                >
-                  새 거래 등록
-                </button>
-              </div>
-              <Link to="/sales-record">전체보기</Link>
-            </div>
+          <Link to="/affiliate/sales-record">전체보기</Link>
+        </div>
 
             <div className="table-section__tit__list-head sales-record">
               <div className="col">구매자</div>
@@ -217,8 +205,6 @@ function SalesRecordList({
                 </div>
               ))
             )}
-          </>
-        )}
       </div>
 
       {showConfirmModalIndex !== null && (
