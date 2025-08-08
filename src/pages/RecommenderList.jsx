@@ -63,7 +63,8 @@ function RecommenderList() {
   // 초대코드 생성 갯수
   const [inviteCodeCnt, setInviteCodeCnt] = useState(0);
   // 초대코드 생성 시 성공 모달
-  const [isInviteCodeCreateSuccess, setIsInviteCodeCreateSuccess] = useState(false);
+  const [isInviteCodeCreateSuccess, setIsInviteCodeCreateSuccess] =
+    useState(false);
 
   //---- 공통 ----------------------------------------------------
   // 사용자 정보 가져오는 함수
@@ -144,16 +145,19 @@ function RecommenderList() {
   // 초대코드 확인 함수
   const fetchInviteCodeList = async () => {
     try {
-      const res = await axios.get(`${serverAPI}/api/user/invitation/code/list`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-        params: {
-          page: currentPage,
-          limit: 20,
-          sort_by: selectedSortOption, // 👈 이 부분 연결
-        },
-      });
+      const res = await axios.get(
+        `${serverAPI}/api/user/invitation/code/list`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+          params: {
+            page: currentPage,
+            limit: 20,
+            sort_by: selectedSortOption, // 👈 이 부분 연결
+          },
+        }
+      );
 
       // 전체 응답 보기
       console.log("전체 응답", res.data);
@@ -256,13 +260,20 @@ function RecommenderList() {
                 총 <small>{inviteCodeCnt}</small>건
               </span>
             </div>
-            <button type="button" className="sales-section__btn" onClick={handleClickInviteBtn}>
+            <button
+              type="button"
+              className="sales-section__btn"
+              onClick={handleClickInviteBtn}
+            >
               초대코드 생성
             </button>
           </div>
           <div className="filter-group">
             <div className="filter-group__title">정렬</div>
-            <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`} onClick={toggleFilterOpen}>
+            <div
+              className={`custom-select ${isFilterOpen ? "is-open" : ""}`}
+              onClick={toggleFilterOpen}
+            >
               <button type="button" className="custom-select__btn">
                 <span>{selectedFilter}</span>
                 <i className="custom-select__arrow"></i>
@@ -271,7 +282,9 @@ function RecommenderList() {
                 {sortOptions.map((item, index) => (
                   <li
                     key={index}
-                    className={selectedSortOption === item.value ? "is-selected" : ""}
+                    className={
+                      selectedSortOption === item.value ? "is-selected" : ""
+                    }
                     onClick={(e) => {
                       e.stopPropagation();
                       handleSelectFilter(item.label, item.value);
@@ -298,31 +311,52 @@ function RecommenderList() {
               {/* 초대코드 리스트가 있는 경우 */}
               {inviteCodeList.length > 0 ? (
                 inviteCodeList.map((item, index) => (
-                  <div key={index} className={`list-item ${openIndex === index ? "open" : ""}`}>
+                  <div
+                    key={index}
+                    className={`list-item ${openIndex === index ? "open" : ""}`}
+                  >
                     <div className="list-item__row">
                       <div className="col">{item.share}%</div>
                       <div className="col">{item.invitation_code}</div>
                       <div className="col mobile-del">{item.nick_name}</div>
-                      <div className="col mobile-del">{item.allocation_cnt}</div>
-                      <div className="col mobile-del">{formatDate(item.create_dt)}</div>
+                      <div className="col mobile-del">
+                        {item.allocation_cnt}
+                      </div>
+                      <div className="col mobile-del">
+                        {formatDate(item.create_dt)}
+                      </div>
                       <div className="col col--action invite-code-button toggle-btn-box">
                         <button
-                          className={`btn--line-mini ${copiedIndex.code === index ? "copied" : ""}`}
-                          onClick={() => handleCopyCode(item.invitation_code, index)}
+                          className={`btn--line-mini ${
+                            copiedIndex.code === index ? "copied" : ""
+                          }`}
+                          onClick={() =>
+                            handleCopyCode(item.invitation_code, index)
+                          }
                         >
-                          {copiedIndex.code === index ? "복사 완료" : "코드 복사"}
+                          {copiedIndex.code === index
+                            ? "복사 완료"
+                            : "코드 복사"}
                         </button>
 
                         <button
-                          className={`btn--line-mini ${copiedIndex.link === index ? "copied" : ""}`}
-                          onClick={() => handleCopyLink(item.invitation_code, index)}
+                          className={`btn--line-mini ${
+                            copiedIndex.link === index ? "copied" : ""
+                          }`}
+                          onClick={() =>
+                            handleCopyLink(item.invitation_code, index)
+                          }
                         >
-                          {copiedIndex.link === index ? "복사 완료" : "링크 복사"}
+                          {copiedIndex.link === index
+                            ? "복사 완료"
+                            : "링크 복사"}
                         </button>
                         {/* QR코드 주석 처리 (정해진 내용이 없다고 함) */}
                         {/* <button className="btn--line-mini">QR코드</button> */}
                         <button
-                          className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
+                          className={`toggle-btn ${
+                            openIndex === index ? "rotate" : ""
+                          }`}
                           onClick={() => toggle(index)}
                         >
                           <img src={arrowDownIcon} alt="토글" />
@@ -334,7 +368,9 @@ function RecommenderList() {
                       <div className="list-item__detail invite-code">
                         {item.user_list.map((user, i) => (
                           <div key={i} className="email-row">
-                            <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
+                            <Link
+                              to={`/other-sales-record?email=${user.username}`}
+                            >
                               <span className="index">{i + 1}</span>
                               <span className="email">{user.username}</span>
                             </Link>
@@ -348,11 +384,17 @@ function RecommenderList() {
                   </div>
                 ))
               ) : (
-                <div className="table-empty">생성한 초대코드 리스트가 없습니다.</div>
+                <div className="table-empty">
+                  생성한 초대코드 리스트가 없습니다.
+                </div>
               )}
             </div>
           </section>
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
         </div>
         <Footer />
       </div>
@@ -363,7 +405,10 @@ function RecommenderList() {
             <div className="modal__content">
               <div className="modal__header">
                 <h2>초대코드 생성</h2>
-                <button type="button" onClick={() => setIsOpenInviteModal(false)}>
+                <button
+                  type="button"
+                  onClick={() => setIsOpenInviteModal(false)}
+                >
                   <img src={closeBtn} alt="팝업 닫기" />
                 </button>
               </div>
@@ -380,13 +425,19 @@ function RecommenderList() {
                 </div>
                 <div className="share-setting">
                   <p className="share-setting__label">지분 설정</p>
-                  <div className="share-setting__options" role="radiogroup" aria-label="지분 설정">
+                  <div
+                    className="share-setting__options"
+                    role="radiogroup"
+                    aria-label="지분 설정"
+                  >
                     <div className="share-setting__left">
                       {[0, 5, 10, 15].map((value) => (
                         <button
                           key={value}
                           type="button"
-                          className={`share-option ${selectedShare === String(value) ? `is-active` : ""}`}
+                          className={`share-option ${
+                            selectedShare === String(value) ? `is-active` : ""
+                          }`}
                           onClick={() => {
                             setSelectedShare(String(value));
                             setCustomShare(""); // 직접 입력값 초기화
@@ -423,9 +474,9 @@ function RecommenderList() {
               </div>
               <div className="modal__footer">
                 <button
-                  className={`btn btn-content-modal ${isFormValid ? "" : "btn--disabled"} ${
-                    isLoading ? "btn--loading" : ""
-                  }`}
+                  className={`btn btn-content-modal ${
+                    isFormValid ? "" : "btn--disabled"
+                  } ${isLoading ? "btn--loading" : ""}`}
                   disabled={!isFormValid}
                   onClick={handleCreateInviteBtn}
                 >

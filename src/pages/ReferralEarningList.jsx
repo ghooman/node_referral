@@ -94,11 +94,14 @@ function ReferralEarningList() {
   // 상단 4개
   const handleDownDashboard = async () => {
     try {
-      const res = await axios.get(`${serverAPI}/api/sales/referrals/income/dashboard`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
+      const res = await axios.get(
+        `${serverAPI}/api/sales/referrals/income/dashboard`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
       const list = res.data;
       console.log("하위자 레퍼럴 상단 대시보드 가져오기 완료~!", list);
       setDownRevenue(list.downline_sales_revenue);
@@ -113,18 +116,26 @@ function ReferralEarningList() {
   //----- 하위 레퍼럴 활동현황 ----------------------------------------------------
   const handleDownReferralActiveList = async () => {
     try {
-      const isCompltParam = filterState === "all" ? undefined : filterState === "success" ? true : false;
+      const isCompltParam =
+        filterState === "all"
+          ? undefined
+          : filterState === "success"
+          ? true
+          : false;
 
-      const res = await axios.get(`${serverAPI}/api/sales/referrals/income/list`, {
-        params: {
-          page: currentPage,
-          limit: 20,
-          state: selectedStatus === "all" ? undefined : selectedStatus,
-        },
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
+      const res = await axios.get(
+        `${serverAPI}/api/sales/referrals/income/list`,
+        {
+          params: {
+            page: currentPage,
+            limit: 20,
+            state: selectedStatus === "all" ? undefined : selectedStatus,
+          },
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
       const list = res.data.data_list;
       const totalCount = res.data.total_cnt || list.length;
       console.log("하위 레퍼럴 활동현황 받아오기 완료!", res.data);
@@ -174,7 +185,9 @@ function ReferralEarningList() {
   const getFilteredRealData = () => {
     if (!Array.isArray(downReferralActive)) return [];
     if (selectedStatus === "all") return downReferralActive;
-    return downReferralActive.filter((item) => String(item.is_complt).toLowerCase() === selectedStatus);
+    return downReferralActive.filter(
+      (item) => String(item.is_complt).toLowerCase() === selectedStatus
+    );
   };
 
   const mapReferralListWithStatus = (list) => {
@@ -251,7 +264,11 @@ function ReferralEarningList() {
           <div className="filter-group">
             <div className="filter-group__title">필터링</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-              <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
+              <button
+                type="button"
+                className="custom-select__btn"
+                onClick={() => setIsFilterOpen((prev) => !prev)}
+              >
                 <span>{statusMap[selectedStatus]}</span>
                 <i className="custom-select__arrow"></i>
               </button>
@@ -286,22 +303,34 @@ function ReferralEarningList() {
 
               {/*  하위 판매자가 없는 경우 */}
               {safeRealData.length === 0 ? (
-                <div className="table-empty">하위자의 판매 기록이 없습니다.</div>
+                <div className="table-empty">
+                  하위자의 판매 기록이 없습니다.
+                </div>
               ) : (
                 safeRealData.map((item, index) => (
-                  <div key={item.state} className={`list-item ${openIndex === index ? "open" : ""}`}>
+                  <div
+                    key={item.state}
+                    className={`list-item ${openIndex === index ? "open" : ""}`}
+                  >
                     <div className="list-item__row">
                       <div className="col">
-                        <span className={`status status--${item.state}`}>{getStateLabel(item.state)}</span>
+                        <span className={`status status--${item.state}`}>
+                          {getStateLabel(item.state)}
+                        </span>
                       </div>
                       <div className="col">{item.unit_price}</div>
                       <div className="col">{item.cnt}</div>
                       <div className="col">{item.amount}</div>
                       <div className="col">{item.my_settlement_amount}</div>
 
-                      <div className="col col--btn toggle-btn-box" style={{ width: "15px", height: "20px" }}>
+                      <div
+                        className="col col--btn toggle-btn-box"
+                        style={{ width: "15px", height: "20px" }}
+                      >
                         <button
-                          className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
+                          className={`toggle-btn ${
+                            openIndex === index ? "rotate" : ""
+                          }`}
                           onClick={() => toggle(index)}
                         >
                           <img src={arrowDownIcon} alt="토글" />
@@ -326,17 +355,31 @@ function ReferralEarningList() {
                                   <strong>{user.username}</strong>
                                 ) : (
                                   <>
-                                    <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
+                                    <Link
+                                      to={`/other-sales-record?email=${user.username}`}
+                                    >
                                       <span>{user.username}</span>
-                                      <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
+                                      <img
+                                        src={arrowRightIcon}
+                                        alt="자세히 보기"
+                                        className="arrow-icon"
+                                      />
                                     </Link>
                                   </>
                                 )}
                               </div>
                               <div className="col">{user.share}</div>
-                              <div className="col">{user.settlement_amount}</div>
                               <div className="col">
-                                <span className={`status ${user.is_complt ? "status--success" : "status--failed"}`}>
+                                {user.settlement_amount}
+                              </div>
+                              <div className="col">
+                                <span
+                                  className={`status ${
+                                    user.is_complt
+                                      ? "status--success"
+                                      : "status--failed"
+                                  }`}
+                                >
                                   {user.is_complt ? "완료" : "대기"}
                                 </span>
                               </div>
@@ -351,7 +394,11 @@ function ReferralEarningList() {
             </div>
           </section>
 
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
         </div>
         <Footer />
       </div>

@@ -17,7 +17,7 @@ export default function ProtectedRoutes() {
     <Routes>
       {/* 유저 전용 */}
       <Route
-        path="/affiliate/dashboard"
+        path="/dashboard"
         element={
           <RoleRoute allowedRoles={["user"]}>
             <Dashboard />
@@ -25,7 +25,7 @@ export default function ProtectedRoutes() {
         }
       />
       <Route
-        path="/affiliate/sales-record"
+        path="/sales-record"
         element={
           <RoleRoute allowedRoles={["user"]}>
             <SalesRecord />
@@ -33,7 +33,7 @@ export default function ProtectedRoutes() {
         }
       />
       <Route
-        path="/affiliate/recommender-list"
+        path="/recommender-list"
         element={
           <RoleRoute allowedRoles={["user"]}>
             <RecommenderList />
@@ -41,7 +41,7 @@ export default function ProtectedRoutes() {
         }
       />
       <Route
-        path="/affiliate/referral-earning-list"
+        path="/referral-earning-list"
         element={
           <RoleRoute allowedRoles={["user"]}>
             <ReferralEarningList />
@@ -49,7 +49,7 @@ export default function ProtectedRoutes() {
         }
       />
       <Route
-        path="/affiliate/other-sales-record"
+        path="/other-sales-record"
         element={
           <RoleRoute allowedRoles={["user"]}>
             <OtherSalesRecord />
@@ -59,7 +59,7 @@ export default function ProtectedRoutes() {
 
       {/* 마스터 전용 */}
       <Route
-        path="/affiliate/master-dashboard-doing"
+        path="/master-dashboard-doing"
         element={
           <RoleRoute allowedRoles={["master"]}>
             <MasterDashboardDoing />
@@ -67,7 +67,7 @@ export default function ProtectedRoutes() {
         }
       />
       <Route
-        path="/affiliate/master-dashboard-done"
+        path="/master-dashboard-done"
         element={
           <RoleRoute allowedRoles={["master"]}>
             <MasterDashboardDone />

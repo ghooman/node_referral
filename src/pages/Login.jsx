@@ -53,9 +53,9 @@ function Login() {
         localStorage.setItem("userRole", role);
         // 메인 (Dashboard 페이지로 이동)
         // if (role == "master") {
-        //   navigate("/affiliate/master-dashboard-doing");
+        //   navigate("/master-dashboard-doing");
         // } else {
-        //   navigate("/affiliate/dashboard");
+        //   navigate("/dashboard");
         // }
         // ✅ replace: true로 뒤로가기 방지
         navigate(redirectPathByRole(role), { replace: true });
@@ -111,7 +111,9 @@ function Login() {
           </fieldset>
           <button
             type="submit"
-            className={`btn btn-login ${isFormValid ? `btn--active` : `btn--disabled`}`}
+            className={`btn btn-login ${
+              isFormValid ? `btn--active` : `btn--disabled`
+            }`}
             disabled={!isFormValid || isLoading}
             onClick={handleIsLogin}
           >
@@ -121,7 +123,7 @@ function Login() {
           </button>
         </form>
 
-        <Link to="/affiliate/signup" className="btn btn-signup">
+        <Link to="/signup" className="btn btn-signup">
           회원가입
         </Link>
       </div>

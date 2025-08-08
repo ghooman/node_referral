@@ -66,33 +66,53 @@ function Footer() {
       <div className="node-footer__inner">
         <div className="node-footer__top">
           <h3 className="node-footer__top__logo">
-            <Link to="/affiliate/dashboard">
+            <Link to="/dashboard">
               <img src={logoImg} alt="Music On the Block Affiliate Logo" />
             </Link>
           </h3>
           <ul className="node-footer__top__sns">
             <li>
-              <Link to="https://blog.naver.com/musicontheblock" target="_blank" rel="noopener noreferrer">
+              <Link
+                to="https://blog.naver.com/musicontheblock"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img src={iconNaver} alt="Naver Blog Icon" />
               </Link>
             </li>
             <li>
-              <Link to="https://www.threads.com/@musicaiblock?hl=ko" target="_blank" rel="noopener noreferrer">
+              <Link
+                to="https://www.threads.com/@musicaiblock?hl=ko"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img src={iconThread} alt="Thread Icon" />
               </Link>
             </li>
             <li>
-              <Link to="https://medium.com/@musicontheblock." target="_blank" rel="noopener noreferrer">
+              <Link
+                to="https://medium.com/@musicontheblock."
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img src={iconMedium} alt="Mediium Icon" />
               </Link>
             </li>
             <li>
-              <Link to="https://discord.com/invite/7zm6bcn76H" target="_blank" rel="noopener noreferrer">
+              <Link
+                to="https://discord.com/invite/7zm6bcn76H"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img src={iconDiscord} alt="Discord Icon" />
               </Link>
             </li>
             <li>
-              <Link to="https://x.com/musicaiblock" target="_blank" rel="noopener noreferrer">
+              <Link
+                to="https://x.com/musicaiblock"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img src={iconX} alt="X Icon" />
               </Link>
             </li>
@@ -181,7 +201,10 @@ function Footer() {
                     {({ isActive }) => (
                       <div className="slide-item">
                         <div className="slide-item__img-com">
-                          <img src={isActive ? iconHash : iconPol} alt="Coin Icon" />
+                          <img
+                            src={isActive ? iconHash : iconPol}
+                            alt="Coin Icon"
+                          />
                           <dl className="slide-item__img-com__tit">
                             <dt>
                               hash : <span>{formatHash(item.hash)}</span>

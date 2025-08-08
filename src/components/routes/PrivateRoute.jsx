@@ -4,7 +4,7 @@ import { isAuthenticated } from "../../utils/auth";
 
 export default function PrivateRoute({ children }) {
   if (!isAuthenticated()) {
-    return <Navigate to="/affiliate/login" replace />;
+    return <Navigate to="/login" replace />;
   }
   return children;
 }

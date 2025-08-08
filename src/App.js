@@ -17,7 +17,7 @@ function App() {
       <ScrollToTop />
       <Routes>
         <Route
-          path="/affiliate/login"
+          path="/login"
           element={
             <GuestOnly>
               <Login />
@@ -25,7 +25,7 @@ function App() {
           }
         />
         <Route
-          path="/affiliate/signup"
+          path="/signup"
           element={
             <GuestOnly>
               <SignUp />

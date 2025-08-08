@@ -4,6 +4,6 @@ export const getRole = () => localStorage.getItem("userRole"); // 'master' | 'us
 export const isAuthenticated = () => Boolean(getToken());
 
 export const redirectPathByRole = (role) => {
-  if (role === "master") return "/affiliate/master-dashboard-doing";
-  return "/affiliate/dashboard";
+  if (role === "master") return "/master-dashboard-doing";
+  return "/dashboard";
 };

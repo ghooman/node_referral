@@ -52,79 +52,79 @@ function InviteCodeList({
         <div className="table-section__tit">
           <div className="table-section__tit__tit-button">
             <h2>초대코드 리스트</h2>
-            <button type="button" className="btn-sm" onClick={handleClickInviteBtn}>
+            <button
+              type="button"
+              className="btn-sm"
+              onClick={handleClickInviteBtn}
+            >
               초대코드 생성
             </button>
           </div>
-          <Link to="/affiliate/recommender-list">전체보기</Link>
+          <Link to="/recommender-list">전체보기</Link>
         </div>
 
-            <div className="table-section__tit__list-head">
-              <div className="col">지분</div>
-              <div className="col">초대코드</div>
-              <div className="col mobile-del">닉네임</div>
-              <div className="col mobile-del">할당인원</div>
-              <div className="col mobile-del">코드 생성일</div>
-              <div className="col col--action">액션</div>
-            </div>
+        <div className="table-section__tit__list-head">
+          <div className="col">지분</div>
+          <div className="col">초대코드</div>
+          <div className="col mobile-del">닉네임</div>
+          <div className="col mobile-del">할당인원</div>
+          <div className="col mobile-del">코드 생성일</div>
+          <div className="col col--action">액션</div>
+        </div>
 
-            {/* 초대코드 리스트가 있는 경우 */}
-            {inviteCodeList.length > 0 ? (
-              sliceList5(inviteCodeList, 5).map((item, index) => (
-                <div
-                  key={index}
-                  className={`list-item ${openIndex === index ? "open" : ""}`}
-                >
-                  <div className="list-item__row">
-                    <div className="col">{item.share}%</div>
-                    <div className="col">{item.invitation_code}</div>
-                    <div className="col mobile-del">{item.nick_name}</div>
-                    <div className="col mobile-del">
-                      {formatNumber(item.allocation_cnt)}
-                    </div>
-                    <div className="col mobile-del">
-                      {formatDate(item.create_dt)}
-                    </div>
-                    <div className="col col--action invite-code-button toggle-btn-box">
-                      <button
-                        className={`btn--line-mini ${
-                          copiedIndex.code === index ? "copied" : ""
-                        }`}
-                        onClick={() =>
-                          handleCopyCode(item.invitation_code, index)
-                        }
-                      >
-                        {copiedIndex.code === index ? "복사 완료" : "코드 복사"}
-                      </button>
+        {/* 초대코드 리스트가 있는 경우 */}
+        {inviteCodeList.length > 0 ? (
+          sliceList5(inviteCodeList, 5).map((item, index) => (
+            <div
+              key={index}
+              className={`list-item ${openIndex === index ? "open" : ""}`}
+            >
+              <div className="list-item__row">
+                <div className="col">{item.share}%</div>
+                <div className="col">{item.invitation_code}</div>
+                <div className="col mobile-del">{item.nick_name}</div>
+                <div className="col mobile-del">
+                  {formatNumber(item.allocation_cnt)}
+                </div>
+                <div className="col mobile-del">
+                  {formatDate(item.create_dt)}
+                </div>
+                <div className="col col--action invite-code-button toggle-btn-box">
+                  <button
+                    className={`btn--line-mini ${
+                      copiedIndex.code === index ? "copied" : ""
+                    }`}
+                    onClick={() => handleCopyCode(item.invitation_code, index)}
+                  >
+                    {copiedIndex.code === index ? "복사 완료" : "코드 복사"}
+                  </button>
 
-                      <button
-                        className={`btn--line-mini ${
-                          copiedIndex.link === index ? "copied" : ""
-                        }`}
-                        onClick={() =>
-                          handleCopyLink(item.invitation_code, index)
-                        }
-                      >
-                        {copiedIndex.link === index ? "복사 완료" : "링크 복사"}
-                      </button>
-                      {/* QR코드 주석 처리 (정해진 내용이 없다고 함) */}
-                      {/* <button className="btn--line-mini">QR코드</button> */}
-                      <button
-                        className={`toggle-btn ${
-                          openIndex === index ? "rotate" : ""
-                        }`}
-                        onClick={() => toggle(index)}
-                      >
-                        <img src={arrowDownIcon} alt="토글" />
-                      </button>
-                    </div>
-                  </div>
+                  <button
+                    className={`btn--line-mini ${
+                      copiedIndex.link === index ? "copied" : ""
+                    }`}
+                    onClick={() => handleCopyLink(item.invitation_code, index)}
+                  >
+                    {copiedIndex.link === index ? "복사 완료" : "링크 복사"}
+                  </button>
+                  {/* QR코드 주석 처리 (정해진 내용이 없다고 함) */}
+                  {/* <button className="btn--line-mini">QR코드</button> */}
+                  <button
+                    className={`toggle-btn ${
+                      openIndex === index ? "rotate" : ""
+                    }`}
+                    onClick={() => toggle(index)}
+                  >
+                    <img src={arrowDownIcon} alt="토글" />
+                  </button>
+                </div>
+              </div>
 
               {openIndex === index && item.user_list?.length > 0 && (
                 <div className="list-item__detail invite-code">
                   {item.user_list.map((user, i) => (
                     <div key={i} className="email-row">
-                      <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
+                      <Link to={`/other-sales-record?email=${user.username}`}>
                         <span className="index">{i + 1}</span>
                         <span className="email">{user.username}</span>
                       </Link>

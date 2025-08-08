@@ -152,10 +152,10 @@ function MasterDashboardDone() {
         <div className="page-wrapper masterdashboard-wrapper">
           <ul className="tab-ui">
             <li>
-              <Link to="/affiliate/master-dashboard-doing">판매승인/정산</Link>
+              <Link to="/master-dashboard-doing">판매승인/정산</Link>
             </li>
             <li className="selected">
-              <Link to="/affiliate/master-dashboard-done">정산기록</Link>
+              <Link to="/master-dashboard-done">정산기록</Link>
             </li>
           </ul>
 
