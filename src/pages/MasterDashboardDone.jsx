@@ -52,14 +52,11 @@ function MasterDashboardDone() {
   const handleGetDashboard = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get(
-        `${serverAPI}/api/sales/settlement/dashboard`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const res = await axios.get(`${serverAPI}/api/sales/settlement/dashboard`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       console.log("상단 대시보드 가져오기 완료!", res.data);
       setDashboard(res.data);
     } catch (error) {
@@ -71,13 +68,9 @@ function MasterDashboardDone() {
 
   // 하단 리스트 API 함수
   const handleGetDataList = async () => {
-    const isoStart = startDate
-      ? new Date(new Date(startDate).setHours(0, 0, 0, 0)).toISOString()
-      : null;
+    const isoStart = startDate ? new Date(new Date(startDate).setHours(0, 0, 0, 0)).toISOString() : null;
 
-    const isoEnd = endDate
-      ? new Date(new Date(endDate).setHours(23, 59, 59, 999)).toISOString()
-      : null;
+    const isoEnd = endDate ? new Date(new Date(endDate).setHours(23, 59, 59, 999)).toISOString() : null;
 
     console.log("📤 서버로 보내는 start_date", isoStart);
     console.log("📤 서버로 보내는 end_date", isoEnd);
@@ -152,10 +145,10 @@ function MasterDashboardDone() {
         <div className="page-wrapper masterdashboard-wrapper">
           <ul className="tab-ui">
             <li>
-              <Link to="/master-dashboard-doing">판매승인/정산</Link>
+              <Link to="/master-dashboard-doing">Sales Approval / Settlement</Link>
             </li>
             <li className="selected">
-              <Link to="/master-dashboard-done">정산기록</Link>
+              <Link to="/master-dashboard-done">Settlement History</Link>
             </li>
           </ul>
 
@@ -164,16 +157,10 @@ function MasterDashboardDone() {
             <label htmlFor="startDate"> Date Filter</label>
             <div className="date-field">
               {/* 시작일 */}
-              <MyDatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-              />
+              <MyDatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
               <span className="dash">-</span>
               {/* 종료일 */}
-              <MyDatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-              />
+              <MyDatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
               <button className="btn--reset" onClick={handleReset}>
                 Reset
               </button>
@@ -231,12 +218,7 @@ function MasterDashboardDone() {
                   handleGetDataList();
                 }}
               >
-                <img
-                  src={SearchIcon}
-                  alt="검색"
-                  aria-hidden="true"
-                  className="icon-search"
-                />
+                <img src={SearchIcon} alt="검색" aria-hidden="true" className="icon-search" />
                 <span className="sr-only">검색</span>
               </button>
             </div>
@@ -275,13 +257,9 @@ function MasterDashboardDone() {
                         </div>
                         <div className="col">{formatNumber(item.cnt)}</div>
                         <div className="col">{formatNumber(item.amount)}</div>
-                        <div className="col">
-                          {formatNumber(item.total_settlement_amount)}
-                        </div>
+                        <div className="col">{formatNumber(item.total_settlement_amount)}</div>
                         <div className="col">{formatNumber(item.fee)}</div>
-                        <div className="col">
-                          {formatDate(item.settlement_dt)}
-                        </div>
+                        <div className="col">{formatDate(item.settlement_dt)}</div>
                       </div>
                     </div>
                   ))}
@@ -289,11 +267,7 @@ function MasterDashboardDone() {
               )}
             </div>
           </div>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
         </div>
         <Footer />
       </div>
