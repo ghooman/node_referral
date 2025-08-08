@@ -129,7 +129,9 @@
       }
     }
     .dash-section__txt__list {
-      @include flex-between;
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
       flex-wrap: wrap;
       column-gap: 1.5%;
       row-gap: 16px;
@@ -395,6 +397,12 @@
 // 개별 modal height 지정
 .modal-wallet {
   min-height: 550px;
+  .modal__footer{
+    @include md{
+      padding: 0 0 20px;
+      width: calc(100% - 40px);
+    }
+  }
 }
 .modal-transaction {
   min-height: 630px;
