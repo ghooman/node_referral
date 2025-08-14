@@ -111,9 +111,7 @@ function Login() {
           </fieldset>
           <button
             type="submit"
-            className={`btn btn-login ${
-              isFormValid ? `btn--active` : `btn--disabled`
-            }`}
+            className={`btn btn-login ${isFormValid ? `btn--active` : `btn--disabled`}`}
             disabled={!isFormValid || isLoading}
             onClick={handleIsLogin}
           >
@@ -124,7 +122,7 @@ function Login() {
         </form>
 
         <Link to="/signup" className="btn btn-signup">
-          회원가입
+          Sign Up
         </Link>
       </div>
       {showFailModal && (
