@@ -489,134 +489,137 @@ function MasterDashboardDoing() {
                     </div>
                     <div className="col">Action</div>
                   </div>
-                  {/* table body */}
-                  {dataList.map((item, index) => (
-                    <div key={index} className={`list-item ${openIndex === index ? "open" : ""}`}>
-                      <div className="list-item__row">
-                        <div
-                          className={`col status-col
-      ${item.state === "pending" ? "status--pending" : ""}
-      ${item.state === "cancelled" ? "status--cancelled" : ""}
-  `}
-                          style={{ flex: "0 0 15%" }}
-                        >
-                          {displayStateMap[item.state] || item.state}
-                        </div>
-
-                        <div className="col wallet-copy-com" style={{ flex: "0 0 20%" }}>
-                          {formatWalletAddress(item.deposit_wallet_address)}
-                          <CopyButton textToCopy={item.deposit_wallet_address} />
-                        </div>
-                        <div className="col" style={{ flex: "0 0 10%" }}>
-                          {formatNumber(item.unit_price)}
-                        </div>
-                        <div className="col" style={{ flex: "0 0 10%" }}>
-                          {formatNumber(item.cnt)}
-                        </div>
-                        <div className="col" style={{ flex: "0 0 10%" }}>
-                          {formatNumber(item.amount)}
-                        </div>
-                        <div className="col wallet-copy-com" style={{ flex: "0 0 18%" }}>
-                          {formatWalletAddress(item.buyer_wallet_address)}
-                          <CopyButton textToCopy={item.buyer_wallet_address} />
-                        </div>
-                        <div className="col col--action toggle-btn-box">
-                          {/* 1) 승인/취소 버튼 (pending일 때만) */}
-                          {item.state === "pending" ? (
-                            <div className="twoway-btn-box --pending">
-                              <button
-                                className="twoway-btn btn--blue"
-                                onClick={() => {
-                                  console.log("🟢 승인 클릭됨 - item.id:", item.id);
-                                  handleChangeState(item.id, "approved");
-                                }}
-                              >
-                                Approval
-                              </button>
-                              <button className="twoway-btn btn--red" onClick={() => setConfirmModalOpenId(item.id)}>
-                                Cancel
-                              </button>
-                            </div>
-                          ) : (
-                            /* 2) 버튼이 아닌 상태(approved/cancelled/settlement* 등)에서는
-          - 승인/취소 블록은 항상 보이게
-          - 정산 완료일은 추가로 쌓아서 보이게  */
-                            <div className="status-stack">
-                              {/* 승인/취소 정보는 상태와 무관하게 유지 */}
-                              {getApprovalOrCancelBlock(item)}
-                            </div>
-                          )}
-
-                          {/* 토글 버튼은 항상 우측에 유지 */}
-                          <button
-                            className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
-                            onClick={() => toggle(index)}
+                  {!isLoading && dataList.length === 0 ? (
+                    <div className="table-empty">No matching records found.</div>
+                  ) : (
+                    dataList.map((item, index) => (
+                      <div key={index} className={`list-item ${openIndex === index ? "open" : ""}`}>
+                        <div className="list-item__row">
+                          <div
+                            className={`col status-col
+                        ${item.state === "pending" ? "status--pending" : ""}
+                        ${item.state === "cancelled" ? "status--cancelled" : ""}
+                    `}
+                            style={{ flex: "0 0 15%" }}
                           >
-                            <img src={arrowDownIcon} alt="토글" />
-                          </button>
-                        </div>
-                      </div>
-                      {/* table body detail */}
-                      {openIndex === index && (
-                        <div className="list-item__detail">
-                          <div className="info-table">
-                            <div className="info-header">
-                              <div className="col col--email" style={{ flex: "0 0 20%" }}>
-                                Email Address
-                              </div>
-                              <div className="col" style={{ flex: "0 0 10%" }}>
-                                Share
-                              </div>
-                              <div className="col" style={{ flex: "0 0 30%" }}>
-                                Settlement Amount
-                              </div>
-                              <div className="col" style={{ flex: "0 0 20%" }}>
-                                Wallet Address
-                              </div>
-                              <div className="col" style={{ flex: "0 0 20%" }}>
-                                Settlement Status
-                              </div>
-                            </div>
+                            {displayStateMap[item.state] || item.state}
+                          </div>
 
-                            {item.referrals?.map((user, i) => (
-                              <div className="info-row" key={i}>
-                                <div className="col col--email" style={{ flex: "0 0 20%" }}>
-                                  <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
-                                    <span>{user.username}</span>
-                                    <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
-                                  </Link>
-                                </div>
-                                <div className="col" style={{ flex: "0 0 10%" }}>
-                                  {user.share}%
-                                </div>
-                                <div className="col" style={{ flex: "0 0 30%" }}>
-                                  {formatNumber(user.settlement_amount)}
-                                </div>
-                                <div className="col" style={{ flex: "0 0 20%" }}>
-                                  {formatWalletAddress(user.wallet_address)
-                                    ? formatWalletAddress(user.wallet_address)
-                                    : "-"}
-                                </div>
-                                <div className="col settlement-btn-box">
-                                  {user.is_complt === false ? (
-                                    <button
-                                      className="btn--blue-line"
-                                      onClick={() => handleSettlement(user.id)}
-                                      disabled={item.state !== "approved"} // 승인완료 아니면 비활성화
-                                    >
-                                      Settle
-                                    </button>
-                                  ) : (
-                                    <span>{formatDate(user.settlement_dt)}</span>
-                                  )}
-                                </div>
+                          <div className="col wallet-copy-com" style={{ flex: "0 0 20%" }}>
+                            {formatWalletAddress(item.deposit_wallet_address)}
+                            <CopyButton textToCopy={item.deposit_wallet_address} />
+                          </div>
+                          <div className="col" style={{ flex: "0 0 10%" }}>
+                            {formatNumber(item.unit_price)}
+                          </div>
+                          <div className="col" style={{ flex: "0 0 10%" }}>
+                            {formatNumber(item.cnt)}
+                          </div>
+                          <div className="col" style={{ flex: "0 0 10%" }}>
+                            {formatNumber(item.amount)}
+                          </div>
+                          <div className="col wallet-copy-com" style={{ flex: "0 0 18%" }}>
+                            {formatWalletAddress(item.buyer_wallet_address)}
+                            <CopyButton textToCopy={item.buyer_wallet_address} />
+                          </div>
+                          <div className="col col--action toggle-btn-box">
+                            {/* 1) 승인/취소 버튼 (pending일 때만) */}
+                            {item.state === "pending" ? (
+                              <div className="twoway-btn-box --pending">
+                                <button
+                                  className="twoway-btn btn--blue"
+                                  onClick={() => {
+                                    console.log("🟢 승인 클릭됨 - item.id:", item.id);
+                                    handleChangeState(item.id, "approved");
+                                  }}
+                                >
+                                  Approval
+                                </button>
+                                <button className="twoway-btn btn--red" onClick={() => setConfirmModalOpenId(item.id)}>
+                                  Cancel
+                                </button>
                               </div>
-                            ))}
+                            ) : (
+                              /* 2) 버튼이 아닌 상태(approved/cancelled/settlement* 등)에서는
+                            - 승인/취소 블록은 항상 보이게
+                            - 정산 완료일은 추가로 쌓아서 보이게  */
+                              <div className="status-stack">
+                                {/* 승인/취소 정보는 상태와 무관하게 유지 */}
+                                {getApprovalOrCancelBlock(item)}
+                              </div>
+                            )}
+
+                            {/* 토글 버튼은 항상 우측에 유지 */}
+                            <button
+                              className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
+                              onClick={() => toggle(index)}
+                            >
+                              <img src={arrowDownIcon} alt="토글" />
+                            </button>
                           </div>
                         </div>
-                      )}
-                    </div>
-                  ))}
+                        {/* table body detail */}
+                        {openIndex === index && (
+                          <div className="list-item__detail">
+                            <div className="info-table">
+                              <div className="info-header">
+                                <div className="col col--email" style={{ flex: "0 0 20%" }}>
+                                  Email Address
+                                </div>
+                                <div className="col" style={{ flex: "0 0 10%" }}>
+                                  Share
+                                </div>
+                                <div className="col" style={{ flex: "0 0 30%" }}>
+                                  Settlement Amount
+                                </div>
+                                <div className="col" style={{ flex: "0 0 20%" }}>
+                                  Wallet Address
+                                </div>
+                                <div className="col" style={{ flex: "0 0 20%" }}>
+                                  Settlement Status
+                                </div>
+                              </div>
+
+                              {item.referrals?.map((user, i) => (
+                                <div className="info-row" key={i}>
+                                  <div className="col col--email" style={{ flex: "0 0 20%" }}>
+                                    <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
+                                      <span>{user.username}</span>
+                                      <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
+                                    </Link>
+                                  </div>
+                                  <div className="col" style={{ flex: "0 0 10%" }}>
+                                    {user.share}%
+                                  </div>
+                                  <div className="col" style={{ flex: "0 0 30%" }}>
+                                    {formatNumber(user.settlement_amount)}
+                                  </div>
+                                  <div className="col" style={{ flex: "0 0 20%" }}>
+                                    {formatWalletAddress(user.wallet_address)
+                                      ? formatWalletAddress(user.wallet_address)
+                                      : "-"}
+                                  </div>
+                                  <div className="col settlement-btn-box">
+                                    {user.is_complt === false ? (
+                                      <button
+                                        className="btn--blue-line"
+                                        onClick={() => handleSettlement(user.id)}
+                                        disabled={item.state !== "approved"} // 승인완료 아니면 비활성화
+                                      >
+                                        Settle
+                                      </button>
+                                    ) : (
+                                      <span>{formatDate(user.settlement_dt)}</span>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  )}
                 </>
               )}
             </div>

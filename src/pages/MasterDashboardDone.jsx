@@ -230,40 +230,43 @@ function MasterDashboardDone() {
                   <Loading />
                 </div>
               )}
-
-              {!isLoading && (
-                <>
-                  {/* table head */}
-                  <div className="table-section__tit__list-head">
-                    <div className="col">Buyer</div>
-                    <div className="col">Seller Email</div>
-                    <div className="col">Wallet Address</div>
-                    <div className="col">Quantity</div>
-                    <div className="col">Total Amount</div>
-                    <div className="col">Settlement Amount</div>
-                    <div className="col">Fee</div>
-                    <div className="col">Settlement Date & Time</div>
-                  </div>
-
-                  {/* table body */}
-                  {dataList.map((item, index) => (
-                    <div key={index} className="list-item">
-                      <div className="list-item__row">
-                        <div className="col">{item.buyer_name}</div>
-                        <div className="col email">{item.username}</div>
-                        <div className="col wallet-copy-com">
-                          {formatWalletAddress(item.wallet_address)}
-                          <CopyButton textToCopy={item.wallet_address} />
-                        </div>
-                        <div className="col">{formatNumber(item.cnt)}</div>
-                        <div className="col">{formatNumber(item.amount)}</div>
-                        <div className="col">{formatNumber(item.total_settlement_amount)}</div>
-                        <div className="col">{formatNumber(item.fee)}</div>
-                        <div className="col">{formatDate(item.settlement_dt)}</div>
-                      </div>
+              {!isLoading && dataList.length === 0 ? (
+                <div className="table-empty">No settlement history found.</div>
+              ) : (
+                !isLoading && (
+                  <>
+                    {/* table head */}
+                    <div className="table-section__tit__list-head">
+                      <div className="col">Buyer</div>
+                      <div className="col">Seller Email</div>
+                      <div className="col">Wallet Address</div>
+                      <div className="col">Quantity</div>
+                      <div className="col">Total Amount</div>
+                      <div className="col">Settlement Amount</div>
+                      <div className="col">Fee</div>
+                      <div className="col">Settlement Date & Time</div>
                     </div>
-                  ))}
-                </>
+
+                    {/* table body */}
+                    {dataList.map((item, index) => (
+                      <div key={index} className="list-item">
+                        <div className="list-item__row">
+                          <div className="col">{item.buyer_name}</div>
+                          <div className="col email">{item.username}</div>
+                          <div className="col wallet-copy-com">
+                            {formatWalletAddress(item.wallet_address)}
+                            <CopyButton textToCopy={item.wallet_address} />
+                          </div>
+                          <div className="col">{formatNumber(item.cnt)}</div>
+                          <div className="col">{formatNumber(item.amount)}</div>
+                          <div className="col">{formatNumber(item.total_settlement_amount)}</div>
+                          <div className="col">{formatNumber(item.fee)}</div>
+                          <div className="col">{formatDate(item.settlement_dt)}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )
               )}
             </div>
           </div>
