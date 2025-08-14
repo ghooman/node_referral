@@ -177,19 +177,19 @@ function MasterDashboardDone() {
                   <p>{formatNumber(dashboard.settlement_complt)}</p>
                 </li>
                 <li>
-                  <h3>Total Revenue</h3>
+                  <h3>Revenue</h3>
                   <p>{formatNumber(dashboard.total_income)}</p>
                 </li>
                 <li>
-                  <h3>Total Settlement Amount</h3>
+                  <h3>Settlement</h3>
                   <p>{formatNumber(dashboard.total_settlement)}</p>
                 </li>
                 <li>
-                  <h3>Total Fee Revenue</h3>
+                  <h3>Fee Revenue</h3>
                   <p>{formatNumber(dashboard.total_fee_income)}</p>
                 </li>
                 <li>
-                  <h3>Total Sent Nodes</h3>
+                  <h3>Sent Nodes</h3>
                   <p>{formatNumber(dashboard.total_node)}</p>
                 </li>
               </ul>

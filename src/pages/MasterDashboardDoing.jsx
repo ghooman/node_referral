@@ -85,11 +85,12 @@ function MasterDashboardDoing() {
 
       const rawList = res.data.data_list;
       const displayStateMap = {
-        requested: "Approval Requested",
-        pending: "Pending Approval",
+        all: "All",
+        requested: "Requested",
+        pending: "Pending",
         approved: "Approved",
-        cancelled: "Approval Cancelled",
-        settlement_pending: "Pending Settlement",
+        cancelled: "Cancelled",
+        승인완료: "Settlement",
         settled: "Settled",
       };
 
@@ -207,7 +208,7 @@ function MasterDashboardDoing() {
   //     pending: '승인대기',
   //     approved: '승인완료',
   //     cancelled: '승인취소',
-  //     settlement_pending: '정산대기',
+  //     승인완료: '정산대기',
   //     settled: '정산완료',
   //   };
   //   return map[state] || state; // 못 찾으면 그냥 원래 값 반환
@@ -218,17 +219,17 @@ function MasterDashboardDoing() {
   //   pending: '승인대기',
   //   approved: '승인완료',
   //   cancelled: '승인취소',
-  //   settlement_pending: '정산대기',
+  //   승인완료: '정산대기',
   //   settled: '정산완료',
   // };
 
   const stateMap = {
     all: "All",
-    requested: "Approval Requested",
-    pending: "Pending Approval",
+    requested: "Requested",
+    pending: "Pending",
     approved: "Approved",
-    cancelled: "Approval Cancelled",
-    settlement_pending: "Pending Settlement",
+    cancelled: "Cancelled",
+    승인완료: "Settlement",
     settled: "Settled",
   };
 
@@ -257,11 +258,11 @@ function MasterDashboardDoing() {
 
   const statusMap = {
     all: "All",
-    requested: "Approval Requested",
-    pending: "Pending Approval",
+    requested: "Requested",
+    pending: "Pending",
     approved: "Approved",
-    cancelled: "Approval Cancelled",
-    settlement_pending: "Pending Settlement",
+    cancelled: "Cancelled",
+    승인완료: "Settlement",
     settled: "Settled",
   };
 
@@ -314,6 +315,31 @@ function MasterDashboardDoing() {
     }
   };
 
+  // 보조 함수들
+  const getApprovalOrCancelBlock = (item) => {
+    // 취소된 건
+    if (item.approval_cancel_dt) {
+      return (
+        <div className="toway-txt-box --cancelled">
+          <p>{displayStateMap["cancelled"]}</p>
+          <small>{formatDate(item.approval_cancel_dt)}</small>
+        </div>
+      );
+    }
+
+    // 승인된 건
+    if (item.approval_dt) {
+      return (
+        <div className="toway-txt-box --approved">
+          <p>{displayStateMap["approved"]}</p>
+          <small>{formatDate(item.approval_dt)}</small>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   // 지갑 주소 포맷팅 함수 (앞뒤 4글자씩 짜르기 0x00....0000)
   const formatWalletAddress = (address) => {
     if (!address || address.length < 10) return address;
@@ -327,11 +353,12 @@ function MasterDashboardDoing() {
   };
 
   const displayStateMap = {
-    requested: "Approval Requested",
-    pending: "Pending Approval",
+    all: "All",
+    requested: "Requested",
+    pending: "Pending",
     approved: "Approved",
-    cancelled: "Approval Cancelled",
-    settlement_pending: "Pending Settlement",
+    cancelled: "Cancelled",
+    승인완료: "Settlement",
     settled: "Settled",
   };
 
@@ -355,7 +382,7 @@ function MasterDashboardDoing() {
             <div className="dash-section__txt">
               <ul className="dash-section__txt__board">
                 <li>
-                  <h3>Total Transactions</h3>
+                  <h3>Total</h3>
                   <p>{formatNumber(dashboard.sales_record)}</p>
                 </li>
                 <li>
@@ -363,7 +390,7 @@ function MasterDashboardDoing() {
                   <p>{formatNumber(dashboard.settled)}</p>
                 </li>
                 <li>
-                  <h3>Pending Settlement</h3>
+                  <h3>Settlement</h3>
                   <p>{formatNumber(dashboard.settlement_pending)}</p>
                 </li>
                 <li>
@@ -371,11 +398,11 @@ function MasterDashboardDoing() {
                   <p>{formatNumber(dashboard.approved)}</p>
                 </li>
                 <li>
-                  <h3>Approval Cancelled</h3>
+                  <h3>Cancelled</h3>
                   <p>{formatNumber(dashboard.cancelled)}</p>
                 </li>
                 <li>
-                  <h3>Pending Approval</h3>
+                  <h3>Pending</h3>
                   <p>{formatNumber(dashboard.pending)}</p>
                 </li>
               </ul>
@@ -494,14 +521,14 @@ function MasterDashboardDoing() {
                           <CopyButton textToCopy={item.buyer_wallet_address} />
                         </div>
                         <div className="col col--action toggle-btn-box">
-                          {/* 상태값 승인대기인 경우 twoway-btn 노출 */}
-                          {item.state === "pending" && (
+                          {/* 1) 승인/취소 버튼 (pending일 때만) */}
+                          {item.state === "pending" ? (
                             <div className="twoway-btn-box --pending">
                               <button
                                 className="twoway-btn btn--blue"
                                 onClick={() => {
                                   console.log("🟢 승인 클릭됨 - item.id:", item.id);
-                                  handleChangeState(item.id, "approved"); // 승인
+                                  handleChangeState(item.id, "approved");
                                 }}
                               >
                                 Approval
@@ -510,21 +537,17 @@ function MasterDashboardDoing() {
                                 Cancel
                               </button>
                             </div>
-                          )}
-
-                          {item.state === "cancelled" && (
-                            <div className="toway-txt-box --cancelled">
-                              <p>{item.state}</p>
-                              <small>{formatDate(item.approval_cancel_dt)}</small>
+                          ) : (
+                            /* 2) 버튼이 아닌 상태(approved/cancelled/settlement* 등)에서는
+          - 승인/취소 블록은 항상 보이게
+          - 정산 완료일은 추가로 쌓아서 보이게  */
+                            <div className="status-stack">
+                              {/* 승인/취소 정보는 상태와 무관하게 유지 */}
+                              {getApprovalOrCancelBlock(item)}
                             </div>
                           )}
 
-                          {item.state === "approved" && (
-                            <div className="toway-txt-box --approved">
-                              <p>{item.state}</p>
-                              <small>{formatDate(item.approval_dt)}</small>
-                            </div>
-                          )}
+                          {/* 토글 버튼은 항상 우측에 유지 */}
                           <button
                             className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
                             onClick={() => toggle(index)}

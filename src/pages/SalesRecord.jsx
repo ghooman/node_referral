@@ -296,24 +296,25 @@ function SalesRecord() {
 
   const getKoreanState = (state) => {
     const stateMap = {
-      requested: "승인요청",
-      pending: "승인대기",
-      cancelled: "승인취소",
-      approved: "승인완료",
-      settlement_pending: "정산대기",
-      settled: "정산완료",
+      all: "All",
+      requested: "Requested",
+      pending: "Pending",
+      approved: "Approved",
+      cancelled: "Cancelled",
+      승인완료: "Settlement",
+      settled: "Settled",
     };
     return stateMap[state] || state;
   };
 
   const statusMap = {
-    all: "전체",
-    requested: "승인요청",
-    pending: "승인대기",
-    cancelled: "승인취소",
-    approved: "승인완료",
-    settlement_pending: "정산대기",
-    settled: "정산완료",
+    all: "All",
+    requested: "Requested",
+    pending: "Pending",
+    approved: "Approved",
+    cancelled: "Cancelled",
+    승인완료: "Settlement",
+    settled: "Settled",
   };
 
   const getBadgeClassName = (state) => {
@@ -322,20 +323,14 @@ function SalesRecord() {
 
   const handleChangeState = async (salesId, newState) => {
     try {
-      const res = await axios.post(
-        `${serverAPI}/api/sales/${salesId}/state`,
-        null,
-        {
-          params: { state: newState },
-          headers: { Authorization: `Bearer ${userToken}` },
-        }
-      );
+      const res = await axios.post(`${serverAPI}/api/sales/${salesId}/state`, null, {
+        params: { state: newState },
+        headers: { Authorization: `Bearer ${userToken}` },
+      });
       console.log("상태 변경 성공:", res.data.status);
 
       // 상태만 변경하는 경우
-      const updatedList = newDealList.map((item) =>
-        item.id === salesId ? { ...item, state: newState } : item
-      );
+      const updatedList = newDealList.map((item) => (item.id === salesId ? { ...item, state: newState } : item));
       setNewDealList(updatedList);
 
       // 혹은 최신 상태 fetch
@@ -350,15 +345,11 @@ function SalesRecord() {
   const handleCancelRequest = async (salesId) => {
     console.log("🟡 취소 요청 시도 중 - salesId:", salesId);
     try {
-      const res = await axios.post(
-        `${serverAPI}/api/sales/${salesId}/cancel`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const res = await axios.post(`${serverAPI}/api/sales/${salesId}/cancel`, null, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       console.log("🟢 승인요청 취소 성공:", res.data);
       await fetchNewDealList(); // 리스트 갱신
     } catch (error) {
@@ -379,46 +370,38 @@ function SalesRecord() {
         <div className="page-wrapper padding-del">
           <div className="sales-section">
             <div className="sales-section__record-tit">
-              <h2>내 판매기록 전체보기</h2>
+              <h2>My Sales Records</h2>
               <span>
-                총 <small>{totalCnt}</small>건
+                Total <small>{totalCnt}</small>
               </span>
             </div>
             <ul className="sales-section__record-list">
               <li>
-                <h3>나의 판매 수입</h3>
+                <h3>My Sales Revenue</h3>
                 <p>{formatNumber(myRevenue)}</p>
               </li>
               <li>
-                <h3>나의 판매 정산금</h3>
+                <h3>My Sales Settlements</h3>
                 <p>{formatNumber(mySettlement)}</p>
               </li>
               <li>
-                <h3>나의 추천인</h3>
+                <h3>My Referrals</h3>
                 <p>{formatNumber(myReferrals)}</p>
               </li>
               <li>
-                <h3>나의 판매 노드 수</h3>
+                <h3>My Sold Nodes</h3>
                 <p>{formatNumber(mySoldNode)}</p>
               </li>
             </ul>
-            <button
-              type="button"
-              className="sales-section__btn"
-              onClick={handleClickNewDealBtn}
-            >
-              새 거래 등록
+            <button type="button" className="sales-section__btn" onClick={handleClickNewDealBtn}>
+              New Transaction
             </button>
           </div>
           {/* 필터 영역 */}
           <div className="filter-group">
-            <div className="filter-group__title">필터링</div>
+            <div className="filter-group__title">Filter</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-              <button
-                type="button"
-                className="custom-select__btn"
-                onClick={() => setIsFilterOpen((prev) => !prev)}
-              >
+              <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
                 <span>{statusMap[selectedStatus]}</span>
                 <i className="custom-select__arrow"></i>
               </button>
@@ -452,72 +435,44 @@ function SalesRecord() {
                 <>
                   {/* list-head는 항상 보여줌 */}
                   <div className="table-section__tit__list-head sales-record">
-                    <div className="col">구매자</div>
-                    <div className="col mobile-del">개수</div>
-                    <div className="col mobile-del">객단가</div>
-                    <div className="col">총 금액</div>
-                    <div className="col">정산금</div>
-                    <div className="col mobile-del">등록일시</div>
-                    <div className="col">상태</div>
-                    <div className="col">액션</div>
+                    <div className="col">Buyer</div>
+                    <div className="col mobile-del">Quantity</div>
+                    <div className="col mobile-del">Unit Price</div>
+                    <div className="col">Total Amount</div>
+                    <div className="col">Settlement Amount</div>
+                    <div className="col mobile-del">Registration Date</div>
+                    <div className="col">Status</div>
+                    <div className="col">Action</div>
                   </div>
 
                   {/* 데이터 유무에 따라 item or empty */}
                   {newDealList.length === 0 ? (
                     // 판매 기록이 없는 경우
-                    <div className="table-empty">판매 기록이 없습니다.</div>
+                    <div className="table-empty">No sales records.</div>
                   ) : (
                     [...newDealList]
-                      .sort(
-                        (a, b) => new Date(b.create_dt) - new Date(a.create_dt)
-                      )
+                      .sort((a, b) => new Date(b.create_dt) - new Date(a.create_dt))
                       .map((item, index) => (
-                        <div
-                          className={`list-item ${
-                            openIndex === index ? "open" : ""
-                          }`}
-                          key={index}
-                        >
+                        <div className={`list-item ${openIndex === index ? "open" : ""}`} key={index}>
                           <div className="list-item__row sales-record">
                             <div className="col">{item.buyer_name}</div>
-                            <div className="col mobile-del">
-                              {formatNumber(item.cnt)}
-                            </div>
-                            <div className="col mobile-del">
-                              {formatNumber(item.unit_price)}
-                            </div>
-                            <div className="col">
-                              {formatNumber(item.cnt * item.unit_price)}
-                            </div>
-                            <div className="col">
-                              {formatNumber(item.settlement_amount)}
-                            </div>
-                            <div className="col mobile-del">
-                              {formatDate(item.create_dt)}
-                            </div>
+                            <div className="col mobile-del">{formatNumber(item.cnt)}</div>
+                            <div className="col mobile-del">{formatNumber(item.unit_price)}</div>
+                            <div className="col">{formatNumber(item.cnt * item.unit_price)}</div>
+                            <div className="col">{formatNumber(item.settlement_amount)}</div>
+                            <div className="col mobile-del">{formatDate(item.create_dt)}</div>
                             <div className="col toggle-btn-box">
                               <button
-                                className={`badge badge--${getBadgeClassName(
-                                  item.state
-                                )}`}
+                                className={`badge badge--${getBadgeClassName(item.state)}`}
                                 onClick={() => {
-                                  console.log(
-                                    "🟡 버튼 클릭됨 - 현재 상태:",
-                                    item.state,
-                                    "id:",
-                                    item.id
-                                  );
+                                  console.log("🟡 버튼 클릭됨 - 현재 상태:", item.state, "id:", item.id);
 
                                   if (item.state === "requested") {
-                                    console.log(
-                                      "🟢 승인요청 상태 → pending 으로 변경 시도"
-                                    );
+                                    console.log("🟢 승인요청 상태 → pending 으로 변경 시도");
                                     // handleChangeState(item.id, "pending");
                                     setShowConfirmModalIndex(item.id);
                                   } else {
-                                    console.log(
-                                      "🔴 승인요청 상태가 아니라서 아무 작업도 하지 않음"
-                                    );
+                                    console.log("🔴 승인요청 상태가 아니라서 아무 작업도 하지 않음");
                                   }
                                 }}
                               >
@@ -527,14 +482,9 @@ function SalesRecord() {
                             <div className="col toggle-btn-box">
                               {/* 취소 버튼 감싸는 래퍼는 항상 존재하지만 내부는 조건부 */}
                               <div className="cancel-wrap">
-                                {["requested", "pending"].includes(
-                                  item.state
-                                ) ? (
-                                  <button
-                                    className="btn-line-cancel"
-                                    onClick={() => setCancelTargetId(item.id)}
-                                  >
-                                    취소
+                                {["requested", "pending"].includes(item.state) ? (
+                                  <button className="btn-line-cancel" onClick={() => setCancelTargetId(item.id)}>
+                                    Cancel
                                   </button>
                                 ) : (
                                   <span
@@ -551,9 +501,7 @@ function SalesRecord() {
                               {/* 화살표 버튼은 항상 렌더링 */}
                               <div className="arrow-wrap">
                                 <button
-                                  className={`toggle-btn ${
-                                    openIndex === index ? "rotate" : ""
-                                  }`}
+                                  className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
                                   onClick={() => toggle(index)}
                                 >
                                   <img src={arrowDownIcon} alt="토글" />
@@ -566,35 +514,25 @@ function SalesRecord() {
                             <div className="list-item__detail">
                               <div className="list-item__detail__list">
                                 <p>
-                                  <b>지갑주소</b>
+                                  <b>Wallet Address</b>
                                   <span>
                                     {item.buyer_wallet_address}
-                                    <CopyButton
-                                      textToCopy={item.buyer_wallet_address}
-                                    />
+                                    <CopyButton textToCopy={item.buyer_wallet_address} />
                                   </span>
                                 </p>
                                 <p>
-                                  <b>비고</b>
+                                  <b>Note</b>
                                   <span>{item.memo ? item.memo : "-"}</span>
                                 </p>
                               </div>
                               <div className="list-item__detail__list">
                                 <p>
-                                  <b>승인완료 날짜</b>
-                                  <span>
-                                    {item.approval_dt
-                                      ? formatDate(item.approval_dt)
-                                      : "-"}
-                                  </span>
+                                  <b>Approval Completed Date</b>
+                                  <span>{item.approval_dt ? formatDate(item.approval_dt) : "-"}</span>
                                 </p>
                                 <p>
-                                  <b>정산완료 날짜</b>
-                                  <span>
-                                    {item.settlement_dt
-                                      ? formatDate(item.settlement_dt)
-                                      : "-"}
-                                  </span>
+                                  <b>Settlement Completed Date</b>
+                                  <span>{item.settlement_dt ? formatDate(item.settlement_dt) : "-"}</span>
                                 </p>
                               </div>
                             </div>
@@ -606,11 +544,7 @@ function SalesRecord() {
               )}
             </div>
           </section>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
         </div>
         <Footer />
       </div>
@@ -621,7 +555,7 @@ function SalesRecord() {
           <div className="modal modal-transaction">
             <div className="modal__content">
               <div className="modal__header">
-                <h2>거래등록</h2>
+                <h2>New Transaction</h2>
                 <button
                   type="button"
                   onClick={() => {
@@ -635,9 +569,9 @@ function SalesRecord() {
               <div className="modal__body">
                 <InputField
                   id="buyerName"
-                  label="구매자명"
+                  label="Buyer Name"
                   type="text"
-                  placeholder="구매자명을 입력해 주세요"
+                  placeholder="Enter buyer name"
                   required
                   value={newDealUser}
                   onChange={handleBuyerNameChange}
@@ -647,8 +581,8 @@ function SalesRecord() {
                     <InputField
                       type="text"
                       id="avgPrice"
-                      label="객단가"
-                      placeholder="객단가 입력"
+                      label="Unit Price"
+                      placeholder="Enter unit price"
                       required
                       value={newDealPerPrice}
                       onChange={(e) => setNewDealPerPrice(e.target.value)}
@@ -657,9 +591,9 @@ function SalesRecord() {
                   <div>
                     <InputField
                       type="text"
-                      label="판매 개수"
+                      label="Quantity"
                       id="salesCount"
-                      placeholder="판매 노드 개수 입력"
+                      placeholder="Enter quantity"
                       required
                       value={newDealNumber}
                       onChange={(e) => setNewDealNumber(e.target.value)}
@@ -667,25 +601,26 @@ function SalesRecord() {
                   </div>
                 </div>
                 <div className="total-amount-field">
-                  <b>총 금액(자동계산)</b>
+                  <b>Total Amount (Auto-calculated)</b>
                   <p>
-                    <span>{newDealTotalAmount.toLocaleString()} </span>USDT
+                    <span>{newDealTotalAmount.toLocaleString()}</span>
+                    USDT
                   </p>
                 </div>
                 <InputField
                   id="buyerWalletAddress"
-                  label="구매자 지갑 주소"
+                  label="Buyer Wallet Address"
                   type="text"
-                  placeholder="노드를 받을 구매자의 지갑 주소를 입력해 주세요"
+                  placeholder="Enter buyer's wallet address"
                   required
                   value={newDealWallet}
                   onChange={(e) => setNewDealWallet(e.target.value)}
                 />
                 <InputField
                   id="addInput"
-                  label="비고"
+                  label="Note"
                   type="text"
-                  placeholder="최대 30자까지 입력 가능합니다"
+                  placeholder="Up to 30 characters"
                   maxLength={30}
                   value={newDealNote}
                   onChange={handleNoteChange}
@@ -693,13 +628,13 @@ function SalesRecord() {
               </div>
               <div className="modal__footer">
                 <button
-                  className={`btn btn-content-modal ${
-                    isNewDealValid ? "" : "btn--disabled"
-                  } ${isLoading ? "btn--loading" : ""}`}
+                  className={`btn btn-content-modal ${isNewDealValid ? "" : "btn--disabled"} ${
+                    isLoading ? "btn--loading" : ""
+                  }`}
                   disabled={!isNewDealValid}
                   onClick={handleNewDealSubmit}
                 >
-                  {isLoading ? "거래등록 중" : "거래등록 완료"} <LoadingDots />
+                  {isLoading ? "Submitting..." : "Submit Transaction"} <LoadingDots />
                 </button>
               </div>
             </div>
@@ -710,9 +645,9 @@ function SalesRecord() {
       {/* '새 거래 등록' 완료 시 Confirm Modal 노출  */}
       {isNewDealCreateSuccess && (
         <ConfirmModal
-          title="등록 완료"
-          message="등록 후 승인요청 버튼을 꼭 클릭해 주세요. 노드 전송 및 정산금 입금은 영업일 기준 2~3일 소요됩니다."
-          buttonText="확인"
+          title="Transaction Registered"
+          message="Please click the 'Request Approval' button after registering. Node transfer and settlement will take 2–3 business days."
+          buttonText="OK"
           onClose={() => {}}
           onClick={() => setIsNewDealCreateSuccess(false)}
         />
@@ -720,8 +655,8 @@ function SalesRecord() {
 
       {showConfirmModalIndex !== null && (
         <ConfirmModal
-          title="승인 요청"
-          message={`요청 전송 시 노드 전송 및 정산을 진행합니다.\n노드 전송 및 정산금 입금은 영업일 기준 2~3일 소요됩니다.`}
+          title="Request Approval"
+          message={`Upon submission, the node transfer and settlement process will begin.\nNode transfer and settlement deposits will take 2–3 business days.`}
           onClose={() => setShowConfirmModalIndex(null)}
           onConfirm={() => {
             handleChangeState(showConfirmModalIndex, "pending");
@@ -732,9 +667,9 @@ function SalesRecord() {
 
       {cancelTargetId !== null && (
         <ConfirmModal
-          title="거래 등록 취소"
-          message={`입력한 내용이 전부 삭제됩니다.\n거래 등록을 취소하시겠습니까?`}
-          buttonText="확인"
+          title="Cancel Transaction Registration"
+          message={`All entered information will be deleted.\nAre you sure you want to cancel the transaction registration? `}
+          buttonText="Confirm"
           onClick={async () => {
             console.log("🟡 최종 취소 확정 - salesId:", cancelTargetId);
             await handleCancelRequest(cancelTargetId); // 실제 취소 API 호출
