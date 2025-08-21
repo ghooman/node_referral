@@ -42,7 +42,7 @@
 
     span {
       @include font-sm-b;
-      color: $color-gray-400;
+      color: $color-gray-600;
 
       @include md {
         @include font-xs-b;

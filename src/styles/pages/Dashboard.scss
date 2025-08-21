@@ -197,7 +197,7 @@
       @include font-md-b;
       @include flex-start;
       gap: 4px;
-      color: $color-gray-400;
+      color: $color-gray-600;
       padding-right: 20px;
       background: url('../../assets/images/icon-arrow-right.svg') no-repeat right center / 15px;
       @include md {
@@ -282,7 +282,7 @@
       @include flex-between;
       @include font-sm-r;
       border-top: 1px solid $color-w-o10;
-      color: $color-gray-400;
+      color: $color-gray-600;
       @include md {
         @include font-xs-r;
       }

@@ -17,7 +17,7 @@
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     padding: 10px 0;
-    color: $color-gray-400;
+    color: $color-gray-600;
     @include md {
       @include font-xs-r;
     }
@@ -121,7 +121,7 @@
           @include font-sm-b;
           display: flex;
           padding: $sp-08 0;
-          color: $color-gray-400;
+          color: $color-gray-600;
           @include md {
             @include font-xs-b;
           }
@@ -168,7 +168,7 @@
               }
               span {
                 @include font-sm-r;
-                color: $color-gray-400;
+                color: $color-gray-600;
                 @include md {
                   @include font-xs-r;
                 }
