@@ -1,10 +1,11 @@
-@import '../../styles/variables';
-@import '../../styles/mixins';
-@import '../../styles/fonts';
+@import "../../styles/variables";
+@import "../../styles/mixins";
+@import "../../styles/fonts";
 
 .node-footer {
   margin-top: $sp-40;
-  padding: $sp-40 4% $sp-60;
+  // padding: $sp-40 4% $sp-60;
+  padding: $sp-40 4%;
   border-top: 1px solid $color-w-o10;
   background-color: $color-gray-900;
   @include md {
@@ -18,7 +19,7 @@
   // footer__top START
   &__top {
     @include flex-between;
-    margin-bottom: $sp-24;
+    // margin-bottom: $sp-24;
 
     @include md {
       @include flex-column;

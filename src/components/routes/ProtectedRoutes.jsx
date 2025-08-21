@@ -1,4 +1,9 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+// src/components/routes/ProtectedRoutes.jsx
+// 각 페이지에 역할 적용
+// ex. master어쩌구는 master일 경우만 입장 가능하도록
+
+import { Routes, Route } from "react-router-dom";
+import RoleRoute from "./RoleRoute";
 import Dashboard from "../../pages/Dashboard";
 import SalesRecord from "../../pages/SalesRecord";
 import RecommenderList from "../../pages/RecommenderList";
@@ -7,24 +12,68 @@ import OtherSalesRecord from "../../pages/OtherSalesRecord";
 import MasterDashboardDoing from "../../pages/MasterDashboardDoing";
 import MasterDashboardDone from "../../pages/MasterDashboardDone";
 
-const isAuthenticated = () => {
-  return !!localStorage.getItem("userToken"); // ✅ 로그인 여부 확인
-};
-
-const ProtectedRoutes = () => {
-  return isAuthenticated() ? (
+export default function ProtectedRoutes() {
+  return (
     <Routes>
-      <Route path="/affiliate/dashboard" element={<Dashboard />} />
-      <Route path="/affiliate/sales-record" element={<SalesRecord />} />
-      <Route path="/affiliate/recommender-list" element={<RecommenderList />} />
-      <Route path="/affiliate/referral-earning-list" element={<ReferralEarningList />} />
-      <Route path="/affiliate/other-sales-record" element={<OtherSalesRecord />} />
-      <Route path="/affiliate/master-dashboard-doing" element={<MasterDashboardDoing />} />
-      <Route path="/affiliate/master-dashboard-done" element={<MasterDashboardDone />} />
-    </Routes>
-  ) : (
-    <Navigate to="/affiliate/login" replace />
-  );
-};
+      {/* 유저 전용 */}
+      <Route
+        path="/dashboard"
+        element={
+          <RoleRoute allowedRoles={["user"]}>
+            <Dashboard />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/sales-record"
+        element={
+          <RoleRoute allowedRoles={["user"]}>
+            <SalesRecord />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/recommender-list"
+        element={
+          <RoleRoute allowedRoles={["user"]}>
+            <RecommenderList />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/referral-earning-list"
+        element={
+          <RoleRoute allowedRoles={["user"]}>
+            <ReferralEarningList />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/other-sales-record"
+        element={
+          <RoleRoute allowedRoles={["user"]}>
+            <OtherSalesRecord />
+          </RoleRoute>
+        }
+      />
 
-export default ProtectedRoutes;
+      {/* 마스터 전용 */}
+      <Route
+        path="/master-dashboard-doing"
+        element={
+          <RoleRoute allowedRoles={["master"]}>
+            <MasterDashboardDoing />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/master-dashboard-done"
+        element={
+          <RoleRoute allowedRoles={["master"]}>
+            <MasterDashboardDone />
+          </RoleRoute>
+        }
+      />
+    </Routes>
+  );
+}

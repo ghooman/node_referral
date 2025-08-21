@@ -64,9 +64,9 @@ function Footer() {
   return (
     <footer className="node-footer">
       <div className="node-footer__inner">
-        <div className="node--footer__top">
+        <div className="node-footer__top">
           <h3 className="node-footer__top__logo">
-            <Link to="/affiliate/dashboard">
+            <Link to="/dashboard">
               <img src={logoImg} alt="Music On the Block Affiliate Logo" />
             </Link>
           </h3>
@@ -156,7 +156,7 @@ function Footer() {
             </div>
           </div> */}
 
-          <div className="node-footer__bottom__right">
+          {/* <div className="node-footer__bottom__right">
             <div className="token-ui mob-token">
               <div className="token-ui__mob-info">
                 <div className="token-ui__mob-info__img-com">
@@ -179,7 +179,7 @@ function Footer() {
                 <li>
                   <h4>Cirulationg supply</h4>
                   <span>-</span>
-                  {/* 데이터 값이 없는 경우 '-'로 표현 */}
+        
                 </li>
                 <li>
                   <h4>Market Cap</h4>
@@ -221,7 +221,7 @@ function Footer() {
                 ))}
               </Swiper>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>

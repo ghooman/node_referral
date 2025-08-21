@@ -52,14 +52,11 @@ function MasterDashboardDone() {
   const handleGetDashboard = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get(
-        `${serverAPI}/api/sales/settlement/dashboard`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const res = await axios.get(`${serverAPI}/api/sales/settlement/dashboard`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       console.log("상단 대시보드 가져오기 완료!", res.data);
       setDashboard(res.data);
     } catch (error) {
@@ -71,13 +68,9 @@ function MasterDashboardDone() {
 
   // 하단 리스트 API 함수
   const handleGetDataList = async () => {
-    const isoStart = startDate
-      ? new Date(new Date(startDate).setHours(0, 0, 0, 0)).toISOString()
-      : null;
+    const isoStart = startDate ? new Date(new Date(startDate).setHours(0, 0, 0, 0)).toISOString() : null;
 
-    const isoEnd = endDate
-      ? new Date(new Date(endDate).setHours(23, 59, 59, 999)).toISOString()
-      : null;
+    const isoEnd = endDate ? new Date(new Date(endDate).setHours(23, 59, 59, 999)).toISOString() : null;
 
     console.log("📤 서버로 보내는 start_date", isoStart);
     console.log("📤 서버로 보내는 end_date", isoEnd);
@@ -152,10 +145,10 @@ function MasterDashboardDone() {
         <div className="page-wrapper masterdashboard-wrapper">
           <ul className="tab-ui">
             <li>
-              <Link to="/affiliate/master-dashboard-doing">판매승인/정산</Link>
+              <Link to="/master-dashboard-doing">Sales Approval / Settlement</Link>
             </li>
             <li className="selected">
-              <Link to="/affiliate/master-dashboard-done">정산기록</Link>
+              <Link to="/master-dashboard-done">Settlement History</Link>
             </li>
           </ul>
 
@@ -164,16 +157,10 @@ function MasterDashboardDone() {
             <label htmlFor="startDate"> Date Filter</label>
             <div className="date-field">
               {/* 시작일 */}
-              <MyDatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-              />
+              <MyDatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
               <span className="dash">-</span>
               {/* 종료일 */}
-              <MyDatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-              />
+              <MyDatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
               <button className="btn--reset" onClick={handleReset}>
                 Reset
               </button>
@@ -190,19 +177,19 @@ function MasterDashboardDone() {
                   <p>{formatNumber(dashboard.settlement_complt)}</p>
                 </li>
                 <li>
-                  <h3>Total Revenue</h3>
+                  <h3>Revenue</h3>
                   <p>{formatNumber(dashboard.total_income)}</p>
                 </li>
                 <li>
-                  <h3>Total Settlement Amount</h3>
+                  <h3>Settlement</h3>
                   <p>{formatNumber(dashboard.total_settlement)}</p>
                 </li>
                 <li>
-                  <h3>Total Fee Revenue</h3>
+                  <h3>Fee Revenue</h3>
                   <p>{formatNumber(dashboard.total_fee_income)}</p>
                 </li>
                 <li>
-                  <h3>Total Sent Nodes</h3>
+                  <h3>Sent Nodes</h3>
                   <p>{formatNumber(dashboard.total_node)}</p>
                 </li>
               </ul>
@@ -231,12 +218,7 @@ function MasterDashboardDone() {
                   handleGetDataList();
                 }}
               >
-                <img
-                  src={SearchIcon}
-                  alt="검색"
-                  aria-hidden="true"
-                  className="icon-search"
-                />
+                <img src={SearchIcon} alt="검색" aria-hidden="true" className="icon-search" />
                 <span className="sr-only">검색</span>
               </button>
             </div>
@@ -248,52 +230,47 @@ function MasterDashboardDone() {
                   <Loading />
                 </div>
               )}
+              {!isLoading && dataList.length === 0 ? (
+                <div className="table-empty">No settlement history found.</div>
+              ) : (
+                !isLoading && (
+                  <>
+                    {/* table head */}
+                    <div className="table-section__tit__list-head">
+                      <div className="col">Buyer</div>
+                      <div className="col">Seller Email</div>
+                      <div className="col">Wallet Address</div>
+                      <div className="col">Quantity</div>
+                      <div className="col">Total Amount</div>
+                      <div className="col">Settlement Amount</div>
+                      <div className="col">Fee</div>
+                      <div className="col">Settlement Date & Time</div>
+                    </div>
 
-              {!isLoading && (
-                <>
-                  {/* table head */}
-                  <div className="table-section__tit__list-head">
-                    <div className="col">Buyer</div>
-                    <div className="col">Seller Email</div>
-                    <div className="col">Wallet Address</div>
-                    <div className="col">Quantity</div>
-                    <div className="col">Total Amount</div>
-                    <div className="col">Settlement Amount</div>
-                    <div className="col">Fee</div>
-                    <div className="col">Settlement Date & Time</div>
-                  </div>
-
-                  {/* table body */}
-                  {dataList.map((item, index) => (
-                    <div key={index} className="list-item">
-                      <div className="list-item__row">
-                        <div className="col">{item.buyer_name}</div>
-                        <div className="col email">{item.username}</div>
-                        <div className="col wallet-copy-com">
-                          {formatWalletAddress(item.wallet_address)}
-                          <CopyButton textToCopy={item.wallet_address} />
-                        </div>
-                        <div className="col">{formatNumber(item.cnt)}</div>
-                        <div className="col">{formatNumber(item.amount)}</div>
-                        <div className="col">
-                          {formatNumber(item.total_settlement_amount)}
-                        </div>
-                        <div className="col">{formatNumber(item.fee)}</div>
-                        <div className="col">
-                          {formatDate(item.settlement_dt)}
+                    {/* table body */}
+                    {dataList.map((item, index) => (
+                      <div key={index} className="list-item">
+                        <div className="list-item__row">
+                          <div className="col">{item.buyer_name}</div>
+                          <div className="col email">{item.username}</div>
+                          <div className="col wallet-copy-com">
+                            {formatWalletAddress(item.wallet_address)}
+                            <CopyButton textToCopy={item.wallet_address} />
+                          </div>
+                          <div className="col">{formatNumber(item.cnt)}</div>
+                          <div className="col">{formatNumber(item.amount)}</div>
+                          <div className="col">{formatNumber(item.total_settlement_amount)}</div>
+                          <div className="col">{formatNumber(item.fee)}</div>
+                          <div className="col">{formatDate(item.settlement_dt)}</div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </>
+                    ))}
+                  </>
+                )
               )}
             </div>
           </div>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
         </div>
         <Footer />
       </div>
