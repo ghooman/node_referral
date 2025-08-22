@@ -24,7 +24,7 @@
         @include font-sm-b;
         padding: 8px 16px;
         background-color: $color-primary;
-        color: $color-gray-000;
+        color: $color-black;
         border-radius: 12px;
       }
     }
@@ -34,7 +34,7 @@
     @include flex-between;
     padding: 16px 0;
     font-weight: 600;
-    color: $color-gray-000;
+    color: $color-black;
 
     .col {
       font-size: 14px;
@@ -47,7 +47,7 @@
   .table-empty {
     text-align: center;
     padding: 60px 0;
-    color: $color-gray-000;
+    color: $color-black;
     font-weight: 600;
   }
 
@@ -64,7 +64,7 @@
     .list-item__row {
       @include flex-between;
       padding: 20px 0;
-      color: $color-gray-000;
+      color: $color-black;
 
       .col {
         flex: 1;
@@ -83,7 +83,7 @@
           &--requested {
             // 승인요청
             background-color: $color-primary;
-            color: $color-gray-000;
+            color: $color-black;
             padding: 4px 20px;
             margin: 0 auto; // 부모가 text-align: center일 때 가운데 정렬됨
           }
@@ -93,7 +93,7 @@
           &--settled {
             // 승인완료, 정산대기, 정산완료
             background-color: transparent;
-            color: $color-gray-000;
+            color: $color-black;
           }
 
           &--pending {

@@ -16,7 +16,7 @@
 
   &__current-month {
     @include font-xl-b;
-    color: $color-gray-000;
+    color: $color-black;
     padding-bottom: $sp-30 !important;
     margin-bottom: 12px;
     border-bottom: 1px solid #363636;
@@ -39,7 +39,7 @@
       height: 30px;
       background-color: transparent;
       border-radius: 10px;
-      border: 1px solid $color-gray-000;
+      border: 1px solid $color-black;
 
       &::before {
         border-color: #fff;
@@ -71,7 +71,7 @@
 
     &:hover {
         background-color: $color-primary;
-        color: $color-gray-000;
+        color: $color-black;
     }
 
     &--selected {

@@ -14,12 +14,12 @@
             overflow: hidden;
             text-overflow: ellipsis !important;
             white-space: nowrap;
-            color: $color-gray-000;
+            color: $color-black;
         }
     }
     small{
         @include font-h5-eb;
-        color: $color-gray-000;
+        color: $color-black;
         @include md{
             @include font-sm-b;
         }

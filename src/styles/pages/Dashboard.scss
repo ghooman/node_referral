@@ -25,7 +25,7 @@
   }
   h2 {
     @include font-h5-eb;
-    color: $color-gray-000;
+    color: $color-black;
     @include md {
       @include font-md-b;
     }
@@ -35,7 +35,7 @@
 .user-section {
   .user-section__email {
     @include font-xl-eb;
-    color: $color-gray-000;
+    color: $color-black;
     margin-bottom: $sp-20;
   }
   .user-section__wallet {
@@ -56,7 +56,7 @@
       }
       strong {
         @include font-h3;
-        color: $color-gray-000;
+        color: $color-black;
         @include md {
           @include font-md-b;
         }
@@ -68,7 +68,7 @@
     }
     .btn-register {
       @include font-sm-b;
-      color: $color-gray-000;
+      color: $color-black;
       padding: 8px 24px;
       font-size: 14px;
       background-color: $color-primary;
@@ -121,7 +121,7 @@
         }
         p {
           @include font-h5-b;
-          color: $color-gray-000;
+          color: $color-black;
           @include md {
             @include font-sm-b;
           }
@@ -149,7 +149,7 @@
         }
         p {
           @include font-xl-b;
-          color: $color-gray-000;
+          color: $color-black;
           @include md {
             @include font-sm-b;
           }
@@ -182,11 +182,11 @@
 
       // h2{
       //     @include font-h5-eb;
-      //     color: $color-gray-000;
+      //     color: $color-black;
       // }
       .btn-sm {
         @include font-sm-b;
-        color: $color-gray-000;
+        color: $color-black;
         padding: $sp-08 $sp-16;
         background-color: $color-primary;
         border-radius: 12px;
@@ -235,7 +235,7 @@
 
   .list-item {
     @include font-sm-r;
-    color: $color-gray-000;
+    color: $color-black;
     @include md {
       font-size: $fs-12 !important;
     }
@@ -258,7 +258,7 @@
         @include font-sm-b;
         padding: $sp-04 $sp-10;
         border-radius: 8px;
-        color: $color-gray-000;
+        color: $color-black;
 
         &--requested {
           background: $color-primary;
@@ -318,7 +318,7 @@
   @include font-xl-b;
   margin-top: $sp-16;
   text-align: center;
-  color: $color-gray-000 !important;
+  color: $color-black !important;
   padding: $sp-40;
 
   @include md {
@@ -332,7 +332,7 @@
   }
   .btn--line-mini {
     @include font-sm-r;
-    color: $color-gray-000;
+    color: $color-black;
     background-color: $color-w-o05;
     border: 1px solid $color-w-o20;
     padding: $sp-04 $sp-10;
@@ -375,7 +375,7 @@
   .modal__header {
     @include flex-between;
     @include font-xl-b;
-    color: $color-gray-000;
+    color: $color-black;
     margin-bottom: $sp-30;
     @include md {
       @include font-md-b;
@@ -430,9 +430,9 @@
     border-radius: 12px;
     border: 1px solid $color-w-o05;
     background-color: $color-w-o05;
-    color: $color-gray-000;
+    color: $color-black;
     &:focus {
-      color: $color-gray-000;
+      color: $color-black;
       &::placeholder {
         color: transparent;
         @include md {
@@ -456,7 +456,7 @@
   p {
     @include font-xl-b;
     font-size: 20px;
-    color: $color-gray-000;
+    color: $color-black;
     @include md {
       @include font-md-b;
     }
@@ -523,7 +523,7 @@
   border-radius: 12px;
   background: transparent;
   border: 1px solid $color-w-o20;
-  color: $color-gray-000;
+  color: $color-black;
   cursor: pointer;
   @include md {
     @include font-xs-r;

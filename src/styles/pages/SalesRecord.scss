@@ -27,7 +27,7 @@
     @include flex-between;
     h2 {
       @include font-h5-eb;
-      color: $color-gray-000;
+      color: $color-black;
       @include md {
         @include font-sm-b;
       }
@@ -65,7 +65,7 @@
       }
       p {
         @include font-xl-b;
-        color: $color-gray-000;
+        color: $color-black;
         @include md {
           @include font-sm-b;
         }
@@ -74,7 +74,7 @@
   }
   &__btn {
     @include font-md-b;
-    color: $color-gray-000;
+    color: $color-black;
     background-color: $color-primary;
     border-radius: 12px;
     padding: 16px;
@@ -124,7 +124,7 @@
     border-radius: 40px;
     min-width: 180px;
     background-color: rgba(0, 0, 0, 0.9);
-    color: $color-gray-000;
+    color: $color-black;
     cursor: pointer;
 
     .custom-select__arrow {
@@ -143,7 +143,7 @@
     z-index: 10;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.9);
-    border: 1px solid $color-gray-000;
+    border: 1px solid $color-black;
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     overflow: hidden;
@@ -162,7 +162,7 @@
       &.is-selected {
         background-color: $color-w-o05;
         font-weight: 600;
-        color: $color-gray-000;
+        color: $color-black;
       }
     }
   }
@@ -176,7 +176,7 @@
 
 .btn-line-cancel {
   @include font-sm-b;
-  color: $color-gray-000;
+  color: $color-black;
   border: 1px solid $color-w-o20;
   background-color: $color-w-o05;
   border-radius: 8px;

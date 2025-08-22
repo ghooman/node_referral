@@ -64,7 +64,7 @@
         &--settled {
           // 승인완료, 정산대기, 정산완료
           background-color: transparent;
-          // color: $color-gray-000;
+          // color: $color-black;
         }
 
         &--pending {
@@ -141,7 +141,7 @@
           @include font-sm-r;
           display: flex;
           padding: $sp-08 0;
-          color: $color-gray-000;
+          color: $color-black;
           @include md {
             @include font-xs-r;
           }

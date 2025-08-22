@@ -27,26 +27,54 @@ function Header() {
   };
 
   return (
+    <>
     <header className="node-header">
-      <div className="node-header__inner">
-        <h1 className="node-header__inner__logo">
-          <img
-            onClick={handleLogoClick}
-            src={logoImg}
-            alt="Music On The Block Affiliate Logo"
-          />
-        </h1>
-        <div className="node-header__actions">
-          {/* <button type="button" className="node-header__lang" aria-label="Change language">
-            <img src={iconLang} alt="" aria-hidden="true" />
-            <span>KOR</span>
-          </button> */}
-          <button className="node-header__sign-out" onClick={handleSignOut}>
-            Sign Out
-          </button>
+      <div className="node-header__center">
+        <div className="node-header__inner">
+          <h1 className="node-header__inner__logo">
+            <img
+              onClick={handleLogoClick}
+              src={logoImg}
+              alt="Music On The Block Affiliate Logo"
+            />
+          </h1>
+          <div className="node-header__actions">
+            {/* <button type="button" className="node-header__lang" aria-label="Change language">
+              <img src={iconLang} alt="" aria-hidden="true" />
+              <span>KOR</span>
+            </button> */}
+            <button className="node-header__sign-out" onClick={handleSignOut}>
+              Sign Out
+            </button>
+          </div>
+        </div>
+        <div className="node-header__nav-wrap">
+          <nav className="node-header__nav">
+            <ul>
+              <li className="active">
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
+              <li>
+                <Link to="/">My Sales Records</Link>
+              </li>
+              <li>
+                <Link to="/">Referral Purchases</Link>
+              </li>
+              <li>
+                <Link to="/">Referral Registrants</Link>
+              </li>
+              <li>
+                <Link to="/">Invite Code List</Link>
+              </li>
+              <li>
+                <Link to="/">Sub-Affiliate Earnings</Link>
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </header>
+    </>
   );
 }
 

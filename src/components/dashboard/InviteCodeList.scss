@@ -24,7 +24,7 @@
         @include font-sm-b;
         padding: 8px 16px;
         background-color: $color-primary;
-        color: $color-gray-000;
+        color: $color-black;
         border-radius: 8px;
         @include md {
           @include font-xs-b;
@@ -36,7 +36,7 @@
   .table-section__tit__list-head {
     display: flex;
     padding: 16px 0;
-    color: $color-gray-000;
+    color: $color-black;
 
     .col {
       @include font-sm-b;
@@ -56,7 +56,7 @@
       display: flex;
       align-items: center;
       padding: 20px;
-      color: $color-gray-000;
+      color: $color-black;
       border-bottom: 1px solid $color-w-o10;
       @include md {
         @include font-xs-b;
@@ -87,7 +87,7 @@
     border: 1px solid $color-w-o20;
     border-radius: 6px;
     background-color: $color-w-o05;
-    color: $color-gray-000;
+    color: $color-black;
     white-space: nowrap;
     transition: all 0.3s ease;
     &.copied {

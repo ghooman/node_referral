@@ -15,8 +15,8 @@
 }
 
 .modal-content {
-  background-color: $color-gray-900;
-  color: #fff;
+  background-color: $color-gray-000;
+  // color: #fff;
   width: 100%;
   max-width: 440px;
   padding: $sp-30;
@@ -29,6 +29,12 @@
 
   @media (max-width: $responsive-md) {
     padding: $sp-20;
+  }
+  .modal__title{
+    color: $color-black;
+  }
+  .modal__txt{
+    color: $color-gray-600;
   }
 }
 
