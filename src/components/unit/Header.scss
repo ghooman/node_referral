@@ -9,6 +9,7 @@
   width: 100%;
   background-color: $color-gray-000;
   z-index: 1;
+  border-bottom: 1px solid $color-gray-300;
 
   &__center{
     margin: 0 auto;
@@ -63,9 +64,7 @@
 
   // navigation
   &__nav-wrap{
-    border-color: $color-gray-300;
-    border-width: 1px 0 1px 0;
-    border-style: solid;
+    border-top: 1px solid $color-gray-300;
   }
   &__nav{
     max-width: 1440px;
@@ -85,17 +84,7 @@
       white-space: nowrap;
       min-width: 100%;
       width: max-content;
-
       overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      
-      /* --- 스크롤바 숨기기 --- */
-      scrollbar-width: none; // Firefox
-      -ms-overflow-style: none; // IE, Edge
-
-      &::-webkit-scrollbar{ // Chrome, Safari
-        display: none;
-      }
       
       li{
         flex: 0 0 auto;

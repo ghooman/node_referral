@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 // compomnents
-import HeaderBack from "../components/unit/HeaderBack";
+import Header from "../components/unit/Header";
 import Footer from "../components/unit/Footer";
 import LoadingDots from "../components/unit/LoadingDots";
 import FullModalWrap from "../components/modal/FullModalWrap";
@@ -261,7 +261,7 @@ function RecommenderList() {
   return (
     <>
       <div className="layout">
-        <HeaderBack />
+        <Header />
         <div className="page-wrapper padding-del">
           <div className="sales-section">
             <div className="sales-section__record-tit">

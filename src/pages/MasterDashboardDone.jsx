@@ -2,7 +2,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import React, { use, useState, useEffect } from "react";
 // compomnents
-import Header from "../components/unit/Header";
+import HeaderBack from "../components/unit/HeaderBack";
 import Footer from "../components/unit/Footer";
 import Pagination from "../components/unit/Pagination";
 import CopyButton from "../components/unit/CopyButton";
@@ -141,7 +141,7 @@ function MasterDashboardDone() {
   return (
     <>
       <div className="layout">
-        <Header />
+        <HeaderBack />
         <div className="page-wrapper masterdashboard-wrapper">
           <ul className="tab-ui">
             <li>

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 // img
 import logoImg from "../../assets/images/logo/logo-affiliate-02.svg";
 import iconLang from "../../assets/images/icon-language.svg";
@@ -7,6 +7,7 @@ import "./Header.scss";
 
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSignOut = () => {
     localStorage.removeItem("userEmail");
@@ -26,6 +27,16 @@ function Header() {
     }
   };
 
+  const isMasterDashboard = location.pathname.startsWith("/master-dashboard");
+
+  const menuItems = [
+    { path: "/dashboard", label: "Dashboard" },
+    { path: "/sales-record", label: "My Sales Records" },
+    { path: "/referral-purchases", label: "Referral Purchases" },
+    { path: "/referral-registrants", label: "Referral Registrants" },
+    { path: "/recommender-list", label: "Invite Code List" },
+    { path: "/referral-earning-list", label: "Sub-Affiliate Earnings" },
+  ];
   return (
     <>
     <header className="node-header">
@@ -48,30 +59,22 @@ function Header() {
             </button>
           </div>
         </div>
+        {!isMasterDashboard && (
         <div className="node-header__nav-wrap">
           <nav className="node-header__nav">
             <ul>
-              <li className="active">
-                <Link to="/dashboard">Dashboard</Link>
-              </li>
-              <li>
-                <Link to="/">My Sales Records</Link>
-              </li>
-              <li>
-                <Link to="/">Referral Purchases</Link>
-              </li>
-              <li>
-                <Link to="/">Referral Registrants</Link>
-              </li>
-              <li>
-                <Link to="/">Invite Code List</Link>
-              </li>
-              <li>
-                <Link to="/">Sub-Affiliate Earnings</Link>
-              </li>
+               {menuItems.map((item, idx) => (
+                  <li
+                    key={idx}
+                    className={location.pathname === item.path ? "active" : ""}
+                  >
+                    <Link to={item.path}>{item.label}</Link>
+                  </li>
+                ))}
             </ul>
           </nav>
         </div>
+        )}
       </div>
     </header>
     </>

@@ -11,6 +11,8 @@ function MyDatePicker({ selected, onChange }) {
       dateFormat="yyyy.MM.dd"
       placeholderText="Year. Month. Day"
       className="filter-date__input"
+      portalId="root-portal"
+
     />
   );
 }

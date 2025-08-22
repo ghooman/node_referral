@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 // compomnents
-import HeaderBack from "../components/unit/HeaderBack";
+import Header from "../components/unit/Header";
 import Footer from "../components/unit/Footer";
 import LoadingDots from "../components/unit/LoadingDots";
 import FullModalWrap from "../components/modal/FullModalWrap";
@@ -366,14 +366,19 @@ function SalesRecord() {
   return (
     <>
       <div className="layout">
-        <HeaderBack />
-        <div className="page-wrapper padding-del">
+        <Header />
+        <div className="page-wrapper">
           <div className="sales-section">
-            <div className="sales-section__record-tit">
-              <h2>My Sales Records</h2>
-              <span>
-                Total <small>{totalCnt}</small>
-              </span>
+            <div className="sales-section__record-tit-box">
+              <div className="sales-section__record-tit">
+                <h2>My Sales Records</h2>
+                <span>
+                  Total <small>{totalCnt}</small>
+                </span>
+              </div>
+              <button type="button" className="sales-section__btn" onClick={handleClickNewDealBtn}>
+                New Transaction
+              </button>          
             </div>
             <ul className="sales-section__record-list">
               <li>
@@ -384,18 +389,15 @@ function SalesRecord() {
                 <h3>My Sales Settlements</h3>
                 <p>{formatNumber(mySettlement)}</p>
               </li>
-              <li>
+              {/* <li>
                 <h3>My Referrals</h3>
                 <p>{formatNumber(myReferrals)}</p>
-              </li>
+              </li> */}
               <li>
                 <h3>My Sold Nodes</h3>
                 <p>{formatNumber(mySoldNode)}</p>
               </li>
             </ul>
-            <button type="button" className="sales-section__btn" onClick={handleClickNewDealBtn}>
-              New Transaction
-            </button>
           </div>
           {/* 필터 영역 */}
           <div className="filter-group">

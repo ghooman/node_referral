@@ -84,9 +84,9 @@
   .btn--line-mini {
     @include font-sm-r;
     padding: 4px 10px;
-    border: 1px solid $color-w-o20;
+    border: 1px solid $color-b-o10;
     border-radius: 6px;
-    background-color: $color-w-o05;
+    background-color: $color-b-o05;
     color: $color-black;
     white-space: nowrap;
     transition: all 0.3s ease;

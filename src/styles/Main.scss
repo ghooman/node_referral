@@ -9,10 +9,7 @@ body {
     max-width: 1440px !important;
     width: 100%;
     margin: $sp-40 auto 0 !important;
-    padding: 54px 0 $sp-60;
-    @include md{
-        padding: 46px 4% $sp-30;
-    }
+    padding: clamp(80px, 8.3vw, 120px) 0 $sp-60;
 }
 
 // scroll style START
@@ -28,17 +25,17 @@ body {
   }
 
   &::-webkit-scrollbar-thumb{
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0,0, 0.2);
     border-radius: 4px;
     transition: background-color 0.2s ease;
   }
 
   &::-webkit-scrollbar-thumb:hover{
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(0, 0, 0, 0.4);
   }
 
   &::-webkit-scrollbar-thumb:active{
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(0, 0, 0, 0.6);
   }
 }
 .table-section-inner {

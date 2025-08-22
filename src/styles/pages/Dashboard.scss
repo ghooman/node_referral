@@ -7,14 +7,8 @@
   padding: 0 2%;
   @include flex-column;
   row-gap: 30px;
-  margin: 0 auto important;
-  padding-top: $sp-60;
-  @include lg {
-    padding: $sp-60 2%;
-  }
-  @include md {
-    padding: 24px 4%;
-  }
+  // margin: 40px auto 0 important;
+  padding-top: clamp(80px, 8.3vw, 120px);
   section {
     padding: $sp-30 2%;
     border-radius: 50px;
@@ -33,20 +27,36 @@
 }
 
 .user-section {
+  padding: clamp(12px, 2vw, 30px);
+  background-color: $color-gray-100;
+  border-radius: clamp(12px, 1.3vw, 20px);
   .user-section__email {
-    @include font-xl-eb;
-    color: $color-black;
-    margin-bottom: $sp-20;
+    font-size: clamp(16px, 1.3vw, 20px);
+    line-height: clamp(24px, 2vw, 30px);
+    font-weight: 700;
+    color: #353535;
+    margin-bottom: $sp-16;
+    text-align: right;
+  }
+  .user-section__flex{
+    @include flex-between;
+    @include md{
+      flex-direction: column-reverse;
+      align-items: flex-start !important;
+    }
+    & > * {
+      flex: 0 0 49%;
+    }
   }
   .user-section__wallet {
-    @include flex-start;
-    column-gap: $sp-60;
+    @include flex-column;
+    row-gap: $sp-08;
     @include md {
-      column-gap: $sp-12;
+      column-gap: $sp-08;
     }
     li {
-      @include flex-column;
-      row-gap: 4px;
+      @include flex-start;
+      column-gap: 8px;
       span {
         @include font-sm-r;
         color: $color-gray-600;
@@ -65,6 +75,11 @@
     .user-section__wallet__copy-com {
       @include flex-start;
       column-gap: 12px;
+      img{
+        @include md{
+          max-width: 20px;
+        }
+      }
     }
     .btn-register {
       @include font-sm-b;
@@ -77,6 +92,9 @@
         @include font-xs-b;
       }
     }
+  }
+  .color-blue{
+    color: $color-primary !important;
   }
 }
 // user-section END
@@ -208,7 +226,7 @@
 
   .table-section__tit__list-head {
     @include flex-between;
-    border-bottom: 1px solid $color-w-o20;
+    border-bottom: 1px solid $color-gray-200;
     @include font-sm-r;
     color: $color-gray-600;
 
@@ -236,6 +254,7 @@
   .list-item {
     @include font-sm-r;
     color: $color-black;
+    border-bottom: 1px solid $color-gray-200;
     @include md {
       font-size: $fs-12 !important;
     }

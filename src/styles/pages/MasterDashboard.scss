@@ -17,7 +17,9 @@
   row-gap: 30px;
 
   .dash-section {
-    padding: 0;
+    padding: clamp(8px, 1.3vw, 20px) clamp(12px, 2vw, 30px) !important;
+    background-color: $color-gray-100;
+    border-radius: 16px; 
 
     .dash-section__tit {
       @include font-h5-eb;
@@ -85,8 +87,6 @@
 
   @include md {
     .dash-section {
-      padding: 0 !important;
-
       .dash-section__tit {
         @include font-md-b;
       }
@@ -98,7 +98,7 @@
   @include flex-between;
   @include font-xl-r;
   color: $color-gray-600;
-  border-bottom: 1px solid $color-w-o20;
+  border-bottom: 1px solid #d9d9d9;
   @include md {
     @include font-sm-r;
   }
@@ -141,7 +141,7 @@
   height: 48px;
   border-radius: 999px;
   padding: 0 16px;
-  background-color: #1c1c1c;
+  background-color: $color-b-o05;
   border: 1px solid rgba(255, 255, 255, 0.1);
 
   &__input {
@@ -149,11 +149,11 @@
     height: 100%;
     border: none;
     background: transparent;
-    color: #fff;
+    color: $color-black;
     font-size: 14px;
 
     &::placeholder {
-      color: rgba(255, 255, 255, 0.4);
+      color: $color-gray-400;
     }
 
     &:focus {
@@ -175,7 +175,6 @@
       width: 20px;
       height: 20px;
       display: block;
-      filter: brightness(0) invert(1);
     }
 
     .sr-only {
@@ -255,8 +254,8 @@
     padding: $sp-10 clamp(10px, 1.1vw, 16px);
     border-radius: 12px;
     border: 1px solid $color-w-o05;
-    background-color: $color-w-o05;
-    color: $color-gray-600;
+    background-color: $color-b-o05;
+    color: $color-black;
     font-weight: 400;
     font-size: clamp(10px, 0.9vw, 14px);
 
@@ -284,7 +283,7 @@
   .btn--reset {
     padding: 10px clamp(12px, 1.1vw, 16px);
     background-color: $color-primary;
-    color: $color-black;
+    color: $color-gray-000;
     border-radius: 12px;
     @include font-sm-b;
     white-space: nowrap;

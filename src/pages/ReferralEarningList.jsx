@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 // compomnents
-import HeaderBack from "../components/unit/HeaderBack";
+import Header from "../components/unit/Header";
 import Footer from "../components/unit/Footer";
 import InputField from "../components/unit/InputField";
 import Pagination from "../components/unit/Pagination";
@@ -224,7 +224,7 @@ function ReferralEarningList() {
   return (
     <>
       <div className="layout">
-        <HeaderBack />
+        <Header />
         <div className="page-wrapper padding-del">
           <div className="sales-section">
             <div className="sales-section__record-tit">
