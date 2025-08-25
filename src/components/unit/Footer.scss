@@ -6,8 +6,8 @@
   margin-top: $sp-40;
   // padding: $sp-40 4% $sp-60;
   padding: $sp-40 4%;
-  border-top: 1px solid $color-w-o10;
-  background-color: $color-gray-900;
+  border-top: 1px solid $color-gray-300;
+  background-color: $color-gray-000;
   @include md {
     padding: $sp-24 4% $sp-20;
     margin-top: $sp-30;
@@ -69,7 +69,7 @@
         cursor: default;
         b {
           @include font-sm-r;
-          color: $color-gray-400;
+          color: $color-gray-600;
           @include md {
             @include font-xs-r;
           }
@@ -127,7 +127,7 @@
             .token-ui__mob-info__img-com__tit {
               dt {
                 @include font-lg-b;
-                color: $color-gray-000;
+                color: $color-black;
               }
               dd {
                 @include font-xs-r;
@@ -140,7 +140,7 @@
             text-align: right;
             dt {
               @include font-md-b;
-              color: $color-gray-000;
+              color: $color-black;
             }
             dd {
               @include font-xs-r;
@@ -157,7 +157,7 @@
             }
             span {
               @include font-sm-b;
-              color: $color-gray-400;
+              color: $color-gray-600;
             }
             &:nth-of-type(1) {
               padding-bottom: $sp-08;
@@ -205,7 +205,7 @@
           .slide-item__img-com__tit {
             dt {
               @include font-md-b;
-              color: $color-gray-000;
+              color: $color-black;
             }
             dd {
               @include font-xs-r;
@@ -215,13 +215,13 @@
         }
         .slide-item__txt-com {
           @include font-md-b;
-          color: $color-gray-000;
+          color: $color-black;
         }
       }
       .swiper-slide:not(:first-of-type) {
         .slide-item__img-com__tit dt,
         .slide-item__txt-com {
-          color: $color-gray-400;
+          color: $color-gray-600;
         }
       }
       // footer__bottom__right > hash-swiper START

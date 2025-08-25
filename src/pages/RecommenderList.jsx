@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 // compomnents
-import HeaderBack from "../components/unit/HeaderBack";
+import Header from "../components/unit/Header";
 import Footer from "../components/unit/Footer";
 import LoadingDots from "../components/unit/LoadingDots";
 import FullModalWrap from "../components/modal/FullModalWrap";
@@ -261,18 +261,20 @@ function RecommenderList() {
   return (
     <>
       <div className="layout">
-        <HeaderBack />
+        <Header />
         <div className="page-wrapper padding-del">
           <div className="sales-section">
+            <div className="sales-section__record-tit-box">
             <div className="sales-section__record-tit">
-              <h2>Invite Code List</h2>
-              <span>
-                Total <small>{inviteCodeCnt}</small>
-              </span>
+                <h2>Invite Code List</h2>
+                <span>
+                  Total <small>{inviteCodeCnt}</small>
+                </span>
+              </div>
+              <button type="button" className="sales-section__btn" onClick={handleClickInviteBtn}>
+                Create Invite Code
+              </button>
             </div>
-            <button type="button" className="sales-section__btn" onClick={handleClickInviteBtn}>
-              Create Invite Code
-            </button>
           </div>
           <div className="filter-group">
             <div className="filter-group__title">Filter</div>

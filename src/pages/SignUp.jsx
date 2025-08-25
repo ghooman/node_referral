@@ -164,7 +164,7 @@ function SignUp() {
   return (
     <>
       <HeaderBack />
-      <section className="signup__wrapper page-wrapper">
+      <section className="signup__wrapper">
         <h2>Sign Up</h2>
 
         <form className="signup__form" onSubmit={handleSubmit}>

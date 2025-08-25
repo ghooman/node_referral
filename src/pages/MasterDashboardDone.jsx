@@ -2,7 +2,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import React, { use, useState, useEffect } from "react";
 // compomnents
-import Header from "../components/unit/Header";
+import HeaderBack from "../components/unit/HeaderBack";
 import Footer from "../components/unit/Footer";
 import Pagination from "../components/unit/Pagination";
 import CopyButton from "../components/unit/CopyButton";
@@ -141,7 +141,7 @@ function MasterDashboardDone() {
   return (
     <>
       <div className="layout">
-        <Header />
+        <HeaderBack />
         <div className="page-wrapper masterdashboard-wrapper">
           <ul className="tab-ui">
             <li>
@@ -225,11 +225,13 @@ function MasterDashboardDone() {
           </div>
           <div className="table-section full-content-section">
             <div className="table-section-inner">
+              {/* 로딩 */}
               {isLoading && (
                 <div className="result-loading">
                   <Loading />
                 </div>
               )}
+              {/* 데이터 없음 */}
               {!isLoading && dataList.length === 0 ? (
                 <div className="table-empty">No settlement history found.</div>
               ) : (
@@ -244,7 +246,7 @@ function MasterDashboardDone() {
                       <div className="col">Total Amount</div>
                       <div className="col">Settlement Amount</div>
                       <div className="col">Fee</div>
-                      <div className="col">Settlement Date & Time</div>
+                      <div className="col">Settlement Date</div>
                     </div>
 
                     {/* table body */}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 // compomnents
-import HeaderBack from "../components/unit/HeaderBack";
+import Header from "../components/unit/Header";
 import Footer from "../components/unit/Footer";
 import Pagination from "../components/unit/Pagination";
 import Loading from "../components/Loading.jsx";
@@ -189,10 +189,10 @@ function OtherSalesRecord() {
   return (
     <>
       <div className="layout">
-        <HeaderBack />
-        <div className="page-wrapper padding-del">
+        <Header />
+        <div className="page-wrapper">
           <div className="sales-section">
-            <div className="sales-section__record-tit">
+            <div className="sales-section__record-tit other-section">
               <div className="custom-select">
                 {/* custom-select에 is-open class 삽입 시 select option 노출 */}
                 <div className="custom-select__sales-list">

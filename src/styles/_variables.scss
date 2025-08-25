@@ -8,7 +8,7 @@ $color-primary: #48b3ff;
 $color-primary-dark: #3a9de3;
 
 // BG_Gradient
-$bg-gradient: linear-gradient(154deg, #000000 4.97%, #222222 77.35%);
+$bg-gradient: #fff;
 
 // Opacity Varients
 $color-w-o05: rgba(255, 255, 255, 0.05);
@@ -23,6 +23,7 @@ $color-b-o70: rgba(0, 0, 0, 0.7);
 $color-b-o80: rgba(0, 0, 0, 0.8);
 
 // Gray Scales
+$color-black: #000;
 $color-gray-900: #181818;
 $color-gray-800: #303030;
 $color-gray-700: #4b4b4b;
@@ -30,6 +31,8 @@ $color-gray-600: #767676;
 $color-gray-500: #959595;
 $color-gray-400: #a8a8a8;
 $color-gray-300: #bbbbbb;
+$color-gray-200: #d9d9d9;
+$color-gray-100: #f8f8f8;
 $color-gray-000: #ffffff;
 
 /* -------------------- Typography -------------------- */
@@ -71,3 +74,4 @@ $sp-80: 80px;
 $responsive-lg: 1200px;
 $responsive-md: 999px;
 $responsive-sm: 768px;
+$responsive-xs: 480px;

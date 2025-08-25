@@ -11,7 +11,7 @@
     &__arrow{
         background: none;
         border: none;
-        color: $color-gray-400;
+        color: $color-gray-600;
         font-size: 20px;
         cursor: pointer;
         padding: $sp-06;
@@ -26,7 +26,7 @@
         @include font-sm-b;
         background: transparent;
         border: none;
-        color: $color-gray-000;
+        color: $color-black;
         width: 40px;
         height: 40px;
         border-radius: 12px;

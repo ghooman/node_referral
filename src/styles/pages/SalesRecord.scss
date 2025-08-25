@@ -10,24 +10,22 @@
   justify-content: center;
   align-items: center;
 }
-
-@include md {
-  .padding-del {
-    padding-top: 24px;
-  }
-}
 .sales-section {
   @include flex-column;
   row-gap: 20px;
-  padding: 0 2%;
+  padding: clamp(8px, 1.3vw, 20px) clamp(12px, 2vw, 30px);
   margin-bottom: $sp-30;
 
-  &__record-tit {
-    width: 100%;
+  &__record-tit-box{
     @include flex-between;
+  }
+
+  &__record-tit {
+    @include flex-start;
+    column-gap: clamp(8px, 0.8vw, 12px);
     h2 {
       @include font-h5-eb;
-      color: $color-gray-000;
+      color: $color-black;
       @include md {
         @include font-sm-b;
       }
@@ -43,13 +41,15 @@
   &__record-list {
     @include flex-between;
     gap: 16px;
+    background-color: $color-gray-100;
+    border-radius: clamp(8px, 1.1vw, 16px);
+    padding: clamp(12px, 1.3vw, 20px) clamp(12px, 2vw, 30px);
     @include md {
       gap: 4px;
       flex-wrap: wrap;
     }
     li {
       border: 1px solid $color-w-o20;
-      padding: 20px;
       width: 32%;
       border-radius: 20px;
       @include md {
@@ -59,13 +59,17 @@
       h3 {
         @include font-sm-r;
         color: $color-gray-600;
+        margin-bottom: 8px;
         @include md {
           @include font-xs-r;
         }
       }
       p {
         @include font-xl-b;
-        color: $color-gray-000;
+        color: $color-black;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         @include md {
           @include font-sm-b;
         }
@@ -75,10 +79,11 @@
   &__btn {
     @include font-md-b;
     color: $color-gray-000;
-    background-color: $color-primary-dark;
+    background-color: $color-primary;
     border-radius: 12px;
-    padding: 16px;
+    padding: clamp(3px, 1.1vw, 16px) clamp(12px, 1.1vw, 16px);
     max-width: 240px;
+    width: fit-content;
     @include md {
       @include font-xs-b;
     }
@@ -119,13 +124,16 @@
     @include font-sm-r;
     @include flex-between;
     width: 100%;
-    padding: 8px 20px;
+    padding: 8px 16px;
     border: 1px solid $color-w-o20;
     border-radius: 40px;
     min-width: 180px;
-    background-color: rgba(0, 0, 0, 0.9);
-    color: $color-gray-000;
+    background-color: $color-gray-100;
+    color: $color-black;
     cursor: pointer;
+    span{
+      font-weight: 700;
+    }
 
     .custom-select__arrow {
       display: inline-block;
@@ -142,8 +150,8 @@
     left: 0;
     z-index: 10;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
-    border: 1px solid $color-gray-000;
+    background-color: $color-gray-100;
+    border: 1px solid $color-black;
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     overflow: hidden;
@@ -162,7 +170,7 @@
       &.is-selected {
         background-color: $color-w-o05;
         font-weight: 600;
-        color: $color-gray-000;
+        color: $color-black;
       }
     }
   }
@@ -176,9 +184,9 @@
 
 .btn-line-cancel {
   @include font-sm-b;
-  color: $color-gray-000;
-  border: 1px solid $color-w-o20;
-  background-color: $color-w-o05;
+  color: $color-black;
+  border: 1px solid $color-b-o10;
+  background-color: $color-b-o05;
   border-radius: 8px;
   padding: 4px 20px;
   @include md {

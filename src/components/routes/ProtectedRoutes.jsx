@@ -11,6 +11,8 @@ import ReferralEarningList from "../../pages/ReferralEarningList";
 import OtherSalesRecord from "../../pages/OtherSalesRecord";
 import MasterDashboardDoing from "../../pages/MasterDashboardDoing";
 import MasterDashboardDone from "../../pages/MasterDashboardDone";
+import ReferralPurchaseList from "../../pages/ReferralPurchaseList";
+import ReferralRegistrantsList from "../../pages/ReferralRegistrantsList";
 
 export default function ProtectedRoutes() {
   return (
@@ -56,6 +58,24 @@ export default function ProtectedRoutes() {
           </RoleRoute>
         }
       />
+      {/* 추가 페이지 */}
+      <Route
+        path="/referral-purchase-list"
+        element={
+          <RoleRoute allowedRoles={["user"]}>
+            <ReferralPurchaseList />
+          </RoleRoute>
+        }
+      />
+      <Route
+        path="/referral-registrants-list"
+        element={
+          <RoleRoute allowedRoles={["user"]}>
+            <ReferralRegistrantsList />
+          </RoleRoute>
+        }
+      />
+
 
       {/* 마스터 전용 */}
       <Route

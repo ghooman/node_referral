@@ -110,6 +110,26 @@ function Dashboard() {
   //----- 하위 레퍼럴 활동현황 상태 ----------------------------------------------------
   const [downReferralActive, setDownReferralActive] = useState(null);
 
+  //----- 내 레퍼럴 코드, 링크 복사 관리 ----------------------------------------------------
+  const [copiedIndex, setCopiedIndex] = useState({ code: false, link: false });
+  const handleCopyCode = (code) => {
+    navigator.clipboard.writeText(code);
+    setCopiedIndex((prev) => ({ ...prev, code: true }));
+  };
+  const handleCopyLink = (code) => {
+    const fullUrl = `https://affiliate.musicontheblock.com/signup/?r=${code}`;
+    navigator.clipboard.writeText(fullUrl);
+    setCopiedIndex((prev) => ({ ...prev, link: true }));
+  };
+  useEffect(() => {
+    if (copiedIndex.code || copiedIndex.link) {
+      const timer = setTimeout(() => {
+        setCopiedIndex({ code: false, link: false });
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [copiedIndex]);
+
   //---- 공통 ----------------------------------------------------
   // 사용자 정보 가져오는 함수
   const userInfo = async () => {
@@ -496,13 +516,15 @@ function Dashboard() {
       <Header />
       <div className="page-wrapper dashboard-wrapper">
         <div className="user-section">
-          <p className="user-section__email">{userName}</p>
           <ul className="user-section__wallet">
-            <li>
-              <span>My Share</span>
-              <strong>{userShare}%</strong>
+            <li className="user-section__flex">
+              <div className="user-section__share">
+                <span>My Share</span>
+                <strong className="color-blue">{userShare}%</strong>
+              </div>
+              <p className="user-section__email">{userName}</p>
             </li>
-            <li>
+            <li> 
               <span>Company Wallet</span>
               <div className="user-section__wallet__copy-com">
                 <strong>{formatWalletAddress(userOfficeWallet)}</strong>
@@ -526,388 +548,142 @@ function Dashboard() {
                 </div>
               )}
             </li>
+            <li>
+              <span>My Referral Code</span>
+              <div className="user-section__referral-code-com">
+                <strong>72FWSA</strong>
+                <div className="user-section__referral-code-com__btn-box">
+                  <button
+                    className={`btn-line-copy ${copiedIndex.code ? "copied" : ""}`}
+                    onClick={() => handleCopyCode("72FWSA")}
+                  >
+                    {copiedIndex.code ? "Copied" : "Copy Code"}
+                  </button>
+                  <button
+                    className={`btn-line-copy ${copiedIndex.link ? "copied" : ""}`}
+                    onClick={() => handleCopyLink("72FWSA")}
+                  >
+                    {copiedIndex.link ? "Copied" : "Copy Link"}
+                  </button>
+                </div>
+              </div>
+            </li>
           </ul>
         </div>
 
-        {/* 대시보드 */}
+        {/* 대시보드 -> 데이터가 없는 경우 '0'으로 처리 */}
         <section className="dash-section">
           <h2 className="dash-section__tit">Dashboard</h2>
           <div className="dash-section__txt">
-            <ul className="dash-section__txt__board">
+            {/* 
+              전체 레퍼럴 가입자, 내 레퍼럴 가입자, 하위자 레퍼럴 가입자
+              레퍼럴 구매 수입, 레퍼럴 구매 정산금, 레퍼럴 구매 노드 수 추가
+            */}
+            <ul className="dash-section__txt__board col-4">
               <li>
+                {/* 전체 수입 */}
                 <h3>Total Revenue (USDT)</h3>
                 <p>{formatNumber(totalRevenue)}</p>
               </li>
               <li>
-                <h3>Total Settlements (USDT)</h3>
-                <p>{formatNumber(totalSettlement)}</p>
-              </li>
-              <li>
-                <h3>Total Referrals</h3>
-                <p>{formatNumber(totalReferrals)}</p>
-              </li>
-              <li>
-                <h3>Total Sold Nodes (NODE)</h3>
-                <p>{formatNumber(totalSoldNode)}</p>
-              </li>
-            </ul>
-            <ul className="dash-section__txt__list">
-              <li>
+                {/* 나의 판매 수입 */}
                 <h3>My Sales Revenue</h3>
                 <p>{formatNumber(myRevenue)}</p>
               </li>
               <li>
+                {/* (new) 레퍼럴 구매 수입 */}
+                <h3>Referral Purchase Revenue</h3>
+                <p>3,284,224</p>
+              </li>
+              <li>
+                {/* 하위자 판매 수입 -> 하위자 거래 수입 */}
+                <h3>Sub-affiliate Transaction Revenue</h3>
+                <p>3,284,224</p>
+              </li>
+            </ul>
+            <ul className="dash-section__txt__board col-4">
+              <li>
+                {/* 전체 정산금 */}
+                <h3>Total Settlements (USDT)</h3>
+                <p>{formatNumber(totalSettlement)}</p>
+              </li>
+              <li>
+                {/* 나의 판매 정산금 */}
                 <h3>My Sales Settlements</h3>
                 <p>{formatNumber(mySettlement)}</p>
               </li>
               <li>
-                <h3>My Referrals</h3>
-                <p>{formatNumber(myReferrals)}</p>
+                {/* (new) 레퍼럴 구매 정산금 */}
+                <h3>Referral Purchase Settlements</h3>
+                <p>3,284,224</p>
               </li>
               <li>
+                {/* 하위자 판매 정산금 -> 하위자 거래 정산금 */}
+                <h3>Sub-affiliate Settlements</h3>
+                <p>{formatNumber(downSettlement)}</p>
+              </li>
+            </ul>
+            <ul className="dash-section__txt__board col-4">
+              <li>
+                  {/* 전체 판매 노드 수 -> 전체 거래 노드 수 */}
+                <h3>Total Sold Nodes (NODE)</h3>
+                <p>{formatNumber(totalSoldNode)}</p>
+              </li>
+              <li>
+                {/* 나의 판매 노드 수 */}
                 <h3>My Sold Nodes</h3>
                 <p>{formatNumber(mySoldNode)}</p>
               </li>
               <li>
-                <h3>Sub-affiliate Sales Revenue</h3>
-                <p>{formatNumber(downRevenue)}</p>
-              </li>
+                {/* (new) 레퍼럴 구매 노드 수 */}
+                <h3>Referral Purchase Nodes</h3>
+                <p>4,203</p>
+              </li>   
               <li>
-                <h3>Sub-affiliate Settlements</h3>
-                <p>{formatNumber(downSettlement)}</p>
-              </li>
-              <li>
-                <h3>Sub-affiliate Referrals</h3>
-                <p>{formatNumber(downReferrals)}</p>
-              </li>
-              <li>
+                {/* 하위자 판매 노드 수 -> 하위자 거래 노드 수 */}
                 <h3>Sub-affiliate Sold Nodes</h3>
                 <p>{formatNumber(downSoldNode)}</p>
+              </li>        
+            </ul>
+            <ul className="dash-section__txt__board col-3">
+              <li>
+                {/* (new) 전체 레퍼럴 가입자 */}
+                <h3>Total Referral Members</h3>
+                <p>4,456</p>
+              </li>
+              <li>
+                {/* (new) 내 레퍼럴 가입자 */}
+                <h3>My Referral Members</h3>
+                <p>456</p>
+              </li>
+              <li>
+                {/* (new) 하위자 레퍼럴 가입자 */}
+                <h3>Sub-affiliate Referral Members</h3>
+                <p>456</p>
+              </li>
+            </ul>
+            <ul className="dash-section__txt__board col-3">
+              <li>
+                {/* 전체 추천인 */}
+                <h3>Total Referrals</h3>
+                <p>{formatNumber(totalReferrals)}</p>
+              </li>
+               <li>
+                {/* 나의 추천인 */}
+                <h3>My Referrals</h3>
+                <p>{formatNumber(myReferrals)}</p>
+              </li>
+              <li>
+                {/* 하위자 추천인 */}
+                <h3>Sub-affiliate Referrals</h3>
+                <p>{formatNumber(downReferrals)}</p>
               </li>
             </ul>
           </div>
         </section>
 
-        {/* 내 판매기록 */}
-        <SalesRecordList
-          openIndex={openSalesIndex}
-          handleToggle={handleSalesToggle}
-          handleClickNewDealBtn={handleClickNewDealBtn}
-          newDealList={newDealList}
-          setNewDealList={setNewDealList}
-          fetchNewDealList={fetchNewDealList}
-          formatDate={formatDate}
-          sliceList5={sliceList5}
-          isPageLoading={isBootLoading || isPageLoading} // ✅ 합쳐서 전달
-          formatNumber={formatNumber}
-        />
-
-        {/* 초대 코드 리스트 */}
-        <InviteCodeList
-          handleClickInviteBtn={handleClickInviteBtn}
-          inviteCodeList={inviteCodeList}
-          formatDate={formatDate}
-          sliceList5={sliceList5}
-          isPageLoading={isBootLoading || isPageLoading} // ✅ 합쳐서 전달
-          formatNumber={formatNumber}
-        />
-
-        {/* 하위 수입자 리스트 */}
-        <ReferralEarnings
-          openIndex={openEarningsIndex}
-          handleToggle={setOpenEarningsIndex}
-          downReferralActive={downReferralActive}
-          sliceList5={sliceList5}
-          isPageLoading={isBootLoading || isPageLoading} // ✅ 합쳐서 전달
-          formatNumber={formatNumber}
-        />
       </div>
       <Footer />
-      {/* '지갑주소 등록' 선택 시 '지갑 등록' Modal 노출 */}
-      {isOpenAddWalletModal && (
-        <ModalWrap>
-          <div className="modal modal-wallet">
-            <div className="modal__content">
-              <div className="modal__header">
-                <h2>Register My Wallet</h2>
-                <button type="button" onClick={() => setIsOpenAddWalletModal(false)}>
-                  <img src={closeBtn} alt="팝업 닫기" />
-                </button>
-              </div>
-              <div className="modal__body">
-                <InputField
-                  id="walletAddress"
-                  label="My Wallet Address"
-                  type="text"
-                  placeholder="Enter your wallet address"
-                  required
-                  value={userWalletInput}
-                  onChange={(e) => setUserWalletInput(e.target.value)}
-                />
-              </div>
-              <div className="modal__footer">
-                <button
-                  className={`btn btn-content-modal ${userWalletInput ? "" : "btn--disabled"} ${
-                    isLoading ? "btn--loading" : ""
-                  }`}
-                  disabled={!userWalletInput}
-                  onClick={() => handleSaveWallet(userWalletInput)}
-                >
-                  {isLoading ? "Registering..." : "Register Wallet Address"}
-                  <LoadingDots />
-                </button>
-              </div>
-            </div>
-          </div>
-        </ModalWrap>
-      )}
-
-      {/* 지갑을 등록한 경우 지갑 주소 우측에 연필 아이콘 클릭 시 '내 지갑주소 수정' Modal 노출 */}
-      {isOpenEditWalletModal && (
-        <ModalWrap>
-          <div className="modal modal-wallet">
-            <div className="modal__content">
-              <div className="modal__header">
-                <h2>Edit My Wallet Address</h2>
-                <button type="button">
-                  <img src={closeBtn} alt="팝업 닫기" onClick={() => setIsOpenEditWalletModal(false)} />
-                </button>
-              </div>
-              <div className="modal__body">
-                <InputField
-                  id="userWalletAddress"
-                  label="My Wallet Address"
-                  type="text"
-                  placeholder="Please enter your wallet address"
-                  defaultValue="2938293829382938292"
-                  required
-                  value={userWalletEdit}
-                  onChange={(e) => setUserWalletEdit(e.target.value)}
-                  // 사용자의 지갑 주소가 입력 필드에 자동으로 기입되도록 처리
-                />
-              </div>
-              <div className="modal__footer">
-                <button
-                  className={`btn btn-content-modal ${
-                    !userWalletEdit || userWalletEdit.trim() === userWallet ? "btn--disabled" : ""
-                  } ${isLoading ? "btn--loading" : ""}`}
-                  disabled={!userWalletEdit || userWalletEdit.trim() === userWallet}
-                  onClick={() => handleSaveWallet(userWalletEdit)}
-                >
-                  {isLoading ? "Edit Wallet Address" : "Edit Wallet Address"} <LoadingDots />
-                </button>
-              </div>
-            </div>
-          </div>
-        </ModalWrap>
-      )}
-
-      {/* '지갑주소 등록' 없이 '새 거래 등록' 선택 시 Confirm Modal 노출  */}
-      {isOpenConfirmModal && (
-        <ConfirmModal
-          title="Cannot Create New Transaction"
-          message="Please register your wallet address first!"
-          buttonText="OK"
-          onClose={() => setIsOpenConfirmModal(false)}
-          onClick={() => setIsOpenConfirmModal(false)}
-        />
-      )}
-      {/* '새 거래 등록' 선택 시 거래 등록 모달 노출  */}
-      {isOpenNewDealModal && userWallet && (
-        <FullModalWrap>
-          <div className="modal modal-transaction">
-            <div className="modal__content">
-              <div className="modal__header">
-                <h2>New Transaction</h2>
-                <button
-                  type="button"
-                  onClick={() => {
-                    resetNewDealFields();
-                    setIsOpenNewDealModal(false);
-                  }}
-                >
-                  <img src={closeBtn} alt="팝업 닫기" />
-                </button>
-              </div>
-              <div className="modal__body">
-                <InputField
-                  id="buyerName"
-                  label="Buyer Name"
-                  type="text"
-                  placeholder="Enter buyer name"
-                  required
-                  value={newDealUser}
-                  onChange={handleBuyerNameChange}
-                />
-                <div className="twoway-inputField">
-                  <div>
-                    <InputField
-                      type="text"
-                      id="avgPrice"
-                      label="Unit Price"
-                      placeholder="Enter unit price"
-                      required
-                      value={newDealPerPrice}
-                      onChange={(e) => setNewDealPerPrice(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <InputField
-                      type="text"
-                      label="Quantity"
-                      id="salesCount"
-                      placeholder="Enter quantity"
-                      required
-                      value={newDealNumber}
-                      onChange={(e) => setNewDealNumber(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="total-amount-field">
-                  <b>Total Amount (Auto-calculated)</b>
-                  <p>
-                    <span>{newDealTotalAmount.toLocaleString()}</span>
-                    USDT
-                  </p>
-                </div>
-                <InputField
-                  id="buyerWalletAddress"
-                  label="Buyer Wallet Address"
-                  type="text"
-                  placeholder="Enter buyer's wallet address"
-                  required
-                  value={newDealWallet}
-                  onChange={(e) => setNewDealWallet(e.target.value)}
-                />
-                <InputField
-                  id="addInput"
-                  label="Note"
-                  type="text"
-                  placeholder="Up to 30 characters"
-                  maxLength={30}
-                  value={newDealNote}
-                  onChange={handleNoteChange}
-                />
-              </div>
-              <div className="modal__footer">
-                <button
-                  className={`btn btn-content-modal ${isNewDealValid ? "" : "btn--disabled"} ${
-                    isLoading ? "btn--loading" : ""
-                  }`}
-                  disabled={!isNewDealValid}
-                  onClick={handleNewDealSubmit}
-                >
-                  {isLoading ? "Submitting..." : "Submit Transaction"} <LoadingDots />
-                </button>
-              </div>
-            </div>
-          </div>
-        </FullModalWrap>
-      )}
-
-      {/* '새 거래 등록' 완료 시 Confirm Modal 노출  */}
-      {isNewDealCreateSuccess && (
-        <ConfirmModal
-          title="Transaction Registered"
-          message="Please click the 'Request Approval' button after registering. Node transfer and settlement will take 2–3 business days."
-          buttonText="OK"
-          onClose={() => {}}
-          onClick={() => setIsNewDealCreateSuccess(false)}
-        />
-      )}
-
-      {/* '초대코드 생성' 선택 시 '초대코드 생성' Modal 노출 */}
-      {isOpenInviteModal && (
-        <FullModalWrap>
-          <div className="modal modal-create-code">
-            <div className="modal__content">
-              <div className="modal__header">
-                <h2>Create Invite Code</h2>
-                <button type="button" onClick={() => setIsOpenInviteModal(false)}>
-                  <img src={closeBtn} alt="팝업 닫기" />
-                </button>
-              </div>
-              <div className="modal__body">
-                <div className="user-share">
-                  <div>
-                    <b>My Share</b>
-                    <span>{userShare}%</span>
-                  </div>
-                  <div>
-                    <b>Share to Allocate</b>
-                    <span>{selectedShare}%</span>
-                  </div>
-                </div>
-                <div className="share-setting">
-                  <p className="share-setting__label">Set Share</p>
-                  <div className="share-setting__options" role="radiogroup" aria-label="지분 설정">
-                    <div className="share-setting__left">
-                      {shareOptions.map((value) => (
-                        <button
-                          key={value}
-                          type="button"
-                          className={`share-option ${selectedShare === String(value) ? `is-active` : ""}`}
-                          onClick={() => {
-                            setSelectedShare(String(value));
-                            setCustomShare(""); // 직접 입력값 초기화
-                          }}
-                        >
-                          {value}%
-                        </button>
-                      ))}
-                    </div>
-                    <input
-                      type="number"
-                      min={0}
-                      max={userShare} // 나의 지분 예시
-                      value={customShare}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setCustomShare(value);
-                        setSelectedShare(value); // 같이 반영하기
-                      }}
-                      placeholder=" ≤ nn %"
-                      className="share-option"
-                    ></input>
-                  </div>
-                </div>
-                <InputField
-                  id="userNickName"
-                  label="Nickname"
-                  type="text"
-                  placeholder="Enter nickname"
-                  required
-                  value={nickname}
-                  onChange={handleNicknameChange}
-                />
-              </div>
-              <div className="modal__footer">
-                <button
-                  className={`btn btn-content-modal ${isFormValid ? "" : "btn--disabled"} ${
-                    isLoading ? "btn--loading" : ""
-                  }`}
-                  disabled={!isFormValid}
-                  onClick={handleCreateInviteBtn}
-                >
-                  {isLoading ? "Creating..." : "Create Invite Code"}
-                  <LoadingDots />
-                </button>
-              </div>
-            </div>
-          </div>
-        </FullModalWrap>
-      )}
-
-      {/* '초대코드 생성' 완료 시 Confirm Modal 노출  */}
-      {isInviteCodeCreateSuccess && (
-        <ConfirmModal
-          title="Invite Code Created"
-          message="Invite code created successfully."
-          buttonText="OK"
-          onClose={() => {}}
-          onClick={() => setIsInviteCodeCreateSuccess(false)}
-        />
-      )}
     </>
   );
 }

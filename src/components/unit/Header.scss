@@ -7,18 +7,22 @@
   top: 0;
   left: 0;
   width: 100%;
-  padding: $sp-24 2%;
-  background-color: rgba(#181818, 0.7);
+  background-color: $color-gray-000;
   z-index: 1;
+  border-bottom: 1px solid $color-gray-300;
 
-  @include md {
-    padding: $sp-16 4%;
+  &__center{
+    margin: 0 auto;
   }
 
   &__inner {
     max-width: 1440px;
     margin: 0 auto;
+    padding: clamp(12px, 1.1vw, 16px) 2%;
     @include flex-between;
+    @include md{
+      padding: clamp(12px, 1.1vw, 16px) 4%;
+    }
     &__logo{
       cursor: pointer;
       img {
@@ -27,7 +31,6 @@
       }
     } 
   }
-
 
   &__actions {
     display: flex;
@@ -42,7 +45,7 @@
 
     span {
       @include font-sm-b;
-      color: $color-gray-400;
+      color: $color-gray-600;
 
       @include md {
         @include font-xs-b;
@@ -51,12 +54,45 @@
   }
 
   &__sign-out {
-    color: #fff;
-    font-size: 14px;
+    font-size: clamp(12px, 0.9vw, 14px);
     font-weight: 700;
-    line-height: 22px;
+    color: $color-black;
     background: none;
     border: none;
     cursor: pointer;
+  }
+
+  // navigation
+  &__nav-wrap{
+    border-top: 1px solid $color-gray-300;
+  }
+
+  .nav-carousel__container{
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    column-gap: clamp(16px, 1.6vw, 24px);
+    font-size: clamp(12px, 1.1vw, 16px);
+    line-height: clamp(18px, 1.6vw, 24px);
+    font-weight: 400;
+    white-space: nowrap;
+    padding: clamp(12px, 1.1vw, 16px) 2%;
+    @include md{
+      padding: clamp(12px, 1.1vw, 16px) 4%;
+    }
+
+    
+    li{
+      flex: 0 0 auto;
+      color: $color-gray-600;
+      &.active{
+        color: $color-black;
+        font-weight: 700;
+      }
+      a{
+        display: block;
+      }
+    }
+    
   }
 }
