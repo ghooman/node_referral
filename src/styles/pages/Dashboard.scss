@@ -622,3 +622,21 @@
 // modal-create-code END
 
 // Modal END
+
+// table-center style START
+.table-center{
+  .table-section{
+    .table-section__tit__list-head{
+      .col{
+        padding: 0 20px;
+      }
+    }
+    .table-section__tit__list-head,
+    .list-item{
+      .col{
+        text-align: left !important;
+        justify-content: flex-start;
+      }
+    }
+  }
+}

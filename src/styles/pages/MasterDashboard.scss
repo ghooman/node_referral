@@ -12,18 +12,34 @@
 
 // MasterDashboardDoing scss START
 .masterdashboard-wrapper {
-  padding: $sp-60 2%;
+  padding: $sp-60 2% $sp-10;
   @include flex-column;
   row-gap: 30px;
 
   .dash-section {
-    padding: clamp(8px, 1.3vw, 20px) clamp(12px, 2vw, 30px) !important;
+    padding: clamp(12px, 1.3vw, 20px) clamp(12px, 2vw, 30px);
     background-color: $color-gray-100;
     border-radius: 16px; 
 
     .dash-section__tit {
       @include font-h5-eb;
       color: $color-black;
+    }
+    .dash-section__txt{
+      .dash-section__txt__board{
+        // master-dashboard 개별 속성 (grid 사용)
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 20px;
+        padding: 0;
+        align-items: flex-start;
+        li:first-of-type{
+          flex: none;
+          max-width: none;
+          position: static;
+        }
+      }
+
     }
   }
   .table-section {
@@ -48,7 +64,7 @@
         }
         .twoway-btn {
           @include font-sm-b;
-          color: $color-black;
+          color: $color-gray-000;
           padding: $sp-04 $sp-16;
           border-radius: 8px;
           @include md {

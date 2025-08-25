@@ -73,7 +73,7 @@ function ReferralPurchaseList() {
     <>
       <div className="layout">
         <Header />
-        <div className="page-wrapper padding-del">
+        <div className="page-wrapper">
           <div className="sales-section">
             <div className="sales-section__record-tit">
               <h2>Sub-Affiliate Earnings List</h2>
@@ -132,54 +132,54 @@ function ReferralPurchaseList() {
             </div>
           </div>
 
-            <section className="table-section">
-                <div className="table-section-inner">
-                    {isPageLoading ? (
-                    <div className="result-loading">
-                        <Loading />
-                    </div>
-                    ) : (
-                    <>
-                    <div className="table-section__tit__list-head">
-                        <div className="col">Status</div>
-                        <div className="col">Buyer</div>
-                        <div className="col">Unit Price</div>
-                        <div className="col">Quantity</div>
-                        <div className="col">Total Amount</div>
-                        <div className="col">Settlement</div>
-                        <div className="col">Purchase Date</div>
-                        <div className="col">Settlement Date</div>
-                    </div>
-
-                        {purchaseList.map((item, index) => (
-                        <div
-                            key={index}
-                            className={`list-item ${openIndex === index ? "open" : ""}`}
-                        >
-                            <div className="list-item__row">
-                                <div className="col">
-                                    <span className={`status status--${item.state}`}>
-                                    {getStateLabel(item.state)}
-                                    </span>
-                            </div>
-                          <div className="col wallet-copy-com">
-                            {item.buyer}
-                            <CopyButton textToCopy={item.buyer} />
-                          </div>
-                            <div className="col">{item.unit_price}</div>
-                            <div className="col">{item.cnt}</div>
-                            <div className="col">{item.amount}</div>
-                            <div className="col">{item.my_settlement_amount}</div>
-                            <div className="col">{item.purchase_date}</div>
-                            <div className="col">{item.settlement_date}</div>
-
-                            </div>
-                        </div>
-                        ))}
-                    </>
-                    )}
+          <section className="table-section">
+            <div className="table-section-inner">
+              {isPageLoading ? (
+                <div className="result-loading">
+                  <Loading />
                 </div>
-            </section>
+              ) : purchaseList.length === 0 ? (
+                <div className="table-empty">No purchase records found.</div>
+              ) : (
+                <>
+                  {/* table head */}
+                  <div className="table-section__tit__list-head">
+                    <div className="col">Status</div>
+                    <div className="col">Buyer</div>
+                    <div className="col">Unit Price</div>
+                    <div className="col">Quantity</div>
+                    <div className="col">Total Amount</div>
+                    <div className="col">Settlement</div>
+                    <div className="col">Purchase Date</div>
+                    <div className="col">Settlement Date</div>
+                  </div>
+
+                  {/* table body */}
+                  {purchaseList.map((item, index) => (
+                    <div key={index} className={`list-item ${openIndex === index ? "open" : ""}`}>
+                      <div className="list-item__row">
+                        <div className="col">
+                          <span className={`status status--${item.state}`}>
+                            {getStateLabel(item.state)}
+                          </span>
+                        </div>
+                        <div className="col wallet-copy-com">
+                          {item.buyer}
+                          <CopyButton textToCopy={item.buyer} />
+                        </div>
+                        <div className="col">{item.unit_price}</div>
+                        <div className="col">{item.cnt}</div>
+                        <div className="col">{item.amount}</div>
+                        <div className="col">{item.my_settlement_amount}</div>
+                        <div className="col">{item.purchase_date}</div>
+                        <div className="col">{item.settlement_date}</div>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          </section>
 
           <Pagination currentPage={currentPage} totalPages={totalPages} totalItems={totalItems} onPageChange={(page) => setCurrentPage(page)} />
         </div>

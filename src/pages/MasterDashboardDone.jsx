@@ -225,11 +225,13 @@ function MasterDashboardDone() {
           </div>
           <div className="table-section full-content-section">
             <div className="table-section-inner">
+              {/* 로딩 */}
               {isLoading && (
                 <div className="result-loading">
                   <Loading />
                 </div>
               )}
+              {/* 데이터 없음 */}
               {!isLoading && dataList.length === 0 ? (
                 <div className="table-empty">No settlement history found.</div>
               ) : (

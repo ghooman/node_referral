@@ -10,12 +10,6 @@
   justify-content: center;
   align-items: center;
 }
-
-// @include md {
-//   .padding-del {
-//     padding-top: 24px;
-//   }
-// }
 .sales-section {
   @include flex-column;
   row-gap: 20px;
@@ -187,8 +181,8 @@
 .btn-line-cancel {
   @include font-sm-b;
   color: $color-black;
-  border: 1px solid $color-w-o20;
-  background-color: $color-w-o05;
+  border: 1px solid $color-b-o10;
+  background-color: $color-b-o05;
   border-radius: 8px;
   padding: 4px 20px;
   @include md {

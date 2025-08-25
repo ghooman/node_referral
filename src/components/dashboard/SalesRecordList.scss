@@ -76,6 +76,7 @@
         .badge {
           display: inline-block; // 필요
           @include font-sm-b;
+          cursor: default;
           @include md {
             @include font-xs-b;
           }
@@ -83,9 +84,10 @@
           &--requested {
             // 승인요청
             background-color: $color-primary;
-            color: $color-black;
+            color: $color-gray-000;
             padding: 4px 20px;
             margin: 0 auto; // 부모가 text-align: center일 때 가운데 정렬됨
+            cursor: pointer;
           }
 
           &--approved,
@@ -100,6 +102,8 @@
             // 승인대기
             background-color: transparent;
             color: $color-primary;
+            
+            
           }
 
           &--cancelled {
