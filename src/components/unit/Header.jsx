@@ -5,6 +5,10 @@ import iconLang from "../../assets/images/icon-language.svg";
 // style
 import "./Header.scss";
 
+// embla carousel
+import useEmblaCarousel from 'embla-carousel-react'
+
+
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,6 +41,15 @@ function Header() {
     { path: "/recommender-list", label: "Invite Code List" },
     { path: "/referral-earning-list", label: "Sub-Affiliate Earnings" },
   ];
+
+  // embla
+  const [emblaRef] = useEmblaCarousel({
+    loop: false,    
+    align: 'start',
+    dragFree: true, 
+    containScroll: 'trimSnaps' 
+  })
+
   return (
     <>
     <header className="node-header">
@@ -60,19 +73,18 @@ function Header() {
           </div>
         </div>
         {!isMasterDashboard && (
-        <div className="node-header__nav-wrap">
-          <nav className="node-header__nav">
-            <ul>
-               {menuItems.map((item, idx) => (
-                  <li
-                    key={idx}
-                    className={location.pathname === item.path ? "active" : ""}
-                  >
-                    <Link to={item.path}>{item.label}</Link>
-                  </li>
-                ))}
-            </ul>
-          </nav>
+        <div className="node-header__nav-wrap nav-carousel" ref={emblaRef}>
+          {/* embla__container */}
+          <ul className="nav-carousel__container">
+            {menuItems.map((item, idx) => (
+              <li
+                key={idx}
+                className={`nav-carousel__item ${location.pathname === item.path ? "active" : ""}`}
+              >
+                <Link to={item.path}>{item.label}</Link>
+              </li>
+            ))}
+          </ul>
         </div>
         )}
       </div>

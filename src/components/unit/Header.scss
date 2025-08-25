@@ -66,38 +66,33 @@
   &__nav-wrap{
     border-top: 1px solid $color-gray-300;
   }
-  &__nav{
-    max-width: 1440px;
-    margin: 0 auto;
+
+  .nav-carousel__container{
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    column-gap: clamp(16px, 1.6vw, 24px);
+    font-size: clamp(12px, 1.1vw, 16px);
+    line-height: clamp(18px, 1.6vw, 24px);
+    font-weight: 400;
+    white-space: nowrap;
     padding: clamp(12px, 1.1vw, 16px) 2%;
     @include md{
       padding: clamp(12px, 1.1vw, 16px) 4%;
     }
 
-    ul{
-      display: flex;
-      flex-wrap: nowrap;
-      column-gap: clamp(16px, 1.6vw, 24px);
-      font-size: clamp(12px, 1.1vw, 16px);
-      line-height: clamp(18px, 1.6vw, 24px);
-      font-weight: 400;
-      white-space: nowrap;
-      min-width: 100%;
-      width: max-content;
-      overflow-x: auto;
-      
-      li{
-        flex: 0 0 auto;
-        min-width: max-content;
-        color: $color-gray-600;
-        &.active{
-          color: $color-black;
-          font-weight: 700;
-        }
-        a{
-          display: block;
-        }
+    
+    li{
+      flex: 0 0 auto;
+      color: $color-gray-600;
+      &.active{
+        color: $color-black;
+        font-weight: 700;
+      }
+      a{
+        display: block;
       }
     }
+    
   }
 }
