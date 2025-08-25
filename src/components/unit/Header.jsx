@@ -32,8 +32,8 @@ function Header() {
   const menuItems = [
     { path: "/dashboard", label: "Dashboard" },
     { path: "/sales-record", label: "My Sales Records" },
-    { path: "/referral-purchases", label: "Referral Purchases" },
-    { path: "/referral-registrants", label: "Referral Registrants" },
+    { path: "/referral-purchase-list", label: "Referral Purchases" },
+    { path: "/referral-registrants-list", label: "Referral Registrants" },
     { path: "/recommender-list", label: "Invite Code List" },
     { path: "/referral-earning-list", label: "Sub-Affiliate Earnings" },
   ];
