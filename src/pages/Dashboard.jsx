@@ -531,60 +531,112 @@ function Dashboard() {
           </ul>
         </div>
 
-        {/* 대시보드 */}
+        {/* 대시보드 -> 데이터가 없는 경우 '0'으로 처리 */}
         <section className="dash-section">
           <h2 className="dash-section__tit">Dashboard</h2>
           <div className="dash-section__txt">
-            <ul className="dash-section__txt__board">
+            {/* 
+              전체 레퍼럴 가입자, 내 레퍼럴 가입자, 하위자 레퍼럴 가입자
+              레퍼럴 구매 수입, 레퍼럴 구매 정산금, 레퍼럴 구매 노드 수 추가
+            */}
+            <ul className="dash-section__txt__board col-4">
               <li>
+                {/* 전체 수입 */}
                 <h3>Total Revenue (USDT)</h3>
                 <p>{formatNumber(totalRevenue)}</p>
               </li>
               <li>
-                <h3>Total Settlements (USDT)</h3>
-                <p>{formatNumber(totalSettlement)}</p>
-              </li>
-              <li>
-                <h3>Total Referrals</h3>
-                <p>{formatNumber(totalReferrals)}</p>
-              </li>
-              <li>
-                <h3>Total Sold Nodes (NODE)</h3>
-                <p>{formatNumber(totalSoldNode)}</p>
-              </li>
-            </ul>
-            <ul className="dash-section__txt__list">
-              <li>
+                {/* 나의 판매 수입 */}
                 <h3>My Sales Revenue</h3>
                 <p>{formatNumber(myRevenue)}</p>
               </li>
               <li>
+                {/* (new) 레퍼럴 구매 수입 */}
+                <h3>Referral Purchase Revenue</h3>
+                <p>3,284,224</p>
+              </li>
+              <li>
+                {/* 하위자 판매 수입 -> 하위자 거래 수입 */}
+                <h3>Sub-affiliate Transaction Revenue</h3>
+                <p>3,284,224</p>
+              </li>
+            </ul>
+            <ul className="dash-section__txt__board col-4">
+              <li>
+                {/* 전체 정산금 */}
+                <h3>Total Settlements (USDT)</h3>
+                <p>{formatNumber(totalSettlement)}</p>
+              </li>
+              <li>
+                {/* 나의 판매 정산금 */}
                 <h3>My Sales Settlements</h3>
                 <p>{formatNumber(mySettlement)}</p>
               </li>
               <li>
-                <h3>My Referrals</h3>
-                <p>{formatNumber(myReferrals)}</p>
+                {/* (new) 레퍼럴 구매 정산금 */}
+                <h3>Referral Purchase Settlements</h3>
+                <p>3,284,224</p>
               </li>
               <li>
+                {/* 하위자 판매 정산금 -> 하위자 거래 정산금 */}
+                <h3>Sub-affiliate Settlements</h3>
+                <p>{formatNumber(downSettlement)}</p>
+              </li>
+            </ul>
+            <ul className="dash-section__txt__board col-4">
+              <li>
+                  {/* 전체 판매 노드 수 -> 전체 거래 노드 수 */}
+                <h3>Total Sold Nodes (NODE)</h3>
+                <p>{formatNumber(totalSoldNode)}</p>
+              </li>
+              <li>
+                {/* 나의 판매 노드 수 */}
                 <h3>My Sold Nodes</h3>
                 <p>{formatNumber(mySoldNode)}</p>
               </li>
               <li>
-                <h3>Sub-affiliate Sales Revenue</h3>
-                <p>{formatNumber(downRevenue)}</p>
-              </li>
+                {/* (new) 레퍼럴 구매 노드 수 */}
+                <h3>Referral Purchase Nodes</h3>
+                <p>4,203</p>
+              </li>   
               <li>
-                <h3>Sub-affiliate Settlements</h3>
-                <p>{formatNumber(downSettlement)}</p>
-              </li>
-              <li>
-                <h3>Sub-affiliate Referrals</h3>
-                <p>{formatNumber(downReferrals)}</p>
-              </li>
-              <li>
+                {/* 하위자 판매 노드 수 -> 하위자 거래 노드 수 */}
                 <h3>Sub-affiliate Sold Nodes</h3>
                 <p>{formatNumber(downSoldNode)}</p>
+              </li>        
+            </ul>
+            <ul className="dash-section__txt__board col-3">
+              <li>
+                {/* (new) 전체 레퍼럴 가입자 */}
+                <h3>Total Referral Members</h3>
+                <p>4,456</p>
+              </li>
+              <li>
+                {/* (new) 내 레퍼럴 가입자 */}
+                <h3>My Referral Members</h3>
+                <p>456</p>
+              </li>
+              <li>
+                {/* (new) 하위자 레퍼럴 가입자 */}
+                <h3>Sub-affiliate Referral Members</h3>
+                <p>456</p>
+              </li>
+            </ul>
+            <ul className="dash-section__txt__board col-3">
+              <li>
+                {/* 전체 추천인 */}
+                <h3>Total Referrals</h3>
+                <p>{formatNumber(totalReferrals)}</p>
+              </li>
+               <li>
+                {/* 나의 추천인 */}
+                <h3>My Referrals</h3>
+                <p>{formatNumber(myReferrals)}</p>
+              </li>
+              <li>
+                {/* 하위자 추천인 */}
+                <h3>Sub-affiliate Referrals</h3>
+                <p>{formatNumber(downReferrals)}</p>
               </li>
             </ul>
           </div>

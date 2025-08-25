@@ -5,7 +5,10 @@
 .signup__wrapper {
   width: 100%;
   max-width: 500px !important;
-  margin: $sp-40 auto 0 !important;
+  margin: clamp(60px, 6.9vw, 100px) auto 0 !important;
+  @include md{
+    padding: 0 2%;
+  }
   h2 {
     @include font-xl-eb;
     color: $color-black;

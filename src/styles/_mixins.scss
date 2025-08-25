@@ -100,6 +100,12 @@
         @content;
     }
 }
+/* mobile (min-width: 480px) */
+@mixin xs{
+    @media (max-width: $responsive-xs){
+        @content;
+    }
+}
 
 
 /* ============================================================
