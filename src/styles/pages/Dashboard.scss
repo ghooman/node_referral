@@ -47,9 +47,10 @@
   }
   .user-section__wallet {
     @include flex-column;
-    row-gap: $sp-08;
+    row-gap: $sp-12;
     @include md {
       column-gap: $sp-08;
+      row-gap: $sp-08
     }
     li {
       @include flex-start;
@@ -66,8 +67,13 @@
         color: $color-black;
         margin-left: clamp(8px, 0.8vw, 12px);
         @include md {
-          @include font-md-b;
+          @include font-sm-b;
         }
+      }
+    }
+    li:last-of-type{
+      @include md{
+        align-items: flex-start;
       }
     }
     .user-section__wallet__copy-com {
@@ -89,6 +95,33 @@
       @include md {
         @include font-xs-b;
       }
+    }
+    .user-section__referral-code-com{
+      @include flex-start;
+      column-gap: 12px;
+      row-gap: 4px;
+      @include md{
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      &__btn-box{
+        @include flex-start-full;
+        column-gap: 10px;
+      }
+    }
+    .btn-line-copy{
+      padding: 4px clamp(10px, 1.3vw, 20px);
+      font-size: clamp(12px, 0.9vw, 14px);
+      line-height: clamp(18px,1.5vw, 22px);
+      border: 1px solid $color-gray-300;
+      background-color: $color-b-o05;
+      font-weight: 400;
+      border-radius: 8px;
+      transition: all .3s ease;
+      &.copied {
+          color: #a8a8a8;
+          border: 1px solid $color-w-o05;
+        }
     }
   }
   .color-blue{
@@ -292,6 +325,7 @@
     .col {
       flex: 1;
       text-align: center;
+      padding: 0 $sp-20;
       @include font-sm-r;
       @include md {
         @include font-xs-r;

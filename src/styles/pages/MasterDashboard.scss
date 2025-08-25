@@ -113,6 +113,7 @@
 .tab-ui {
   @include flex-between;
   @include font-xl-r;
+  align-items: stretch;
   color: $color-gray-600;
   border-bottom: 1px solid #d9d9d9;
   @include md {
@@ -121,7 +122,7 @@
   li {
     flex: 1;
     text-align: center;
-    padding-bottom: 20px;
+    padding-bottom: clamp(12px, 1.3vw, 20px);
     cursor: pointer;
     position: relative;
 
@@ -250,24 +251,23 @@
 // MasterDashboardDone scss START
 .filter-date {
   @include flex-start;
-  gap: 12px;
-  @include md {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  gap: clamp(4px, 0.8vw, 12px);
   label {
-    @include font-sm-r;
+    font-size: clamp(12px, 0.9vw, 14px);
+    line-height: clamp(18px, 1.5vw, 22px);
+    font-weight: 400;
     color: $color-gray-600;
     white-space: nowrap;
   }
   .date-field {
     @include flex-start;
-    gap: 12px;
+    gap: clamp(8px, 0.8vw, 12px);
   }
 
   .filter-date__input {
-    min-width: clamp(120px, 11vw, 160px);
-    padding: $sp-10 clamp(10px, 1.1vw, 16px);
+    min-width: clamp(100px, 11vw, 160px);
+    width: clamp(100px, 11vw, 160px);
+    padding: $sp-10 clamp(8px, 1.1vw, 16px);
     border-radius: 12px;
     border: 1px solid $color-w-o05;
     background-color: $color-b-o05;
@@ -297,7 +297,7 @@
   }
 
   .btn--reset {
-    padding: 10px clamp(12px, 1.1vw, 16px);
+    padding: 10px clamp(8px, 1.1vw, 16px);
     background-color: $color-primary;
     color: $color-gray-000;
     border-radius: 12px;

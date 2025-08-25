@@ -110,6 +110,26 @@ function Dashboard() {
   //----- 하위 레퍼럴 활동현황 상태 ----------------------------------------------------
   const [downReferralActive, setDownReferralActive] = useState(null);
 
+  //----- 내 레퍼럴 코드, 링크 복사 관리 ----------------------------------------------------
+  const [copiedIndex, setCopiedIndex] = useState({ code: false, link: false });
+  const handleCopyCode = (code) => {
+    navigator.clipboard.writeText(code);
+    setCopiedIndex((prev) => ({ ...prev, code: true }));
+  };
+  const handleCopyLink = (code) => {
+    const fullUrl = `https://affiliate.musicontheblock.com/signup/?r=${code}`;
+    navigator.clipboard.writeText(fullUrl);
+    setCopiedIndex((prev) => ({ ...prev, link: true }));
+  };
+  useEffect(() => {
+    if (copiedIndex.code || copiedIndex.link) {
+      const timer = setTimeout(() => {
+        setCopiedIndex({ code: false, link: false });
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [copiedIndex]);
+
   //---- 공통 ----------------------------------------------------
   // 사용자 정보 가져오는 함수
   const userInfo = async () => {
@@ -527,6 +547,26 @@ function Dashboard() {
                   </button>
                 </div>
               )}
+            </li>
+            <li>
+              <span>My Referral Code</span>
+              <div className="user-section__referral-code-com">
+                <strong>72FWSA</strong>
+                <div className="user-section__referral-code-com__btn-box">
+                  <button
+                    className={`btn-line-copy ${copiedIndex.code ? "copied" : ""}`}
+                    onClick={() => handleCopyCode("72FWSA")}
+                  >
+                    {copiedIndex.code ? "Copied" : "Copy Code"}
+                  </button>
+                  <button
+                    className={`btn-line-copy ${copiedIndex.link ? "copied" : ""}`}
+                    onClick={() => handleCopyLink("72FWSA")}
+                  >
+                    {copiedIndex.link ? "Copied" : "Copy Link"}
+                  </button>
+                </div>
+              </div>
             </li>
           </ul>
         </div>

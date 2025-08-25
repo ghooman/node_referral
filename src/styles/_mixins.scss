@@ -116,6 +116,11 @@
     display: flex;
     align-items: center;
 }
+// 좌 정렬, 좌우 맞춤
+@mixin flex-start-full{
+    display: flex;
+    align-items: stretch;
+}
 
 // 좌우 정렬, 가운데 맞춤 
 @mixin flex-between{

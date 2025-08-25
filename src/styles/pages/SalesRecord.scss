@@ -43,13 +43,13 @@
     gap: 16px;
     background-color: $color-gray-100;
     border-radius: clamp(8px, 1.1vw, 16px);
+    padding: clamp(12px, 1.3vw, 20px) clamp(12px, 2vw, 30px);
     @include md {
       gap: 4px;
       flex-wrap: wrap;
     }
     li {
       border: 1px solid $color-w-o20;
-      padding: 20px;
       width: 32%;
       border-radius: 20px;
       @include md {
@@ -59,6 +59,7 @@
       h3 {
         @include font-sm-r;
         color: $color-gray-600;
+        margin-bottom: 8px;
         @include md {
           @include font-xs-r;
         }
@@ -66,6 +67,9 @@
       p {
         @include font-xl-b;
         color: $color-black;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         @include md {
           @include font-sm-b;
         }
@@ -120,7 +124,7 @@
     @include font-sm-r;
     @include flex-between;
     width: 100%;
-    padding: 8px 20px;
+    padding: 8px 16px;
     border: 1px solid $color-w-o20;
     border-radius: 40px;
     min-width: 180px;

@@ -246,7 +246,7 @@ function MasterDashboardDone() {
                       <div className="col">Total Amount</div>
                       <div className="col">Settlement Amount</div>
                       <div className="col">Fee</div>
-                      <div className="col">Settlement Date & Time</div>
+                      <div className="col">Settlement Date</div>
                     </div>
 
                     {/* table body */}
