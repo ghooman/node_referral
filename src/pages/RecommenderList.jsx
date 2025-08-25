@@ -264,15 +264,17 @@ function RecommenderList() {
         <Header />
         <div className="page-wrapper padding-del">
           <div className="sales-section">
+            <div className="sales-section__record-tit-box">
             <div className="sales-section__record-tit">
-              <h2>Invite Code List</h2>
-              <span>
-                Total <small>{inviteCodeCnt}</small>
-              </span>
+                <h2>Invite Code List</h2>
+                <span>
+                  Total <small>{inviteCodeCnt}</small>
+                </span>
+              </div>
+              <button type="button" className="sales-section__btn" onClick={handleClickInviteBtn}>
+                Create Invite Code
+              </button>
             </div>
-            <button type="button" className="sales-section__btn" onClick={handleClickInviteBtn}>
-              Create Invite Code
-            </button>
           </div>
           <div className="filter-group">
             <div className="filter-group__title">Filter</div>
