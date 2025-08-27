@@ -47,7 +47,7 @@ function Header() {
     loop: false,    
     align: 'start',
     dragFree: true, 
-    containScroll: 'trimSnaps' 
+    containScroll: 'trimSnaps',
   })
 
   return (
