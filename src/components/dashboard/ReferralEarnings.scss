@@ -61,14 +61,18 @@
 
         &--approved,
         &--settlement_pending,
-        &--settled {
+        &--settled,
+        &--normal {
           // 승인완료, 정산대기, 정산완료
+          // 사업판매
           background-color: transparent;
           // color: $color-black;
         }
 
-        &--pending {
+        &--pending,
+        &--referral {
           // 승인대기
+          // 유저판매
           background-color: transparent;
           color: $color-primary;
         }

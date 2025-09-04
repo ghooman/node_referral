@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 // compomnents
@@ -8,12 +7,10 @@ import LoadingDots from "../components/unit/LoadingDots";
 import FullModalWrap from "../components/modal/FullModalWrap";
 import ConfirmModal from "../components/modal/ConfirmModal";
 import CopyButton from "../components/unit/CopyButton";
-import SalesRecordList from "../components/dashboard/SalesRecordList";
 import InputField from "../components/unit/InputField";
 import Pagination from "../components/unit/Pagination";
 import Loading from "../components/Loading";
 // img
-import arrowUpIcon from "../assets/images/icon-arrow-up.svg";
 import arrowDownIcon from "../assets/images/icon-arrow-down.svg";
 import closeBtn from "../assets/images/icon-close.svg";
 
@@ -23,42 +20,10 @@ import "../components/dashboard/SalesRecordList.scss";
 const serverAPI = process.env.REACT_APP_NODE_SERVER_API;
 
 function SalesRecord() {
-  const [openIndex, setOpenIndex] = useState(null);
-  const [isPageLoading, setIsPageLoading] = useState(false);
-
-  const toggle = (index) => {
-    setOpenIndex((prev) => (prev === index ? null : index));
-  };
-  const data = [
-    {
-      buyer: "홍길동",
-      count: 3,
-      unitPrice: "50 USDT",
-      total: "150 USDT",
-      settlement: "100 USDT",
-      date: "2025.07.14",
-      status: "승인요청",
-      statusType: "request",
-      wallet: "8687678678678678678687",
-      memo: "테스트 메모",
-      approveDate: "2025.07.15",
-      completeDate: "2025.07.17",
-    },
-  ];
-
-  //---- 공통 상태 ----------------------------------------------------
-  // 사용자 정보 상태
-  const [userName, setUserName] = useState("");
-  const [userShare, setUserShare] = useState("");
-  const [userWallet, setUserWallet] = useState("");
-  const [userOfficeWallet, setUserOfficeWallet] = useState("");
-
-  const [userWalletInput, setUserWalletInput] = useState("");
-  const [userWalletEdit, setUserWalletEdit] = useState("");
-
   const userToken = localStorage.getItem("userToken");
-  const userRole = localStorage.getItem("userRole");
-  const isMaster = userRole === "master";
+  //----- 상태 ------------------------------------------------------------------------------------
+  // 사용자 정보 상태
+  const [userWallet, setUserWallet] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -98,8 +63,14 @@ function SalesRecord() {
   const [totalCnt, setTotalCnt] = useState(0);
   // 새 거래 등록 생성 시 성공 모달
   const [isNewDealCreateSuccess, setIsNewDealCreateSuccess] = useState(false);
+  const [openIndex, setOpenIndex] = useState(null);
+  const [isPageLoading, setIsPageLoading] = useState(false);
 
-  //---- 공통 ----------------------------------------------------
+  const toggle = (index) => {
+    setOpenIndex((prev) => (prev === index ? null : index));
+  };
+
+  //----- API 호출 함수  ------------------------------------------------------------------------------------
   // 사용자 정보 가져오는 함수
   const userInfo = async () => {
     try {
@@ -109,23 +80,13 @@ function SalesRecord() {
         },
       });
       console.log("API에서 받아온 사용자 정보", res.data);
-      setUserName(res.data.username);
-      setUserShare(res.data.share);
       setUserWallet(res.data.wallet_address);
-      setUserOfficeWallet(res.data.deposit_wallet_address);
     } catch (error) {
       console.error("사용자 정보 가져오는 함수 error입니당", error);
     }
   };
-  // userToken이 존재하면 사용자 정보 호출하기!
-  useEffect(() => {
-    if (userToken) {
-      userInfo();
-    }
-  }, [userToken]);
 
-  //---- 대시보드 ----------------------------------------------------
-  // 대시보드 정보 값 가져오는 함수
+  // 대시보드 값 가져오는 함수
   const handleGetDashboardData = async () => {
     try {
       const res = await axios.get(`${serverAPI}/api/sales/my/dashboard`, {
@@ -142,92 +103,6 @@ function SalesRecord() {
     } catch (error) {
       console.error("대시보드 정보 값 가져오는 함수 error입니당", error);
     }
-  };
-
-  // 로그인 후 첫 진입 시, 각 리스트 불러오기!
-  useEffect(() => {
-    if (userToken) {
-      handleGetDashboardData();
-      fetchNewDealList();
-    }
-  }, [selectedStatus, currentPage]);
-
-  // 날짜 포맷팅
-  const formatDate = (isoString) => {
-    const raw = new Date(isoString).toLocaleString("ko-KR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-
-    // "2025. 07. 19. 15:16" → "2025. 07. 19 15:16"
-    return raw.replace(/(\d{2})\.\s(\d{2})\.\s(\d{2})\.\s/, "$1. $2. $3 ");
-  };
-
-  //---- 새 거래등록 ----------------------------------------------------
-  // 새 거래등록 클릭 함수
-  const handleClickNewDealBtn = async () => {
-    if (!userWallet) {
-      setIsOpenConfirmModal(true);
-    } else {
-      setIsOpenNewDealModal(true);
-    }
-  };
-
-  // 새 거래등록 총 금액 자동 계산
-  useEffect(() => {
-    const price = parseInt(newDealPerPrice, 10);
-    const count = parseInt(newDealNumber, 10);
-
-    if (!isNaN(price) && !isNaN(count)) {
-      setNewDealTotalAmount(price * count);
-    } else {
-      setNewDealTotalAmount(0);
-    }
-  }, [newDealPerPrice, newDealNumber]);
-  // 새 거래등록 유효성 검사 및 버튼 활성화 로직
-  useEffect(() => {
-    const isUserValid = /^[a-zA-Z가-힣]{1,8}$/.test(newDealUser);
-    const isPerPriceValid = /^\d+$/.test(newDealPerPrice);
-    const isNumberValid = /^\d+$/.test(newDealNumber);
-    const isWalletValid = newDealWallet.trim().length > 0;
-
-    if (isUserValid && isPerPriceValid && isNumberValid && isWalletValid) {
-      setIsNewDealValid(true);
-    } else {
-      setIsNewDealValid(false);
-    }
-  }, [newDealUser, newDealPerPrice, newDealNumber, newDealWallet]);
-  // 새 거래등록 글자갯수 포맷팅 (이름)
-  const handleBuyerNameChange = (e) => {
-    const value = e.target.value;
-    const regex = /^[ㄱ-ㅎ가-힣a-zA-Z]*$/; // 한글/영문만 허용
-
-    if (regex.test(value) && value.length <= 8) {
-      setNewDealUser(value);
-    }
-  };
-  // 새 거래등록 글자갯수 포맷팅 (비고)
-  const handleNoteChange = (e) => {
-    const value = e.target.value;
-    const regex = /^[ㄱ-ㅎ가-힣a-zA-Z0-9\s.,!?()'"-]*$/; // 문장 기호도 허용하면 이렇게
-
-    if (regex.test(value) && value.length <= 30) {
-      setNewDealNote(value);
-    }
-  };
-  // 새 거래등록 필드 초기화
-  const resetNewDealFields = () => {
-    setNewDealUser("");
-    setNewDealPerPrice("");
-    setNewDealNumber("");
-    setNewDealTotalAmount(0);
-    setNewDealWallet("");
-    setNewDealNote("");
-    setIsNewDealValid(false); // 등록 버튼 비활성화 초기화
   };
 
   // 새 거래등록 최종 등록하는 함수
@@ -267,7 +142,8 @@ function SalesRecord() {
       setIsLoading(false);
     }
   };
-  // 새 거래등록 확인 함수
+
+  // 새 거래등록 리스트 가져오는 함수
   const fetchNewDealList = async () => {
     try {
       setIsPageLoading(true);
@@ -294,33 +170,7 @@ function SalesRecord() {
     }
   };
 
-  const getKoreanState = (state) => {
-    const stateMap = {
-      all: "All",
-      requested: "Requested",
-      pending: "Pending",
-      approved: "Approved",
-      cancelled: "Cancelled",
-      승인완료: "Settlement",
-      settled: "Settled",
-    };
-    return stateMap[state] || state;
-  };
-
-  const statusMap = {
-    all: "All",
-    requested: "Requested",
-    pending: "Pending",
-    approved: "Approved",
-    cancelled: "Cancelled",
-    승인완료: "Settlement",
-    settled: "Settled",
-  };
-
-  const getBadgeClassName = (state) => {
-    return state; // 상태명이 곧 className과 동일함
-  };
-
+  // 승인 요청 버튼 클릭 -> 상태 변경하는 함수
   const handleChangeState = async (salesId, newState) => {
     try {
       const res = await axios.post(`${serverAPI}/api/sales/${salesId}/state`, null, {
@@ -342,6 +192,7 @@ function SalesRecord() {
     }
   };
 
+  // 거래 취소 버튼 클릭 -> 상태 변경하는 함수
   const handleCancelRequest = async (salesId) => {
     console.log("🟡 취소 요청 시도 중 - salesId:", salesId);
     try {
@@ -357,11 +208,129 @@ function SalesRecord() {
     }
   };
 
+  //----- 함수 로직 모음  ------------------------------------------------------------------------------------
+  // 날짜 포맷팅
+  const formatDate = (isoString) => {
+    const raw = new Date(isoString).toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+    // "2025. 07. 19. 15:16" → "2025. 07. 19 15:16"
+    return raw.replace(/(\d{2})\.\s(\d{2})\.\s(\d{2})\.\s/, "$1. $2. $3 ");
+  };
+
+  // 새 거래등록 클릭 함수
+  const handleClickNewDealBtn = async () => {
+    if (!userWallet) {
+      setIsOpenConfirmModal(true);
+    } else {
+      setIsOpenNewDealModal(true);
+    }
+  };
+
+  // 새 거래등록 글자갯수 포맷팅 (이름)
+  const handleBuyerNameChange = (e) => {
+    const value = e.target.value;
+    const regex = /^[ㄱ-ㅎ가-힣a-zA-Z]*$/; // 한글/영문만 허용
+
+    if (regex.test(value) && value.length <= 8) {
+      setNewDealUser(value);
+    }
+  };
+
+  // 새 거래등록 글자갯수 포맷팅 (비고)
+  const handleNoteChange = (e) => {
+    const value = e.target.value;
+    const regex = /^[ㄱ-ㅎ가-힣a-zA-Z0-9\s.,!?()'"-]*$/; // 문장 기호도 허용하면 이렇게
+
+    if (regex.test(value) && value.length <= 30) {
+      setNewDealNote(value);
+    }
+  };
+
+  // 새 거래등록 필드 초기화
+  const resetNewDealFields = () => {
+    setNewDealUser("");
+    setNewDealPerPrice("");
+    setNewDealNumber("");
+    setNewDealTotalAmount(0);
+    setNewDealWallet("");
+    setNewDealNote("");
+    setIsNewDealValid(false); // 등록 버튼 비활성화 초기화
+  };
+
+  const getBadgeClassName = (state) => {
+    return state; // 상태명이 곧 className과 동일함
+  };
+
   // 숫자 포맷 함수
   const formatNumber = (num) => {
     if (isNaN(num)) return 0;
     return Number(num).toLocaleString("en-US"); // "1,000", "50,000" 형태
   };
+
+  //----- 필터 제어 ------------------------------------------------------------------------------------
+  // 필터 드롭다운 순서
+  const STATUS_OPTIONS = [
+    { key: "all", label: "All" },
+    { key: "requested", label: "Requested" },
+    { key: "pending", label: "Pending" },
+    { key: "approved", label: "Approved" },
+    { key: "cancelled", label: "Cancelled" },
+    { key: "승인완료", label: "Settlement" },
+    { key: "settled", label: "Settled" },
+  ];
+
+  // 필터 라벨링
+  const statusLabelMap = React.useMemo(() => Object.fromEntries(STATUS_OPTIONS.map((o) => [o.key, o.label])), []);
+  const getStateLabel = (state) => statusLabelMap[state] || state;
+
+  //----- useEffect 모음  ------------------------------------------------------------------------------------
+  // userToken이 존재하면 사용자 정보 호출하기!
+  useEffect(() => {
+    if (userToken) {
+      userInfo();
+    }
+  }, [userToken]);
+
+  // 로그인 후 첫 진입 시, 각 리스트 불러오기!
+  useEffect(() => {
+    if (userToken) {
+      handleGetDashboardData();
+      fetchNewDealList();
+    }
+  }, [selectedStatus, currentPage]);
+
+  // 새 거래등록 총 금액 자동 계산
+  useEffect(() => {
+    const price = parseInt(newDealPerPrice, 10);
+    const count = parseInt(newDealNumber, 10);
+
+    if (!isNaN(price) && !isNaN(count)) {
+      setNewDealTotalAmount(price * count);
+    } else {
+      setNewDealTotalAmount(0);
+    }
+  }, [newDealPerPrice, newDealNumber]);
+
+  // 새 거래등록 유효성 검사 및 버튼 활성화 로직
+  useEffect(() => {
+    const isUserValid = /^[a-zA-Z가-힣]{1,8}$/.test(newDealUser);
+    const isPerPriceValid = /^\d+$/.test(newDealPerPrice);
+    const isNumberValid = /^\d+$/.test(newDealNumber);
+    const isWalletValid = newDealWallet.trim().length > 0;
+
+    if (isUserValid && isPerPriceValid && isNumberValid && isWalletValid) {
+      setIsNewDealValid(true);
+    } else {
+      setIsNewDealValid(false);
+    }
+  }, [newDealUser, newDealPerPrice, newDealNumber, newDealWallet]);
 
   return (
     <>
@@ -371,14 +340,14 @@ function SalesRecord() {
           <div className="sales-section">
             <div className="sales-section__record-tit-box">
               <div className="sales-section__record-tit">
-                <h2>My Sales Records</h2>
+                <h2>My Sales Records List</h2>
                 <span>
                   Total <small>{totalCnt}</small>
                 </span>
               </div>
               <button type="button" className="sales-section__btn" onClick={handleClickNewDealBtn}>
                 New Transaction
-              </button>          
+              </button>
             </div>
             <ul className="sales-section__record-list">
               <li>
@@ -404,21 +373,21 @@ function SalesRecord() {
             <div className="filter-group__title">Filter</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
               <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
-                <span>{statusMap[selectedStatus]}</span>
+                <span>{getStateLabel(selectedStatus)}</span>
                 <i className="custom-select__arrow"></i>
               </button>
               <ul className="custom-select__list">
-                {Object.entries(statusMap).map(([key, label]) => (
+                {STATUS_OPTIONS.map((opt) => (
                   <li
-                    key={key}
-                    className={selectedStatus === key ? "is-selected" : ""}
+                    key={opt.key}
+                    className={selectedStatus === opt.key ? "is-selected" : ""}
                     onClick={() => {
-                      setSelectedStatus(key);
+                      setSelectedStatus(opt.key);
                       setCurrentPage(1);
                       setIsFilterOpen(false);
                     }}
                   >
-                    {label}
+                    {opt.label}
                   </li>
                 ))}
               </ul>
@@ -478,7 +447,7 @@ function SalesRecord() {
                                   }
                                 }}
                               >
-                                {getKoreanState(item.state)}
+                                {getStateLabel(item.state)}
                               </button>
                             </div>
                             <div className="col toggle-btn-box">
@@ -550,6 +519,16 @@ function SalesRecord() {
         </div>
         <Footer />
       </div>
+      {/* '지갑주소 등록' 없이 '새 거래 등록' 선택 시 Confirm Modal 노출  */}
+      {isOpenConfirmModal && (
+        <ConfirmModal
+          title="Cannot Create New Transaction"
+          message="Please register your wallet address first!"
+          buttonText="OK"
+          onClose={() => setIsOpenConfirmModal(false)}
+          onClick={() => setIsOpenConfirmModal(false)}
+        />
+      )}
 
       {/* '새 거래 등록' 선택 시 거래 등록 모달 노출  */}
       {isOpenNewDealModal && userWallet && (
@@ -655,6 +634,7 @@ function SalesRecord() {
         />
       )}
 
+      {/* 승인 요청 버튼 클릭 시 Confirm Modal 노출  */}
       {showConfirmModalIndex !== null && (
         <ConfirmModal
           title="Request Approval"
@@ -667,6 +647,7 @@ function SalesRecord() {
         />
       )}
 
+      {/* 거래 취소 버튼 클릭 시 Confirm Modal 노출  */}
       {cancelTargetId !== null && (
         <ConfirmModal
           title="Cancel Transaction Registration"

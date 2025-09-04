@@ -1,29 +1,31 @@
-@import '../../styles/variables';
-@import '../../styles/mixins';
+@import "../../styles/variables";
+@import "../../styles/mixins";
 
-.sales-section__record-tit.other-section{
-    justify-content: space-between;
+.sales-section__record-tit.other-section {
+  display: flex;
+  align-items: center;
+  column-gap: clamp(8px, 0.8vw, 12px);
 }
 
-.custom-select__sales-list{
-    @include flex-start;
-    column-gap: clamp(8px, 1.1vw, 16px);
-    .custom-select__btn{
-        width: 60%;
-        min-width: clamp(170px, 24vw, 360px);
-        span{
-            overflow: hidden;
-            text-overflow: ellipsis !important;
-            white-space: nowrap;
-            color: $color-black;
-        }
+.custom-select__sales-list {
+  @include flex-start;
+  column-gap: clamp(8px, 1.1vw, 16px);
+  .custom-select__btn {
+    width: 60%;
+    min-width: clamp(170px, 24vw, 360px);
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis !important;
+      white-space: nowrap;
+      color: $color-black;
     }
-    small{
-        @include font-h5-eb;
-        color: $color-black;
-        width: 100%;
-        @include md{
-            @include font-xs-b;
-        }
+  }
+  small {
+    @include font-h5-eb;
+    color: $color-black;
+    width: 100%;
+    @include md {
+      @include font-xs-b;
     }
+  }
 }

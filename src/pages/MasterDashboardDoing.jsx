@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Link } from "react-router-dom";
-import React, { use, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 // compomnents
 import Header from "../components/unit/Header";
 import Footer from "../components/unit/Footer";
@@ -19,23 +19,27 @@ const serverAPI = process.env.REACT_APP_NODE_SERVER_API;
 
 function MasterDashboardDoing() {
   const userToken = localStorage.getItem("userToken");
-  const userRole = localStorage.getItem("userRole");
-  const isMaster = userRole === "master";
-
+  //----- 상태 ------------------------------------------------------------------------------------
   // 상단 대시보드 상태
   const [dashboard, setDashboard] = useState([]);
-  // 총 갯수 상태
-  const [totalCnt, setTotalCnt] = useState(0);
   // 하단 리스트 상태
   const [dataList, setDataList] = useState([]);
-  // 정렬 필터 버튼
+
+  // 필터 정렬 상태
+  // 어떤 항목을 선택했는지(라벨 표시용)
+  const [selectedKey, setSelectedKey] = useState("status:all");
+  // 실제 API 파라미터용
+  const [statusFilter, setStatusFilter] = useState("all"); // status 파라미터
+  const [sortFilter, setSortFilter] = useState(null); // sort 파라미터(normal | referral)
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState("all"); // 버튼에 보여줄 텍스트
+
   // 페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
   // 검색창
   const [searchKeyword, setSearchKeyword] = useState("");
+
   // 취소 버튼 클릭 모달
   const [confirmModalOpenId, setConfirmModalOpenId] = useState(null);
   // 승인 상태 업데이트
@@ -48,6 +52,59 @@ function MasterDashboardDoing() {
   // 로딩
   const [isLoading, setIsLoading] = useState(false);
 
+  //----- 필터 제어 ------------------------------------------------------------------------------------
+  // 필터 드롭다운 순서
+  const FILTER_SORT_OPTIONS = [
+    { key: "status:all", label: "All" },
+    // sort 계열
+    { key: "sort:normal", label: "Affiliate" },
+    { key: "sort:referral", label: "User" },
+    // status 계열
+    { key: "status:requested", label: "Requested" },
+    { key: "status:pending", label: "Pending" },
+    { key: "status:approved", label: "Approved" },
+    { key: "status:cancelled", label: "Cancelled" },
+    { key: "status:승인완료", label: "Settlement" },
+    { key: "status:settled", label: "Settled" },
+  ];
+
+  // 필터 라벨링
+  const getStateLabel = (state) => {
+    const map = {
+      all: "All",
+      normal: "Affiliate",
+      referral: "User",
+      requested: "Requested",
+      pending: "Pending",
+      approved: "Approved",
+      cancelled: "Cancelled",
+      승인완료: "Settlement",
+      settled: "Settled",
+    };
+    return map[state] || state;
+  };
+
+  // 필터 제어
+  const handleFilterSelectUnified = (key) => {
+    setSelectedKey(key);
+    const [type, value] = key.split(":");
+
+    if (key === "status:all") {
+      setStatusFilter("all");
+      setSortFilter(null); // ✅ 완전 초기화
+    } else if (type === "status") {
+      setStatusFilter(value); // 이번에 고른 status를 적용
+      setSortFilter(null); // ✅ sort는 초기화
+    } else if (type === "sort") {
+      setSortFilter(value); // 이번에 고른 sort를 적용
+      setStatusFilter("all"); // ✅ status는 'all'로 초기화
+    }
+
+    setCurrentPage(1);
+    setIsFilterOpen(false);
+  };
+
+  //----- API 호출 함수  ------------------------------------------------------------------------------------
   // 상단 대시보드 API 함수
   const handleGetDashboard = async () => {
     try {
@@ -65,7 +122,7 @@ function MasterDashboardDoing() {
 
   // 하단 리스트 API 함수
   const handleGetDataList = async () => {
-    console.log("🔍 서버로 보내는 state", selectedStatus);
+    console.log("🔍 서버로 보내는 state", statusFilter, sortFilter);
     console.log("🔍 서버로 보내는 search_keyword", searchKeyword);
 
     try {
@@ -73,7 +130,8 @@ function MasterDashboardDoing() {
 
       const res = await axios.get(`${serverAPI}/api/sales/record/approval/settlement/list`, {
         params: {
-          state: selectedStatus !== "all" ? selectedStatus : undefined,
+          state: statusFilter === "all" ? undefined : statusFilter,
+          sort: sortFilter || undefined, // normal | referral
           page: currentPage,
           limit: 20,
           search_keyword: searchKeyword !== "" ? searchKeyword : undefined,
@@ -83,203 +141,18 @@ function MasterDashboardDoing() {
         },
       });
 
-      const rawList = res.data.data_list;
-      const displayStateMap = {
-        all: "All",
-        requested: "Requested",
-        pending: "Pending",
-        approved: "Approved",
-        cancelled: "Cancelled",
-        승인완료: "Settlement",
-        settled: "Settled",
-      };
+      const list = res.data.data_list;
+      const totalCount = res.data.total_cnt || list.length;
 
-      // ✅ state 영문 → 한글로 매핑
-      // const mappedList = rawList.map(item => ({
-      //   ...item,
-      //   state: stateMap[item.state] || item.state,
-      // }));
-      const mappedList = rawList;
+      console.log("하단 리스트 가져오기 완료!", res.data);
 
-      const allowedStates = ["requested", "pending", "approved", "cancelled", "settlement_pending", "settled"];
-
-      // ✅ 1차 필터링 + 선택 상태 필터링
-      const filteredList = mappedList
-        .filter((item) => allowedStates.includes(item.state))
-        .filter((item) => selectedStatus === "all" || item.state === selectedStatus);
-
-      console.log("하단 리스트 가져오기 완료!", filteredList);
-
-      setTotalCnt(filteredList.length);
-      setDataList(filteredList);
-      setTotalPages(Math.ceil(res.data.total_cnt / 20));
+      setDataList(list);
+      setTotalPages(Math.ceil(totalCount / 20));
     } catch (error) {
       console.error("하단 리스트 가져오는 API 함수 error입니당", error);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const toggle = (index) => {
-    setOpenIndex((prev) => (prev === index ? null : index));
-  };
-  const data = [
-    {
-      status: "승인대기",
-      wallet: "0xDdDd...DdDd",
-      unitPrice: 500,
-      quantity: 1,
-      total: 500,
-      toWallet: "0xDdDd...DdDd",
-      emailList: ["kimchumji@mob.com", "kimchumji@mob.com", "kimchumji@mob.com"],
-      정산리스트: [
-        {
-          email: "kimchumji@mob.com",
-          지분: "50%",
-          정산금: "250",
-          정산상태: "정산대기",
-        },
-        {
-          email: "partner@mob.com",
-          지분: "50%",
-          정산금: "250",
-          정산상태: "정산완료",
-        },
-      ],
-    },
-    {
-      status: "승인취소",
-      wallet: "0xDdDd...DdDd",
-      unitPrice: 500,
-      quantity: 1,
-      total: 500,
-      toWallet: "0xDdDd...DdDd",
-      emailList: ["kimchumji@mob.com", "kimchumji@mob.com", "kimchumji@mob.com"],
-      정산리스트: [
-        {
-          email: "kimchumji@mob.com",
-          지분: "50%",
-          정산금: "250",
-          정산상태: "정산대기",
-        },
-        {
-          email: "partner@mob.com",
-          지분: "50%",
-          정산금: "250",
-          정산상태: "정산완료",
-        },
-      ],
-    },
-  ];
-
-  // 대시보드는 처음 한 번만 실행
-  useEffect(() => {
-    if (userToken) {
-      handleGetDashboard();
-    }
-  }, []);
-
-  // 하단 리스트는 값 바뀔때마다 실행
-  useEffect(() => {
-    if (userToken) {
-      handleGetDataList();
-    }
-  }, [selectedStatus, currentPage, searchKeyword]);
-
-  // 승인 상태 업데이트
-  useEffect(() => {
-    if (isStateChanged) {
-      handleGetDataList();
-      setIsStateChanged(false); // 초기화
-    }
-  }, [isStateChanged]);
-
-  useEffect(() => {
-    if (isSettlementChanged) {
-      handleGetDataList();
-      setIsSettlementChanged(false); // 다시 false로 초기화
-    }
-  }, [isSettlementChanged]);
-
-  // 영한 변환 함수
-  // const getKoreanState = state => {
-  //   const map = {
-  //     requested: '승인요청',
-  //     pending: '승인대기',
-  //     approved: '승인완료',
-  //     cancelled: '승인취소',
-  //     승인완료: '정산대기',
-  //     settled: '정산완료',
-  //   };
-  //   return map[state] || state; // 못 찾으면 그냥 원래 값 반환
-  // };
-
-  // const stateMap = {
-  //   requested: '승인요청',
-  //   pending: '승인대기',
-  //   approved: '승인완료',
-  //   cancelled: '승인취소',
-  //   승인완료: '정산대기',
-  //   settled: '정산완료',
-  // };
-
-  const stateMap = {
-    all: "All",
-    requested: "Requested",
-    pending: "Pending",
-    approved: "Approved",
-    cancelled: "Cancelled",
-    승인완료: "Settlement",
-    settled: "Settled",
-  };
-
-  // 날짜 포맷팅
-  const formatDate = (isoString) => {
-    const raw = new Date(isoString).toLocaleString("ko-KR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-    // "2025. 07. 19. 15:16" → "2025. 07. 19 15:16"
-    return raw.replace(/(\d{2})\.\s(\d{2})\.\s(\d{2})\.\s/, "$1. $2. $3 ");
-  };
-
-  // 정렬 필터 매핑
-  // const statusMap = {
-  //   all: '전체',
-  //   승인대기: '승인대기',
-  //   승인취소: '승인취소',
-  //   승인완료: '승인완료',
-  //   정산완료: '정산완료',
-  // };
-
-  const statusMap = {
-    all: "All",
-    requested: "Requested",
-    pending: "Pending",
-    approved: "Approved",
-    cancelled: "Cancelled",
-    승인완료: "Settlement",
-    settled: "Settled",
-  };
-
-  // const statusToServerMap = {
-  //   승인요청: 'requested',
-  //   승인대기: 'pending',
-  //   승인완료: 'approved',
-  //   승인취소: 'cancelled',
-  //   정산대기: 'settlement_pending',
-  //   정산완료: 'settled',
-  // };
-
-  // 정렬 필터 변경 함수
-  const handleFilterChange = (key) => {
-    setSelectedStatus(key);
-    setIsFilterOpen(false);
-    setCurrentPage(1); // 페이지 초기화
   };
 
   // 승인 / 취소 버튼 클릭했을 때
@@ -315,29 +188,24 @@ function MasterDashboardDoing() {
     }
   };
 
-  // 보조 함수들
-  const getApprovalOrCancelBlock = (item) => {
-    // 취소된 건
-    if (item.approval_cancel_dt) {
-      return (
-        <div className="toway-txt-box --cancelled">
-          <p>{displayStateMap["cancelled"]}</p>
-          <small>{formatDate(item.approval_cancel_dt)}</small>
-        </div>
-      );
-    }
+  //----- 함수 로직 모음  ------------------------------------------------------------------------------------
+  // 우측 화살표 토글
+  const toggle = (index) => {
+    setOpenIndex((prev) => (prev === index ? null : index));
+  };
 
-    // 승인된 건
-    if (item.approval_dt) {
-      return (
-        <div className="toway-txt-box --approved">
-          <p>{displayStateMap["approved"]}</p>
-          <small>{formatDate(item.approval_dt)}</small>
-        </div>
-      );
-    }
-
-    return null;
+  // 날짜 포맷팅
+  const formatDate = (isoString) => {
+    const raw = new Date(isoString).toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    // "2025. 07. 19. 15:16" → "2025. 07. 19 15:16"
+    return raw.replace(/(\d{2})\.\s(\d{2})\.\s(\d{2})\.\s/, "$1. $2. $3 ");
   };
 
   // 지갑 주소 포맷팅 함수 (앞뒤 4글자씩 짜르기 0x00....0000)
@@ -352,15 +220,60 @@ function MasterDashboardDoing() {
     return Number(num).toLocaleString("en-US"); // "1,000", "50,000" 형태
   };
 
-  const displayStateMap = {
-    all: "All",
-    requested: "Requested",
-    pending: "Pending",
-    approved: "Approved",
-    cancelled: "Cancelled",
-    승인완료: "Settlement",
-    settled: "Settled",
+  // Action 보조 함수들
+  const getApprovalOrCancelBlock = (item) => {
+    // 취소된 건
+    if (item.approval_cancel_dt) {
+      return (
+        <div className="toway-txt-box --cancelled">
+          <p>{getStateLabel("cancelled")}</p>
+          <small>{formatDate(item.approval_cancel_dt)}</small>
+        </div>
+      );
+    }
+
+    // 승인된 건
+    if (item.approval_dt) {
+      return (
+        <div className="toway-txt-box --approved">
+          <p>{getStateLabel("approved")}</p>
+          <small>{formatDate(item.approval_dt)}</small>
+        </div>
+      );
+    }
+
+    return null;
   };
+
+  //----- useEffect 모음  ------------------------------------------------------------------------------------
+  // 대시보드는 처음 한 번만 실행
+  useEffect(() => {
+    if (userToken) {
+      handleGetDashboard();
+    }
+  }, []);
+
+  // 하단 리스트는 값 바뀔때마다 실행
+  useEffect(() => {
+    if (userToken) {
+      handleGetDataList();
+    }
+  }, [statusFilter, sortFilter, currentPage]);
+
+  // 승인 상태 업데이트
+  useEffect(() => {
+    if (isStateChanged) {
+      handleGetDataList();
+      setIsStateChanged(false); // 초기화
+    }
+  }, [isStateChanged]);
+
+  useEffect(() => {
+    if (isSettlementChanged) {
+      handleGetDataList();
+      setIsSettlementChanged(false); // 다시 false로 초기화
+    }
+  }, [isSettlementChanged]);
 
   return (
     <>
@@ -414,17 +327,17 @@ function MasterDashboardDoing() {
               <div className="filter-group__title">Filter</div>
               <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
                 <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
-                  <span>{statusMap[selectedStatus]}</span>
+                  <span>{FILTER_SORT_OPTIONS.find((o) => o.key === selectedKey)?.label || "All"}</span>
                   <i className="custom-select__arrow"></i>
                 </button>
                 <ul className="custom-select__list">
-                  {Object.entries(statusMap).map(([key, label]) => (
+                  {FILTER_SORT_OPTIONS.map((opt) => (
                     <li
-                      key={key}
-                      className={selectedStatus === key ? "is-selected" : ""}
-                      onClick={() => handleFilterChange(key)}
+                      key={opt.key}
+                      className={selectedKey === opt.key ? "is-selected" : ""}
+                      onClick={() => handleFilterSelectUnified(opt.key)}
                     >
-                      {label}
+                      {opt.label}
                     </li>
                   ))}
                 </ul>
@@ -469,10 +382,13 @@ function MasterDashboardDoing() {
                 <>
                   {/* table head */}
                   <div className="table-section__tit__list-head">
-                    <div className="col" style={{ flex: "0 0 15%" }}>
+                    <div className="col" style={{ flex: "0 0 10%" }}>
+                      Transaction Type
+                    </div>
+                    <div className="col" style={{ flex: "0 0 10%" }}>
                       Status
                     </div>
-                    <div className="col" style={{ flex: "0 0 20%" }}>
+                    <div className="col" style={{ flex: "0 0 15%" }}>
                       Deposited Wallet Address
                     </div>
                     <div className="col" style={{ flex: "0 0 10%" }}>
@@ -484,7 +400,7 @@ function MasterDashboardDoing() {
                     <div className="col" style={{ flex: "0 0 10%" }}>
                       Total Amount
                     </div>
-                    <div className="col" style={{ flex: "0 0 18%" }}>
+                    <div className="col" style={{ flex: "0 0 15%" }}>
                       Wallet to Send
                     </div>
                     <div className="col">Action</div>
@@ -493,19 +409,19 @@ function MasterDashboardDoing() {
                     <div className="table-empty">No matching records found.</div>
                   ) : (
                     dataList.map((item, index) => (
-                      <div key={index} className={`list-item ${openIndex === index ? "open" : ""}`}>
+                      <div
+                        key={item.id ?? `${item.state}-${index}`}
+                        className={`list-item ${openIndex === index ? "open" : ""}`}
+                      >
                         <div className="list-item__row">
-                          <div
-                            className={`col status-col
-                        ${item.state === "pending" ? "status--pending" : ""}
-                        ${item.state === "cancelled" ? "status--cancelled" : ""}
-                    `}
-                            style={{ flex: "0 0 15%" }}
-                          >
-                            {displayStateMap[item.state] || item.state}
+                          <div className="col" style={{ flex: "0 0 10%" }}>
+                            <span className={`status status--${item.sort}`}>{getStateLabel(item.sort)}</span>
+                          </div>
+                          <div className="col" style={{ flex: "0 0 10%" }}>
+                            <span className={`status status--${item.state}`}>{getStateLabel(item.state)}</span>
                           </div>
 
-                          <div className="col wallet-copy-com" style={{ flex: "0 0 20%" }}>
+                          <div className="col wallet-copy-com" style={{ flex: "0 0 15%" }}>
                             {formatWalletAddress(item.deposit_wallet_address)}
                             <CopyButton textToCopy={item.deposit_wallet_address} />
                           </div>
@@ -518,7 +434,7 @@ function MasterDashboardDoing() {
                           <div className="col" style={{ flex: "0 0 10%" }}>
                             {formatNumber(item.amount)}
                           </div>
-                          <div className="col wallet-copy-com" style={{ flex: "0 0 18%" }}>
+                          <div className="col wallet-copy-com" style={{ flex: "0 0 15%" }}>
                             {formatWalletAddress(item.buyer_wallet_address)}
                             <CopyButton textToCopy={item.buyer_wallet_address} />
                           </div>
@@ -583,7 +499,7 @@ function MasterDashboardDoing() {
                               {item.referrals?.map((user, i) => (
                                 <div className="info-row" key={i}>
                                   <div className="col col--email" style={{ flex: "0 0 20%" }}>
-                                    <Link to={`/affiliate/other-sales-record?email=${user.username}`}>
+                                    <Link to={`/other-sales-record?email=${user.username}`}>
                                       <span>{user.username}</span>
                                       <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
                                     </Link>

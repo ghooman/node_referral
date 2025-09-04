@@ -3,13 +3,12 @@ import logoImg from "../assets/images/logo/logo-affiliate-01.svg";
 // Components
 import InputField from "../components/unit/InputField";
 import LoadingDots from "../components/unit/LoadingDots";
-import ModalWrap from "../components/modal/ModalWrap";
 import ConfirmModal from "../components/modal/ConfirmModal";
 // style
 import "../styles/pages/Login.scss";
 // 외부 라이브러리 및 패키지
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 // Login.jsx 내 성공 시
 import { redirectPathByRole } from "../utils/auth";
@@ -17,6 +16,7 @@ import { redirectPathByRole } from "../utils/auth";
 const serverAPI = process.env.REACT_APP_NODE_SERVER_API;
 
 function Login() {
+  //----- 상태 ------------------------------------------------------------------------------------
   // 사용자 아이디 & 비번 상태
   const [userId, setUserId] = useState("");
   const [userPw, setUserPw] = useState("");
@@ -28,6 +28,8 @@ function Login() {
   const isFormValid = userId.trim() !== "" && userPw.trim() !== "";
   // API data 가져오는 텀
   const [isLoading, setIsLoading] = useState(false);
+
+  //----- API 호출 함수  ------------------------------------------------------------------------------------
   // 로그인 성공실패 여부 함수
   const handleIsLogin = async () => {
     setIsLoading(true);
@@ -43,7 +45,7 @@ function Login() {
       // console.log("res.data코드확인중..!", res.data);
       if (res.data?.token) {
         // 로그인 성공 처리
-        console.log("✅ 로그인 성공!", res.data);
+        console.log("로그인 성공!", res.data);
         // 1. 토큰 저장
         localStorage.setItem("userToken", res.data.token);
         // 2. 이메일 저장
@@ -51,13 +53,6 @@ function Login() {
         // 3. 역할 저장 (없으면 이메일로 판단)
         const role = userId.trim() === "nisoft83@naver.com" ? "master" : "user";
         localStorage.setItem("userRole", role);
-        // 메인 (Dashboard 페이지로 이동)
-        // if (role == "master") {
-        //   navigate("/master-dashboard-doing");
-        // } else {
-        //   navigate("/dashboard");
-        // }
-        // ✅ replace: true로 뒤로가기 방지
         navigate(redirectPathByRole(role), { replace: true });
       } else {
         // 로그인 실패 처리
