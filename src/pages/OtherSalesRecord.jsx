@@ -111,14 +111,17 @@ function OtherSalesRecord() {
   // 상단 4개
   const handleSubUserDashboard = async () => {
     try {
-      const res = await axios.get(`${serverAPI}/api/sales/user/income/dashboard`, {
-        params: {
-          username: userEmail,
-        },
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
+      const res = await axios.get(
+        `${serverAPI}/api/sales/user/income/dashboard`,
+        {
+          params: {
+            username: userEmail,
+          },
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
       const list = res.data;
       console.log("하위 레퍼럴 상단 대시보드 가져왔당", list);
       setSubUserDashboard(list);
@@ -166,7 +169,9 @@ function OtherSalesRecord() {
 
   //----- 함수 로직 모음  ------------------------------------------------------------------------------------
   // 날짜 포맷팅
+  // 날짜 포맷팅
   const formatDate = (isoString) => {
+    if (!isoString) return "-";
     const raw = new Date(isoString).toLocaleString("ko-KR", {
       year: "numeric",
       month: "2-digit",
@@ -256,8 +261,15 @@ function OtherSalesRecord() {
           <div className="filter-group">
             <div className="filter-group__title">Filter</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-              <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
-                <span>{FILTER_SORT_OPTIONS.find((o) => o.key === selectedKey)?.label || "All"}</span>
+              <button
+                type="button"
+                className="custom-select__btn"
+                onClick={() => setIsFilterOpen((prev) => !prev)}
+              >
+                <span>
+                  {FILTER_SORT_OPTIONS.find((o) => o.key === selectedKey)
+                    ?.label || "All"}
+                </span>
                 <i className="custom-select__arrow"></i>
               </button>
               <ul className="custom-select__list">
@@ -299,19 +311,34 @@ function OtherSalesRecord() {
                     <div className="table-empty">No sales records.</div>
                   ) : (
                     subUserData.data_list.map((item, index) => (
-                      <div key={item.id} className={`list-item ${openIndex === index ? "open" : ""}`}>
+                      <div
+                        key={item.id}
+                        className={`list-item ${
+                          openIndex === index ? "open" : ""
+                        }`}
+                      >
                         <div className="list-item__row">
                           <div className="col">
-                            <span className={`status status--${item.sort}`}>{getStateLabel(item.sort)}</span>
+                            <span className={`status status--${item.sort}`}>
+                              {getStateLabel(item.sort)}
+                            </span>
                           </div>
                           <div className="col">
-                            <span className={`status status--${item.state}`}>{getStateLabel(item.state)}</span>
+                            <span className={`status status--${item.state}`}>
+                              {getStateLabel(item.state)}
+                            </span>
                           </div>
-                          <div className="col">{formatNumber(item.unit_price)}</div>
+                          <div className="col">
+                            {formatNumber(item.unit_price)}
+                          </div>
                           <div className="col">{formatNumber(item.cnt)}</div>
                           <div className="col">{formatNumber(item.amount)}</div>
-                          <div className="col">{formatNumber(item.settlement_amount)}</div>
-                          <div className="col">{formatDate(item.create_dt)}</div>
+                          <div className="col">
+                            {formatNumber(item.settlement_amount)}
+                          </div>
+                          <div className="col">
+                            {formatDate(item.create_dt)}
+                          </div>
                           <div className="col">{item.buyer_name}</div>
                         </div>
                       </div>
@@ -322,7 +349,11 @@ function OtherSalesRecord() {
             </div>
           </section>
 
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
         </div>
         <Footer />
       </div>

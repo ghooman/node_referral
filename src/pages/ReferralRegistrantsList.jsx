@@ -26,11 +26,14 @@ function ReferralRegistrantsList() {
   const GetReferralList = async () => {
     setIsPageLoading(true);
     try {
-      const res = await axios.get(`${serverAPI}/api/user/referrals?sort_by=${selectedSortOption}`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
+      const res = await axios.get(
+        `${serverAPI}/api/user/referrals?sort_by=${selectedSortOption}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
 
       const list = res.data || [];
       setReferralList(list);
@@ -45,6 +48,7 @@ function ReferralRegistrantsList() {
   //----- 함수 로직 모음  ------------------------------------------------------------------------------------
   // 날짜 포맷팅
   const formatDate = (isoString) => {
+    if (!isoString) return "-";
     const raw = new Date(isoString).toLocaleString("ko-KR", {
       year: "numeric",
       month: "2-digit",
@@ -86,15 +90,26 @@ function ReferralRegistrantsList() {
           <div className="filter-group">
             <div className="filter-group__title">Filter</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-              <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
-                <span>{SORT_OPTIONS.find((o) => o.value === selectedSortOption)?.label}</span>
+              <button
+                type="button"
+                className="custom-select__btn"
+                onClick={() => setIsFilterOpen((prev) => !prev)}
+              >
+                <span>
+                  {
+                    SORT_OPTIONS.find((o) => o.value === selectedSortOption)
+                      ?.label
+                  }
+                </span>
                 <i className="custom-select__arrow"></i>
               </button>
               <ul className="custom-select__list">
                 {SORT_OPTIONS.map((opt) => (
                   <li
                     key={opt.value}
-                    className={selectedSortOption === opt.value ? "is-selected" : ""}
+                    className={
+                      selectedSortOption === opt.value ? "is-selected" : ""
+                    }
                     onClick={() => {
                       setSelectedSortOption(opt.value);
                       setIsFilterOpen(false);

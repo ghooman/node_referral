@@ -12,49 +12,6 @@ const serverAPI = process.env.REACT_APP_NODE_SERVER_API;
 function ReferralPurchaseList() {
   const userToken = localStorage.getItem("userToken");
 
-  // const dummyData = [
-  //   {
-  //     state: "settlement",
-  //     unit_price: 100,
-  //     cnt: 2,
-  //     create_dt: "2025-09-01T10:15:30.000Z",
-  //     settlement_dt: "2025-09-05T12:00:00.000Z",
-  //     buyer_wallet_address: "0xABC123DEF456",
-  //     settlement_amount: 200,
-  //     amount: 200,
-  //   },
-  //   {
-  //     state: "settled",
-  //     unit_price: 50,
-  //     cnt: 5,
-  //     create_dt: "2025-08-28T08:45:00.000Z",
-  //     settlement_dt: "2025-09-02T15:30:00.000Z",
-  //     buyer_wallet_address: "0x987654321FEDCBA",
-  //     settlement_amount: 250,
-  //     amount: 250,
-  //   },
-  //   {
-  //     state: "settlement",
-  //     unit_price: 75,
-  //     cnt: 3,
-  //     create_dt: "2025-09-02T11:20:00.000Z",
-  //     settlement_dt: "2025-09-06T09:00:00.000Z",
-  //     buyer_wallet_address: "0x111222333444555",
-  //     settlement_amount: 225,
-  //     amount: 225,
-  //   },
-  //   {
-  //     state: "settled",
-  //     unit_price: 120,
-  //     cnt: 1,
-  //     create_dt: "2025-08-30T14:10:00.000Z",
-  //     settlement_dt: "2025-09-01T18:45:00.000Z",
-  //     buyer_wallet_address: "0xFFFFEEEEDDDDCCCC",
-  //     settlement_amount: 120,
-  //     amount: 120,
-  //   },
-  // ];
-
   //----- 상태 ------------------------------------------------------------------------------------
   // 레퍼럴 구매목록 상태
   const [referralDashboard, setReferralDashboard] = useState({
@@ -84,11 +41,14 @@ function ReferralPurchaseList() {
   // 레퍼럴 구매목록 대시보드 get api
   const GetReferralDashboard = async () => {
     try {
-      const res = await axios.get(`${serverAPI}/api/sales/referrals/buy/dashboard`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
+      const res = await axios.get(
+        `${serverAPI}/api/sales/referrals/buy/dashboard`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
       setReferralDashboard(res.data);
     } catch (e) {
       console.error(e);
@@ -121,6 +81,7 @@ function ReferralPurchaseList() {
   //----- 함수 로직 모음  ------------------------------------------------------------------------------------
   // 날짜 포맷팅
   const formatDate = (isoString) => {
+    if (!isoString) return "-";
     const raw = new Date(isoString).toLocaleString("ko-KR", {
       year: "numeric",
       month: "2-digit",
@@ -143,12 +104,16 @@ function ReferralPurchaseList() {
   // 필터 드롭다운 순서
   const STATUS_OPTIONS = [
     { key: "all", label: "All" },
+    { key: "approved", label: "Approved" },
     { key: "승인완료", label: "Settlement" },
     { key: "settled", label: "Settled" },
   ];
 
   // 필터 라벨링
-  const statusLabelMap = React.useMemo(() => Object.fromEntries(STATUS_OPTIONS.map((o) => [o.key, o.label])), []);
+  const statusLabelMap = React.useMemo(
+    () => Object.fromEntries(STATUS_OPTIONS.map((o) => [o.key, o.label])),
+    []
+  );
   const getStateLabel = (state) => statusLabelMap[state] || state;
 
   //----- useEffect 모음  ------------------------------------------------------------------------------------
@@ -203,7 +168,11 @@ function ReferralPurchaseList() {
           <div className="filter-group">
             <div className="filter-group__title">Filter</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-              <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
+              <button
+                type="button"
+                className="custom-select__btn"
+                onClick={() => setIsFilterOpen((prev) => !prev)}
+              >
                 <span>{getStateLabel(selectedStatus)}</span>
                 <i className="custom-select__arrow"></i>
               </button>
@@ -249,10 +218,17 @@ function ReferralPurchaseList() {
 
                   {/* table body */}
                   {referralList.map((item, index) => (
-                    <div key={index} className={`list-item ${openIndex === index ? "open" : ""}`}>
+                    <div
+                      key={index}
+                      className={`list-item ${
+                        openIndex === index ? "open" : ""
+                      }`}
+                    >
                       <div className="list-item__row">
                         <div className="col">
-                          <span className={`status status--${item.state}`}>{getStateLabel(item.state)}</span>
+                          <span className={`status status--${item.state}`}>
+                            {getStateLabel(item.state)}
+                          </span>
                         </div>
                         <div className="col wallet-copy-com">
                           {formatWalletAddress(item.buyer_wallet_address)}
@@ -263,7 +239,9 @@ function ReferralPurchaseList() {
                         <div className="col">{item.amount}</div>
                         <div className="col">{item.settlement_amount}</div>
                         <div className="col">{formatDate(item.create_dt)}</div>
-                        <div className="col">{formatDate(item.settlement_dt)}</div>
+                        <div className="col">
+                          {formatDate(item.settlement_dt)}
+                        </div>
                       </div>
                     </div>
                   ))}
