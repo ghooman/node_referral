@@ -1,114 +1,162 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../components/unit/Header";
 import Footer from "../components/unit/Footer";
-import Pagination from "../components/unit/Pagination";
 import Loading from "../components/Loading";
 import CopyButton from "../components/unit/CopyButton";
 
+import axios from "axios";
+
+const serverAPI = process.env.REACT_APP_NODE_SERVER_API;
+
 function ReferralRegistrantsList() {
+  const userToken = localStorage.getItem("userToken");
+
+  //----- 상태 ------------------------------------------------------------------------------------
+  // 레퍼럴 가입자 상태
+  const [referralList, setReferralList] = useState([]);
+  const [referralCnt, setReferralCnt] = useState(0);
+
   const [isPageLoading, setIsPageLoading] = useState(false);
+
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedFilter, setSelectedFilter] = useState("latest");
-  const [selectedSortOption, setSelectedSortOption] = useState("latest");
+  const [selectedSortOption, setSelectedSortOption] = useState("desc");
 
-  const registrants = [
-    // 지갑주소 전체 노출
-    { username: "4822dssdajkndjkasnjaks3432432432454DBDT", joinedDate: "2025. 06. 02 17:48" },
-    { username: "4822dssdajkndjkasnjaks3432432432454DBDT", joinedDate: "2025. 06. 02 17:48" },
-    { username: "4822dssdajkndjkasnjaks3432432432454DBDT", joinedDate: "2025. 06. 02 17:48" },
-    { username: "4822dssdajkndjkasnjaks3432432432454DBDT", joinedDate: "2025. 06. 02 17:48" },
-  ];
+  //----- API 호출 함수  ------------------------------------------------------------------------------------
+  // 레퍼럴 가입자 get api
+  const GetReferralList = async () => {
+    setIsPageLoading(true);
+    try {
+      const res = await axios.get(
+        `${serverAPI}/api/user/referrals?sort_by=${selectedSortOption}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
 
-  const itemsPerPage = 20;
-  const totalItems = registrants.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  const sortOptions = [
-    { label: "Latest", value: "latest" }, // 가입일시 오름차순
-    { label: "Oldest", value: "oldest" }, // 가입일시 내림차순
-  ];
-  const handleSelectFilter = (label, value) => {
-    setSelectedSortOption(value);
-    setIsFilterOpen(false);
+      const list = res.data || [];
+      setReferralList(list);
+      setReferralCnt(list.length);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsPageLoading(false);
+    }
   };
+
+  //----- 함수 로직 모음  ------------------------------------------------------------------------------------
+  // 날짜 포맷팅
+  const formatDate = (isoString) => {
+    if (!isoString) return "-";
+    const raw = new Date(isoString).toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    // "2025. 07. 19. 15:16" → "2025. 07. 19 15:16"
+    return raw.replace(/(\d{2})\.\s(\d{2})\.\s(\d{2})\.\s/, "$1. $2. $3 ");
+  };
+
+  //----- 필터 제어 ------------------------------------------------------------------------------------
+  // 필터 드롭다운 순서
+  const SORT_OPTIONS = [
+    { value: "desc", label: "Latest" }, // 최신순(내림차순)
+    { value: "asc", label: "Oldest" }, // 오래된순(오름차순)
+  ];
+
+  //----- useEffect 모음  ------------------------------------------------------------------------------------
+  useEffect(() => {
+    GetReferralList();
+  }, [selectedSortOption]);
 
   return (
     <>
-    <div className="layout">
-      <Header />
-      <div className="page-wrapper table-center">
-        <div className="sales-section">
-          <div className="sales-section__record-tit">
-            <h2>Referral Registrants List</h2>
-            <span>
-              Total <small>{registrants.length}</small>
-            </span>
+      <div className="layout">
+        <Header />
+        <div className="page-wrapper table-center">
+          <div className="sales-section">
+            <div className="sales-section__record-tit">
+              <h2>Referral Registrants List</h2>
+              <span>
+                Total <small>{referralCnt}</small>
+              </span>
+            </div>
           </div>
-        </div>
-        {/* 필터 정렬 */}
-        <div className="filter-group">
-          <div className="filter-group__title">Filter</div>
-          <div
-            className={`custom-select ${isFilterOpen ? "is-open" : ""}`}
-            onClick={() => setIsFilterOpen((prev) => !prev)}
-          >
-            <button type="button" className="custom-select__btn">
-              <span>{selectedFilter}</span>
-              <i className="custom-select__arrow"></i>
-            </button>
-            <ul className="custom-select__list">
-              {sortOptions.map((item, index) => (
-              <li
-                key={index}
-                className={selectedSortOption === item.value ? "is-selected" : ""}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSelectFilter(item.label, item.value);
-                }}
+          {/* 필터 정렬 */}
+          <div className="filter-group">
+            <div className="filter-group__title">Filter</div>
+            <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
+              <button
+                type="button"
+                className="custom-select__btn"
+                onClick={() => setIsFilterOpen((prev) => !prev)}
               >
-                {item.label}
-              </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        {/* 테이블 섹션 */}
-        <section className="table-section">
-          <div className="table-section-inner">
-            {isPageLoading ? (
-              <div className="result-loading">
-                <Loading />
-              </div>
-            ) : registrants.length === 0 ? (
-              <div className="table-empty">No registrants found.</div>
-            ) : (
-              <>
-                <div className="table-section__tit__list-head">
-                  <div className="col">Registrants</div>
-                  <div className="col">Join Date</div>
-                </div>
-
-                {registrants.map((item, index) => (
-                  <div key={index} className="list-item">
-                    <div className="list-item__row">
-                      <div className="col wallet-copy-com">
-                        {item.username}
-                        <CopyButton textToCopy={item.username} />
-                      </div>
-                      <div className="col">{item.joinedDate}</div>
-                    </div>
-                  </div>
+                <span>
+                  {
+                    SORT_OPTIONS.find((o) => o.value === selectedSortOption)
+                      ?.label
+                  }
+                </span>
+                <i className="custom-select__arrow"></i>
+              </button>
+              <ul className="custom-select__list">
+                {SORT_OPTIONS.map((opt) => (
+                  <li
+                    key={opt.value}
+                    className={
+                      selectedSortOption === opt.value ? "is-selected" : ""
+                    }
+                    onClick={() => {
+                      setSelectedSortOption(opt.value);
+                      setIsFilterOpen(false);
+                    }}
+                  >
+                    {opt.label}
+                  </li>
                 ))}
-              </>
-            )}
+              </ul>
+            </div>
           </div>
-        </section>
+          {/* 테이블 섹션 */}
+          <section className="table-section">
+            <div className="table-section-inner">
+              {isPageLoading ? (
+                <div className="result-loading">
+                  <Loading />
+                </div>
+              ) : referralCnt === 0 ? (
+                <div className="table-empty">No registrants found.</div>
+              ) : (
+                <>
+                  <div className="table-section__tit__list-head">
+                    <div className="col">Registrants</div>
+                    <div className="col">Join Date</div>
+                  </div>
+
+                  {referralList.map((item, index) => (
+                    <div key={index} className="list-item">
+                      <div className="list-item__row">
+                        <div className="col wallet-copy-com flex-left">
+                          {item.wallet_address}
+                          <CopyButton textToCopy={item.wallet_address} />
+                        </div>
+                        <div className="col">{formatDate(item.create_dt)}</div>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          </section>
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
     </>
-  )
+  );
 }
 
-export default ReferralRegistrantsList
+export default ReferralRegistrantsList;

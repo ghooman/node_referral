@@ -19,27 +19,26 @@
   .dash-section {
     padding: clamp(12px, 1.3vw, 20px) clamp(12px, 2vw, 30px);
     background-color: $color-gray-100;
-    border-radius: 16px; 
+    border-radius: 16px;
 
     .dash-section__tit {
       @include font-h5-eb;
       color: $color-black;
     }
-    .dash-section__txt{
-      .dash-section__txt__board{
+    .dash-section__txt {
+      .dash-section__txt__board {
         // master-dashboard 개별 속성 (grid 사용)
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 20px;
         padding: 0;
         align-items: flex-start;
-        li:first-of-type{
+        li:first-of-type {
           flex: none;
           max-width: none;
           position: static;
         }
       }
-
     }
   }
   .table-section {
@@ -319,7 +318,7 @@
     .table-section__tit__list-head,
     .list-item__row {
       display: grid;
-      grid-template-columns: 1.5fr 2.5fr 2fr 1fr 1fr 1fr 1fr 2fr !important;
+      grid-template-columns: 1.5fr 1.5fr 2fr 1.5fr 1fr 1fr 1fr 1fr 1.5fr !important;
     }
     .col {
       overflow: hidden !important;

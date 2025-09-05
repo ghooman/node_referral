@@ -3,13 +3,11 @@ import { Link } from "react-router-dom";
 // compomnents
 import Header from "../components/unit/Header";
 import Footer from "../components/unit/Footer";
-import InputField from "../components/unit/InputField";
 import Pagination from "../components/unit/Pagination";
 import Loading from "../components/Loading";
 
 // img
 import arrowDownIcon from "../assets/images/icon-arrow-down.svg";
-import arrowUpIcon from "../assets/images/icon-arrow-up.svg";
 import arrowRightIcon from "../assets/images/icon-arrow-right.svg";
 
 // style
@@ -21,79 +19,88 @@ const serverAPI = process.env.REACT_APP_NODE_SERVER_API;
 
 function ReferralEarningList() {
   const userToken = localStorage.getItem("userToken");
-  const [isPageLoading, setIsPageLoading] = useState(false);
-
-  const handleToggle = (callback) => {
-    setOpenIndex(typeof callback === "function" ? callback : callback);
-  };
-
-  //----- 하위 레퍼럴 활동현황 상태 ----------------------------------------------------
-  const [downReferralActive, setDownReferralActive] = useState([]);
-  const [totalCnt, setTotalCnt] = useState(0);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  const [filterState, setFilterState] = useState("all"); // all | success | failed
-  const [openIndex, setOpenIndex] = useState(null);
-  const [activeSettleStatus, setActiveSettleStatus] = useState(null);
-  const [selectOpen, setSelectOpen] = useState(false);
-
-  // 상단 4개
+  //----- 상태 ------------------------------------------------------------------------------------
+  // 상단 대시보드
   const [downRevenue, setDownRevenue] = useState(0);
   const [downSettlement, setDownSettlement] = useState(0);
   const [downReferrals, setDownReferrals] = useState(0);
   const [downSoldNode, setDownSoldNode] = useState(0);
 
+  // 하위 레퍼럴 활동현황 상태
+  const [downReferralActive, setDownReferralActive] = useState([]);
+  const [totalCnt, setTotalCnt] = useState(0);
+
   // 필터 정렬 상태
-  const [selectedStatus, setSelectedStatus] = useState("all");
+  // 어떤 항목을 선택했는지(라벨 표시용)
+  const [selectedKey, setSelectedKey] = useState("status:all");
+
+  // 실제 API 파라미터용
+  const [statusFilter, setStatusFilter] = useState("all"); // status 파라미터
+  const [sortFilter, setSortFilter] = useState(null); // sort 파라미터(normal | referral)
+
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const dummyDataList = [
-    {
-      state: "requested", // ← 문자열
-      unit_price: 100,
-      cnt: 10,
-      my_settlement_amount: 30,
-      amount: 20,
-      referrals: [
-        {
-          id: 0,
-          username: "ref1@metapol.io",
-          share: 30,
-          settlement_amount: 300,
-          is_complt: true, // ← 불리언
-          settlement_dt: "2025-07-23T07:20:00.000Z",
-        },
-        {
-          id: 1,
-          username: "ref2@metapol.io",
-          share: 20,
-          settlement_amount: 200,
-          is_complt: false, // ← 불리언
-          settlement_dt: "2025-07-23T07:25:00.000Z",
-        },
-      ],
-    },
-    {
-      state: "cancelled", // ← 문자열
-      unit_price: 100,
-      cnt: 10,
-      my_settlement_amount: 30,
-      amount: 20,
-      referrals: [
-        {
-          id: 0,
-          username: "ref3@metapol.io",
-          share: 50,
-          settlement_amount: 1500,
-          is_complt: true,
-          settlement_dt: "2025-07-22T18:30:00.000Z",
-        },
-      ],
-    },
+
+  const [openIndex, setOpenIndex] = useState(null);
+
+  const [isPageLoading, setIsPageLoading] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  //----- 필터 제어 ------------------------------------------------------------------------------------
+  // 필터 드롭다운 순서
+  const FILTER_SORT_OPTIONS = [
+    { key: "status:all", label: "All" },
+    // sort 계열
+    { key: "sort:normal", label: "Affiliate" },
+    { key: "sort:referral", label: "User" },
+    // status 계열
+    { key: "status:requested", label: "Requested" },
+    { key: "status:pending", label: "Pending" },
+    { key: "status:approved", label: "Approved" },
+    { key: "status:cancelled", label: "Cancelled" },
+    { key: "status:승인완료", label: "Settlement" },
+    { key: "status:settled", label: "Settled" },
   ];
 
-  // 상단 4개
+  // 필터 라벨링
+  const getStateLabel = (state) => {
+    const map = {
+      all: "All",
+      normal: "Affiliate",
+      referral: "User",
+      requested: "Requested",
+      pending: "Pending",
+      approved: "Approved",
+      cancelled: "Cancelled",
+      승인완료: "Settlement",
+      settled: "Settled",
+    };
+    return map[state] || state;
+  };
+
+  // 필터 제어
+  const handleFilterSelectUnified = (key) => {
+    setSelectedKey(key);
+    const [type, value] = key.split(":");
+
+    if (key === "status:all") {
+      setStatusFilter("all");
+      setSortFilter(null); // ✅ 완전 초기화
+    } else if (type === "status") {
+      setStatusFilter(value); // 이번에 고른 status를 적용
+      setSortFilter(null); // ✅ sort는 초기화
+    } else if (type === "sort") {
+      setSortFilter(value); // 이번에 고른 sort를 적용
+      setStatusFilter("all"); // ✅ status는 'all'로 초기화
+    }
+
+    setCurrentPage(1);
+    setIsFilterOpen(false);
+  };
+
+  //----- API 호출 함수  ------------------------------------------------------------------------------------
+  // 상단 대시보드 가져오는 함수
   const handleDownDashboard = async () => {
     try {
       const res = await axios.get(`${serverAPI}/api/sales/referrals/income/dashboard`, {
@@ -112,17 +119,16 @@ function ReferralEarningList() {
     }
   };
 
-  //----- 하위 레퍼럴 활동현황 ----------------------------------------------------
+  // 하단 리스트 가져오는 함수
   const handleDownReferralActiveList = async () => {
     try {
       setIsPageLoading(true);
-      const isCompltParam = filterState === "all" ? undefined : filterState === "success" ? true : false;
-
       const res = await axios.get(`${serverAPI}/api/sales/referrals/income/list`, {
         params: {
           page: currentPage,
           limit: 20,
-          state: selectedStatus === "all" ? undefined : selectedStatus,
+          state: statusFilter === "all" ? undefined : statusFilter,
+          sort: sortFilter || undefined, // normal | referral
         },
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -131,6 +137,7 @@ function ReferralEarningList() {
       const list = res.data.data_list;
       const totalCount = res.data.total_cnt || list.length;
       console.log("하위 레퍼럴 활동현황 받아오기 완료!", res.data);
+
       setDownReferralActive(list);
       setTotalCnt(res.data.total_cnt);
       setTotalPages(Math.ceil(totalCount / 20));
@@ -141,85 +148,21 @@ function ReferralEarningList() {
     }
   };
 
+  //----- 함수 로직 모음  ------------------------------------------------------------------------------------
+  // 우측 화살표 토글
+  const toggle = (index) => {
+    setOpenIndex((prev) => (prev === index ? null : index));
+  };
+
+  //----- useEffect 모음  ------------------------------------------------------------------------------------
   useEffect(() => {
     handleDownReferralActiveList();
-  }, [currentPage, selectedStatus, filterState]);
+  }, [currentPage, statusFilter, sortFilter]);
 
   useEffect(() => {
     handleDownDashboard();
     handleDownReferralActiveList();
   }, []);
-
-  const toggle = (index) => {
-    setOpenIndex((prev) => (prev === index ? null : index));
-  };
-
-  const handleFilterSelect = (value) => {
-    let stateValue = "all";
-    if (value === "정산완료") stateValue = "success";
-    else if (value === "정산실패") stateValue = "failed";
-
-    setFilterState(stateValue);
-    setCurrentPage(1);
-    setSelectOpen(false);
-  };
-
-  // 필터 정렬 함수
-  const handleStatusFilter = (value) => {
-    setSelectedStatus(value);
-    setCurrentPage(1); // 필터 바뀌면 1페이지부터 보기
-  };
-
-  // 필터 정렬 함수 테스트용
-  const getFilteredDummyData = () => {
-    if (selectedStatus === "all") return dummyDataList;
-    return dummyDataList.filter((item) => item.state === selectedStatus);
-  };
-
-  const getFilteredRealData = () => {
-    if (!Array.isArray(downReferralActive)) return [];
-    if (selectedStatus === "all") return downReferralActive;
-    return downReferralActive.filter((item) => String(item.is_complt).toLowerCase() === selectedStatus);
-  };
-
-  const mapReferralListWithStatus = (list) => {
-    if (!Array.isArray(list)) return [];
-    return list.map((item) => {
-      const isComplete = String(item.is_complt).toLowerCase() === "true";
-      return {
-        ...item,
-        settleStatusType: isComplete ? "success" : "failed",
-      };
-    });
-  };
-
-  const dummyData = mapReferralListWithStatus(getFilteredDummyData());
-  // const realData = mapReferralListWithStatus(getFilteredRealData());
-  const realData = mapReferralListWithStatus(Array.isArray(downReferralActive) ? downReferralActive : []);
-  const safeRealData = Array.isArray(realData) ? realData : [];
-
-  const getStateLabel = (state) => {
-    const map = {
-      all: "All",
-      requested: "Requested",
-      pending: "Pending",
-      approved: "Approved",
-      cancelled: "Cancelled",
-      승인완료: "Settlement",
-      settled: "Settled",
-    };
-    return map[state] || state;
-  };
-
-  const statusMap = {
-    all: "All",
-    requested: "Requested",
-    pending: "Pending",
-    approved: "Approved",
-    cancelled: "Cancelled",
-    승인완료: "Settlement",
-    settled: "Settled",
-  };
 
   return (
     <>
@@ -259,21 +202,17 @@ function ReferralEarningList() {
             <div className="filter-group__title">Filter</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
               <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
-                <span>{statusMap[selectedStatus]}</span>
+                <span>{FILTER_SORT_OPTIONS.find((o) => o.key === selectedKey)?.label || "All"}</span>
                 <i className="custom-select__arrow"></i>
               </button>
               <ul className="custom-select__list">
-                {Object.entries(statusMap).map(([key, label]) => (
+                {FILTER_SORT_OPTIONS.map((opt) => (
                   <li
-                    key={key}
-                    className={selectedStatus === key ? "is-selected" : ""}
-                    onClick={() => {
-                      setSelectedStatus(key);
-                      setCurrentPage(1);
-                      setIsFilterOpen(false);
-                    }}
+                    key={opt.key}
+                    className={selectedKey === opt.key ? "is-selected" : ""}
+                    onClick={() => handleFilterSelectUnified(opt.key)}
                   >
-                    {label}
+                    {opt.label}
                   </li>
                 ))}
               </ul>
@@ -289,33 +228,35 @@ function ReferralEarningList() {
               ) : (
                 <>
                   <div className="table-section__tit__list-head">
+                    <div className="col">Transaction Type</div>
                     <div className="col">Status</div>
                     <div className="col">Unit Price</div>
                     <div className="col">Quantity</div>
                     <div className="col">Total Amount</div>
                     <div className="col">My Settlement Amount</div>
-                    <div className="col col--btn"></div>
                   </div>
 
                   {/*  하위 판매자가 없는 경우 */}
-                  {safeRealData.length === 0 ? (
+                  {totalCnt === 0 ? (
                     <div className="table-empty">No sub-referral sales records.</div>
                   ) : (
-                    safeRealData.map((item, index) => (
+                    downReferralActive.map((item, index) => (
                       <div
                         key={item.id ?? `${item.state}-${index}`}
                         className={`list-item ${openIndex === index ? "open" : ""}`}
                       >
                         <div className="list-item__row">
                           <div className="col">
+                            <span className={`status status--${item.sort}`}>{getStateLabel(item.sort)}</span>
+                          </div>
+                          <div className="col">
                             <span className={`status status--${item.state}`}>{getStateLabel(item.state)}</span>
                           </div>
                           <div className="col">{item.unit_price}</div>
                           <div className="col">{item.cnt}</div>
                           <div className="col">{item.amount}</div>
-                          <div className="col">{item.my_settlement_amount}</div>
-
                           <div className="col col--btn toggle-btn-box" style={{ width: "15px", height: "20px" }}>
+                            {item.my_settlement_amount}
                             <button
                               className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
                               onClick={() => toggle(index)}
@@ -335,7 +276,7 @@ function ReferralEarningList() {
                                 <div className="col">Settlement Status</div>
                               </div>
 
-                              {item.down_referrals.map((user, i) => (
+                              {(item.down_referrals || item.referrals || []).map((user, i) => (
                                 <div className="info-row" key={i}>
                                   <div className="col col--email">
                                     {i === 0 ? (
@@ -349,7 +290,7 @@ function ReferralEarningList() {
                                       </>
                                     )}
                                   </div>
-                                  <div className="col">{user.share}</div>
+                                  <div className="col">{user.share}%</div>
                                   <div className="col">{user.settlement_amount}</div>
                                   <div className="col">
                                     <span className={`status ${user.is_complt ? "status--success" : "status--failed"}`}>

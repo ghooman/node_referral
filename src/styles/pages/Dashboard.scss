@@ -1,6 +1,6 @@
-@import '../variables';
-@import '../mixins';
-@import '../fonts';
+@import "../variables";
+@import "../mixins";
+@import "../fonts";
 
 // user-section START
 .dashboard-wrapper {
@@ -34,15 +34,14 @@
     margin-bottom: $sp-16;
     text-align: right;
   }
-  .user-section__flex{
+  .user-section__flex {
     @include flex-between;
-    @include md{
+    @include md {
       flex-direction: column-reverse;
       align-items: flex-start !important;
     }
     & > * {
       flex: 0 0 49%;
-      
     }
   }
   .user-section__wallet {
@@ -50,7 +49,7 @@
     row-gap: $sp-12;
     @include md {
       column-gap: $sp-08;
-      row-gap: $sp-08
+      row-gap: $sp-08;
     }
     li {
       @include flex-start;
@@ -71,16 +70,16 @@
         }
       }
     }
-    li:last-of-type{
-      @include md{
+    li:last-of-type {
+      @include md {
         align-items: flex-start;
       }
     }
     .user-section__wallet__copy-com {
       @include flex-start;
       column-gap: 12px;
-      img{
-        @include md{
+      img {
+        @include md {
           max-width: 20px;
         }
       }
@@ -96,35 +95,35 @@
         @include font-xs-b;
       }
     }
-    .user-section__referral-code-com{
+    .user-section__referral-code-com {
       @include flex-start;
       column-gap: 12px;
       row-gap: 4px;
-      @include md{
+      @include md {
         flex-direction: column;
         align-items: flex-start;
       }
-      &__btn-box{
+      &__btn-box {
         @include flex-start-full;
         column-gap: 10px;
       }
     }
-    .btn-line-copy{
+    .btn-line-copy {
       padding: 4px clamp(10px, 1.3vw, 20px);
       font-size: clamp(12px, 0.9vw, 14px);
-      line-height: clamp(18px,1.5vw, 22px);
+      line-height: clamp(18px, 1.5vw, 22px);
       border: 1px solid $color-gray-300;
       background-color: $color-b-o05;
       font-weight: 400;
       border-radius: 8px;
-      transition: all .3s ease;
+      transition: all 0.3s ease;
       &.copied {
-          color: #a8a8a8;
-          border: 1px solid $color-w-o05;
-        }
+        color: #a8a8a8;
+        border: 1px solid $color-w-o05;
+      }
     }
   }
-  .color-blue{
+  .color-blue {
     color: $color-primary !important;
   }
 }
@@ -157,7 +156,7 @@
       @include md {
         flex-wrap: wrap;
       }
-      @include xs{
+      @include xs {
         flex-direction: column;
         align-items: flex-start;
       }
@@ -165,24 +164,24 @@
       li {
         padding: 0 1.5%;
         // 공통 레이아웃
-        &:first-of-type{
+        &:first-of-type {
           flex: 0 0 35%;
           max-width: 35%;
           position: relative;
-          @include md{
+          @include md {
             flex-basis: 100%;
             max-width: 100%;
-            &::after{
+            &::after {
               display: none;
             }
           }
-          @include xs{
+          @include xs {
             flex-basis: 100%;
             max-width: 100%;
           }
-          &:after{
+          &:after {
             position: absolute;
-            content: '';
+            content: "";
             width: 1px;
             height: 30px;
             background-color: $color-gray-300;
@@ -193,28 +192,27 @@
         }
       }
       // 4열 레이아웃 ()
-      &.col-4 li:not(:first-of-type){
+      &.col-4 li:not(:first-of-type) {
         flex: 1 1 calc((65% - (1.5% * 3)) / 3);
         max-width: calc((65% - (1.5% * 3)) / 3);
-        @include md{
+        @include md {
           flex-basis: 30.33%;
           max-width: 30.33%;
         }
-        @include xs{
+        @include xs {
           flex-basis: 100%;
           max-width: 100%;
         }
-        
       }
       // 3열 레이아웃
-      &.col-3 li:not(:first-of-type){
+      &.col-3 li:not(:first-of-type) {
         flex: 1 1 calc((65% - (1.5% * 2)) / 2);
         max-width: calc((65% - (1.5% * 2)) / 2);
-        @include md{
+        @include md {
           flex-basis: 48.5%;
           max-width: 48.5%;
         }
-        @include xs{
+        @include xs {
           flex-basis: 100%;
           max-width: 100%;
         }
@@ -309,7 +307,7 @@
       gap: 4px;
       color: $color-gray-600;
       padding-right: 20px;
-      background: url('../../assets/images/icon-arrow-right.svg') no-repeat right center / 15px;
+      background: url("../../assets/images/icon-arrow-right.svg") no-repeat right center / 15px;
       @include md {
         @include font-sm-b;
       }
@@ -509,8 +507,8 @@
 // 개별 modal height 지정
 .modal-wallet {
   min-height: 550px;
-  .modal__footer{
-    @include md{
+  .modal__footer {
+    @include md {
       padding: 0 0 20px;
       width: calc(100% - 40px);
     }
@@ -525,6 +523,25 @@
 }
 .modal-create-code {
   min-height: 550px;
+  .modal__body {
+    @include md {
+      margin-bottom: 30px;
+      .user-share {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        row-gap: 10px;
+        b {
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+  &.create {
+    .full-modal-content .modal__footer {
+      width: 100% !important;
+    }
+  }
 }
 
 // twoway-inputField START
@@ -631,10 +648,10 @@
   @include font-sm-r;
   @include flex-between;
   width: 100%;
-  padding: $sp-12 $sp-16;
+  padding: $sp-12;
   border-radius: 12px;
   background: transparent;
-  border: 1px solid $color-w-o20;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   color: $color-black;
   cursor: pointer;
   @include md {
@@ -658,19 +675,62 @@
 // Modal END
 
 // table-center style START
-.table-center{
-  .table-section{
-    .table-section__tit__list-head{
-      .col{
+.table-center {
+  .table-section {
+    .table-section__tit__list-head {
+      .col {
         padding: 0 20px;
       }
     }
     .table-section__tit__list-head,
-    .list-item{
-      .col{
+    .list-item {
+      .col {
         text-align: left !important;
         justify-content: flex-start;
       }
+      .wallet-copy-com.flex-left {
+        justify-content: flex-start !important;
+      }
     }
   }
+}
+
+// 0903 하늘 로딩 추가
+// :root {
+//   --node-header-height: 0px;
+// } // JS가 덮어씀
+
+/* 헤더가 항상 위 */
+.node-header {
+  position: fixed; /* 또는 fixed */
+  top: 0;
+  z-index: 3000;
+  background: #fff;
+}
+
+/* 본문 인터랙션 잠금 */
+.is-loading {
+  pointer-events: none;
+}
+
+/* 헤더 아래만 흰 배경으로 덮는 오버레이 */
+.loading-overlay {
+  position: fixed;
+  top: var(--node-header-height); /* ★ 캐러셀 포함한 헤더 높이 */
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 2500; /* 헤더(3000)보다 낮게 */
+  background: #fff;
+}
+
+.loading-overlay__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

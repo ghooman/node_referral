@@ -13,6 +13,7 @@ import { is } from "date-fns/locale";
 const serverAPI = process.env.REACT_APP_NODE_SERVER_API;
 
 function SignUp() {
+  //----- 상태 ------------------------------------------------------------------------------------
   // 회원가입 성공하고 로그인으로 화면 이동
   const navigate = useNavigate();
   // 초대코드 상태
@@ -37,19 +38,7 @@ function SignUp() {
   // 버튼 loading
   const [isLoading, setIsLoading] = useState(false);
 
-  // 초대링크 클릭하면 자동 입력되도록
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    console.log("urlParams", urlParams);
-    const referralCode = urlParams.get("r");
-
-    if (referralCode) {
-      // localStorage.setItem("referral_code", referralCode);
-      setInviteCode(referralCode);
-      console.log("레퍼럴 코드 저장:", referralCode);
-    }
-  }, []);
-
+  //----- API 호출 함수  ------------------------------------------------------------------------------------
   // 초대코드 일치 함수
   const checkInviteCode = async () => {
     setIsLoading(true);
@@ -80,6 +69,7 @@ function SignUp() {
       setIsCodeConfirmed(false);
     }
   };
+
   // 이메일 보내는 함수
   const sendEmailCode = async () => {
     console.log("보내지고 있는 emailcode", emailCode);
@@ -98,6 +88,7 @@ function SignUp() {
       setIsEmailSent(false); // 실패했으니 버튼 그대로 활성화
     }
   };
+
   // 이메일 인증 코드 일치 함수
   const checkEmailAuthCode = async () => {
     try {
@@ -115,6 +106,55 @@ function SignUp() {
       setIsEmailVerified(false); // 실패했으니 버튼 그대로 활성화
     }
   };
+
+  // 회원가입을 위한 최종 Send 버튼 함수
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // 이거 없으면 무조건 새로고침 됨..
+    try {
+      await axios.post(`${serverAPI}/api/user/join`, {
+        email: emailCode,
+        password: passWord,
+        invitation_code: inviteCode,
+      });
+      console.log("회원가입 성공~!");
+      navigate("/");
+    } catch (error) {
+      console.error("회원가입 error입니당", error);
+    }
+  };
+
+  //----- 함수 로직 모음  ------------------------------------------------------------------------------------
+  // 이메일 인증 타이머 시간 표시 포맷 함수
+  const formatTime = (seconds) => {
+    const min = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const sec = String(seconds % 60).padStart(2, "0");
+    return `${min}:${sec}`;
+  };
+
+  // 비밂번호 조건 체크
+  const lengthOk = passWord.length >= 8;
+  const upperCaseOk = /[A-Z]/.test(passWord);
+  // 비밀번호 확인란 작성 중 && 비밀번호와 일치하지 않을 때
+  const isMismatch = confirmPassword !== "" && passWord !== confirmPassword;
+
+  // 모든 텍스트를 다 적었으며 각 조건들에 부합하는가? (회원가입 Send 버튼 활성화 위함)
+  const isFormValid =
+    isCodeConfirmed && isEmailSent && isEmailVerified && lengthOk && upperCaseOk && passWord === confirmPassword;
+
+  //----- useEffect 모음  ------------------------------------------------------------------------------------
+  // 초대링크 클릭하면 자동 입력되도록
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    console.log("urlParams", urlParams);
+    const referralCode = urlParams.get("r");
+
+    if (referralCode) {
+      // localStorage.setItem("referral_code", referralCode);
+      setInviteCode(referralCode);
+      console.log("레퍼럴 코드 저장:", referralCode);
+    }
+  }, []);
+
   // useEffect 사용해서 이메일 인증 타이머 작동시키기!
   useEffect(() => {
     let timer;
@@ -131,35 +171,6 @@ function SignUp() {
 
     return () => clearInterval(timer);
   }, [timerActive, timeLeft]);
-  // 이메일 인증 타이머 시간 표시 포맷 함수
-  const formatTime = (seconds) => {
-    const min = String(Math.floor(seconds / 60)).padStart(2, "0");
-    const sec = String(seconds % 60).padStart(2, "0");
-    return `${min}:${sec}`;
-  };
-  // 비밂번호 조건 체크
-  const lengthOk = passWord.length >= 8;
-  const upperCaseOk = /[A-Z]/.test(passWord);
-  // 비밀번호 확인란 작성 중 && 비밀번호와 일치하지 않을 때
-  const isMismatch = confirmPassword !== "" && passWord !== confirmPassword;
-  // 모든 텍스트를 다 적었으며 각 조건들에 부합하는가? (회원가입 Send 버튼 활성화 위함)
-  const isFormValid =
-    isCodeConfirmed && isEmailSent && isEmailVerified && lengthOk && upperCaseOk && passWord === confirmPassword;
-  // 회원가입을 위한 최종 Send 버튼 함수
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // 이거 없으면 무조건 새로고침 됨..
-    try {
-      await axios.post(`${serverAPI}/api/user/join`, {
-        email: emailCode,
-        password: passWord,
-        invitation_code: inviteCode,
-      });
-      console.log("회원가입 성공~!");
-      navigate("/");
-    } catch (error) {
-      console.error("회원가입 error입니당", error);
-    }
-  };
 
   return (
     <>
@@ -189,7 +200,7 @@ function SignUp() {
                     isCodeConfirmed ? "btn--disabled" : ""
                   } ${isLoading ? "btn--loading" : ""}`}
                   onClick={(e) => {
-                    e.preventDefault(); // ✅ 폼 제출 막기
+                    e.preventDefault(); // 폼 제출 막기
                     checkInviteCode();
                   }}
                 >
@@ -266,7 +277,7 @@ function SignUp() {
                       type="button"
                       onClick={(e) => {
                         e.preventDefault();
-                        sendEmailCode(); // ✅ 인증 이메일 다시 보내는 함수
+                        sendEmailCode(); // 인증 이메일 다시 보내는 함수
                       }}
                     >
                       Resend

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Link } from "react-router-dom";
-import React, { use, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 // compomnents
 import HeaderBack from "../components/unit/HeaderBack";
 import Footer from "../components/unit/Footer";
@@ -10,8 +10,6 @@ import MyDatePicker from "../components/unit/MyDatePicker";
 import Loading from "../components/Loading";
 // img
 import SearchIcon from "../assets/images/icon-search.svg";
-import arrowDownIcon from "../assets/images/icon-arrow-down.svg";
-import arrowRightIcon from "../assets/images/icon-arrow-right.svg";
 // style
 import "../styles/pages/MasterDashboard.scss";
 
@@ -19,62 +17,77 @@ const serverAPI = process.env.REACT_APP_NODE_SERVER_API;
 
 function MasterDashboardDone() {
   const userToken = localStorage.getItem("userToken");
-  const userRole = localStorage.getItem("userRole");
-  const isMaster = userRole === "master";
-
+  //----- 상태 ------------------------------------------------------------------------------------
   // 상단 대시보드 상태
   const [dashboard, setDashboard] = useState([]);
   // 하단 리스트 상태
   const [dataList, setDataList] = useState([]);
+
+  // 필터 정렬 상태
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [selectedKey, setSelectedKey] = useState("all");
+
   // 페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
   // 검색창
   const [searchKeyword, setSearchKeyword] = useState("");
+
   // 날짜 초기값
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
-  const handleReset = () => {
-    setStartDate("");
-    setEndDate("");
-  };
-  const [openIndex, setOpenIndex] = useState(null);
-
   // 로딩
   const [isLoading, setIsLoading] = useState(false);
 
-  const toggle = (index) => {
-    setOpenIndex((prev) => (prev === index ? null : index));
-  };
+  //----- 필터 제어 ------------------------------------------------------------------------------------
+  // 필터 드롭다운 순서
+  const STATUS_OPTIONS = [
+    { key: "all", label: "All" },
+    { key: "normal", label: "Affiliate" },
+    { key: "referral", label: "User" },
+  ];
 
+  // 필터 라벨링
+  const statusLabelMap = React.useMemo(
+    () => Object.fromEntries(STATUS_OPTIONS.map((o) => [o.key, o.label])),
+    []
+  );
+  const getStateLabel = (state) => statusLabelMap[state] || state;
+
+  //----- API 호출 함수  ------------------------------------------------------------------------------------
   // 상단 대시보드 API 함수
   const handleGetDashboard = async () => {
     try {
-      setIsLoading(true);
-      const res = await axios.get(`${serverAPI}/api/sales/settlement/dashboard`, {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
+      const res = await axios.get(
+        `${serverAPI}/api/sales/settlement/dashboard`,
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
       console.log("상단 대시보드 가져오기 완료!", res.data);
       setDashboard(res.data);
     } catch (error) {
       console.error("상단 대시보드 가져오는 API 함수 error입니당", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   // 하단 리스트 API 함수
   const handleGetDataList = async () => {
-    const isoStart = startDate ? new Date(new Date(startDate).setHours(0, 0, 0, 0)).toISOString() : null;
+    const isoStart = startDate
+      ? new Date(new Date(startDate).setHours(0, 0, 0, 0)).toISOString()
+      : null;
 
-    const isoEnd = endDate ? new Date(new Date(endDate).setHours(23, 59, 59, 999)).toISOString() : null;
+    const isoEnd = endDate
+      ? new Date(new Date(endDate).setHours(23, 59, 59, 999)).toISOString()
+      : null;
 
     console.log("📤 서버로 보내는 start_date", isoStart);
     console.log("📤 서버로 보내는 end_date", isoEnd);
-
+    setIsLoading(true);
     try {
       const res = await axios.get(`${serverAPI}/api/sales/settlement/list`, {
         params: {
@@ -83,6 +96,7 @@ function MasterDashboardDone() {
           search_keyword: searchKeyword || undefined,
           ...(isoStart && { start_date: isoStart }),
           ...(isoEnd && { end_date: isoEnd }),
+          sort: selectedKey === "all" ? undefined : selectedKey,
         },
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -95,25 +109,22 @@ function MasterDashboardDone() {
       setTotalPages(Math.ceil(res.data.total_cnt / 20));
     } catch (error) {
       console.error("하단 리스트 가져오는 API 함수 error입니당", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // 대시보드는 처음 한 번만 실행
-  useEffect(() => {
-    if (userToken) {
-      handleGetDashboard();
-    }
-  }, [userToken]);
-
-  // 하단 리스트는 값 바뀔때마다 실행
-  useEffect(() => {
-    if (userToken) {
-      handleGetDataList();
-    }
-  }, [currentPage, searchKeyword, startDate, endDate]); // 변경될 때마다 호출
+  //----- 함수 로직 모음  ------------------------------------------------------------------------------------
+  // 날짜 초기화
+  const handleReset = () => {
+    setStartDate("");
+    setEndDate("");
+  };
 
   // 날짜 포맷팅
+  // 날짜 포맷팅
   const formatDate = (isoString) => {
+    if (!isoString) return "-";
     const raw = new Date(isoString).toLocaleString("ko-KR", {
       year: "numeric",
       month: "2-digit",
@@ -138,6 +149,17 @@ function MasterDashboardDone() {
     return Number(num).toLocaleString("en-US"); // "1,000", "50,000" 형태
   };
 
+  //----- useEffect 모음  ------------------------------------------------------------------------------------
+  // 대시보드는 처음 한 번만 실행
+  useEffect(() => {
+    handleGetDashboard();
+  }, []);
+
+  // 하단 리스트는 값 바뀔때마다 실행
+  useEffect(() => {
+    handleGetDataList();
+  }, [currentPage, startDate, endDate, selectedKey]); // 변경될 때마다 호출
+
   return (
     <>
       <div className="layout">
@@ -145,7 +167,9 @@ function MasterDashboardDone() {
         <div className="page-wrapper masterdashboard-wrapper">
           <ul className="tab-ui">
             <li>
-              <Link to="/master-dashboard-doing">Sales Approval / Settlement</Link>
+              <Link to="/master-dashboard-doing">
+                Sales Approval / Settlement
+              </Link>
             </li>
             <li className="selected">
               <Link to="/master-dashboard-done">Settlement History</Link>
@@ -157,10 +181,16 @@ function MasterDashboardDone() {
             <label htmlFor="startDate"> Date Filter</label>
             <div className="date-field">
               {/* 시작일 */}
-              <MyDatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+              <MyDatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+              />
               <span className="dash">-</span>
               {/* 종료일 */}
-              <MyDatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
+              <MyDatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+              />
               <button className="btn--reset" onClick={handleReset}>
                 Reset
               </button>
@@ -196,6 +226,35 @@ function MasterDashboardDone() {
             </div>
           </section>
           <div className="filter-section">
+            {/* 필터 영역 */}
+            <div className="filter-group">
+              <div className="filter-group__title">Filter</div>
+              <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
+                <button
+                  type="button"
+                  className="custom-select__btn"
+                  onClick={() => setIsFilterOpen((prev) => !prev)}
+                >
+                  <span>{getStateLabel(selectedKey)}</span>
+                  <i className="custom-select__arrow"></i>
+                </button>
+                <ul className="custom-select__list">
+                  {STATUS_OPTIONS.map((opt) => (
+                    <li
+                      key={opt.key}
+                      className={selectedKey === opt.key ? "is-selected" : ""}
+                      onClick={() => {
+                        setSelectedKey(opt.key);
+                        setCurrentPage(1);
+                        setIsFilterOpen(false);
+                      }}
+                    >
+                      {opt.label}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
             <div className="node-search-bar">
               <input
                 type="text"
@@ -218,7 +277,12 @@ function MasterDashboardDone() {
                   handleGetDataList();
                 }}
               >
-                <img src={SearchIcon} alt="검색" aria-hidden="true" className="icon-search" />
+                <img
+                  src={SearchIcon}
+                  alt="검색"
+                  aria-hidden="true"
+                  className="icon-search"
+                />
                 <span className="sr-only">검색</span>
               </button>
             </div>
@@ -239,6 +303,7 @@ function MasterDashboardDone() {
                   <>
                     {/* table head */}
                     <div className="table-section__tit__list-head">
+                      <div className="col">Transaction Type</div>
                       <div className="col">Buyer</div>
                       <div className="col">Seller Email</div>
                       <div className="col">Wallet Address</div>
@@ -253,6 +318,11 @@ function MasterDashboardDone() {
                     {dataList.map((item, index) => (
                       <div key={index} className="list-item">
                         <div className="list-item__row">
+                          <div className="col">
+                            <span className={`status status--${item.sort}`}>
+                              {getStateLabel(item.sort)}
+                            </span>
+                          </div>
                           <div className="col">{item.buyer_name}</div>
                           <div className="col email">{item.username}</div>
                           <div className="col wallet-copy-com">
@@ -261,9 +331,13 @@ function MasterDashboardDone() {
                           </div>
                           <div className="col">{formatNumber(item.cnt)}</div>
                           <div className="col">{formatNumber(item.amount)}</div>
-                          <div className="col">{formatNumber(item.total_settlement_amount)}</div>
+                          <div className="col">
+                            {formatNumber(item.total_settlement_amount)}
+                          </div>
                           <div className="col">{formatNumber(item.fee)}</div>
-                          <div className="col">{formatDate(item.settlement_dt)}</div>
+                          <div className="col">
+                            {formatDate(item.settlement_dt)}
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -272,7 +346,11 @@ function MasterDashboardDone() {
               )}
             </div>
           </div>
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
         </div>
         <Footer />
       </div>
