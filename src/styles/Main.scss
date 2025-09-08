@@ -6,7 +6,7 @@ body {
   background: $bg-gradient no-repeat center / cover fixed;
 }
 .page-wrapper {
-  max-width: 1440px !important;
+  max-width: 1920px !important;
   width: 100%;
   margin: $sp-40 auto 0 !important;
   padding: clamp(80px, 6.9vw, 100px) 0 $sp-10;
@@ -39,9 +39,23 @@ body {
   }
 }
 .table-section-inner {
-  min-width: 1440px;
+  max-width: 1920px;
+  min-width: 1560px;
   width: 100%;
   height: 100%;
+  @include lg{
+    min-width: 1200px
+  }
+  &.empty{
+    min-width: auto;
+  }
+}
+
+.table-section-inner:has(.table-empty) {
+  min-width: auto;
+  @include lg{
+    min-width: 1200px
+  }
 }
 // scroll style END
 
