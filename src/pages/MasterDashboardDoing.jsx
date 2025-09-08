@@ -64,7 +64,7 @@ function MasterDashboardDoing() {
     { key: "status:pending", label: "Pending" },
     { key: "status:approved", label: "Approved" },
     { key: "status:cancelled", label: "Cancelled" },
-    { key: "status:승인완료", label: "Settlement" },
+    // { key: "status:승인완료", label: "Settlement" },
     { key: "status:settled", label: "Settled" },
   ];
 
@@ -78,7 +78,7 @@ function MasterDashboardDoing() {
       pending: "Pending",
       approved: "Approved",
       cancelled: "Cancelled",
-      승인완료: "Settlement",
+      // 승인완료: "Settlement",
       settled: "Settled",
     };
     return map[state] || state;
@@ -108,14 +108,11 @@ function MasterDashboardDoing() {
   // 상단 대시보드 API 함수
   const handleGetDashboard = async () => {
     try {
-      const res = await axios.get(
-        `${serverAPI}/api/sales/record/approval/settlement/dashboard`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const res = await axios.get(`${serverAPI}/api/sales/record/approval/settlement/dashboard`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       console.log("상단 대시보드 가져오기 완료!", res.data);
       setDashboard(res.data);
     } catch (error) {
@@ -131,21 +128,18 @@ function MasterDashboardDoing() {
     try {
       setIsLoading(true);
 
-      const res = await axios.get(
-        `${serverAPI}/api/sales/record/approval/settlement/list`,
-        {
-          params: {
-            state: statusFilter === "all" ? undefined : statusFilter,
-            sort: sortFilter || undefined, // normal | referral
-            page: currentPage,
-            limit: 20,
-            search_keyword: searchKeyword !== "" ? searchKeyword : undefined,
-          },
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const res = await axios.get(`${serverAPI}/api/sales/record/approval/settlement/list`, {
+        params: {
+          state: statusFilter === "all" ? undefined : statusFilter,
+          sort: sortFilter || undefined, // normal | referral
+          page: currentPage,
+          limit: 20,
+          search_keyword: searchKeyword !== "" ? searchKeyword : undefined,
+        },
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
 
       const list = res.data.data_list;
       const totalCount = res.data.total_cnt || list.length;
@@ -164,14 +158,10 @@ function MasterDashboardDoing() {
   // 승인 / 취소 버튼 클릭했을 때
   const handleChangeState = async (salesId, newState) => {
     try {
-      const res = await axios.post(
-        `${serverAPI}/api/sales/${salesId}/state`,
-        null,
-        {
-          params: { state: newState },
-          headers: { Authorization: `Bearer ${userToken}` },
-        }
-      );
+      const res = await axios.post(`${serverAPI}/api/sales/${salesId}/state`, null, {
+        params: { state: newState },
+        headers: { Authorization: `Bearer ${userToken}` },
+      });
       console.log("상태 변경 성공:", res.data.status);
       setIsStateChanged(true); // useEffect 트리거
     } catch (error) {
@@ -183,18 +173,14 @@ function MasterDashboardDoing() {
   const handleSettlement = async (settlement_id) => {
     console.log("🟢 정산 버튼 클릭됨 - settlement_id:", settlement_id); // ← 여기!
     try {
-      const res = await axios.post(
-        `${serverAPI}/api/sales/${settlement_id}/settlement`,
-        null,
-        {
-          // params: {
-          //   settlement_id: settlement_id,
-          // },
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const res = await axios.post(`${serverAPI}/api/sales/${settlement_id}/settlement`, null, {
+        // params: {
+        //   settlement_id: settlement_id,
+        // },
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       console.log("정산 버튼 클릭 성공:", res.data.status);
       setIsSettlementChanged(true);
     } catch (error) {
@@ -298,9 +284,7 @@ function MasterDashboardDoing() {
         <div className="page-wrapper masterdashboard-wrapper">
           <ul className="tab-ui">
             <li className="selected">
-              <Link to="/master-dashboard-doing">
-                Sales Approval / Settlement
-              </Link>
+              <Link to="/master-dashboard-doing">Sales Approval / Settlement</Link>
             </li>
             <li>
               <Link to="/master-dashboard-done">Settlement History</Link>
@@ -344,15 +328,8 @@ function MasterDashboardDoing() {
             <div className="filter-group">
               <div className="filter-group__title">Filter</div>
               <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-                <button
-                  type="button"
-                  className="custom-select__btn"
-                  onClick={() => setIsFilterOpen((prev) => !prev)}
-                >
-                  <span>
-                    {FILTER_SORT_OPTIONS.find((o) => o.key === selectedKey)
-                      ?.label || "All"}
-                  </span>
+                <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
+                  <span>{FILTER_SORT_OPTIONS.find((o) => o.key === selectedKey)?.label || "All"}</span>
                   <i className="custom-select__arrow"></i>
                 </button>
                 <ul className="custom-select__list">
@@ -390,12 +367,7 @@ function MasterDashboardDoing() {
                   handleGetDataList();
                 }}
               >
-                <img
-                  src={SearchIcon}
-                  alt="검색"
-                  aria-hidden="true"
-                  className="icon-search"
-                />
+                <img src={SearchIcon} alt="검색" aria-hidden="true" className="icon-search" />
                 <span className="sr-only">검색</span>
               </button>
             </div>
@@ -436,37 +408,24 @@ function MasterDashboardDoing() {
                     <div className="col">Action</div>
                   </div>
                   {!isLoading && dataList.length === 0 ? (
-                    <div className="table-empty">
-                      No matching records found.
-                    </div>
+                    <div className="table-empty">No matching records found.</div>
                   ) : (
                     dataList.map((item, index) => (
                       <div
                         key={item.id ?? `${item.state}-${index}`}
-                        className={`list-item ${
-                          openIndex === index ? "open" : ""
-                        }`}
+                        className={`list-item ${openIndex === index ? "open" : ""}`}
                       >
                         <div className="list-item__row">
                           <div className="col" style={{ flex: "0 0 10%" }}>
-                            <span className={`status status--${item.sort}`}>
-                              {getStateLabel(item.sort)}
-                            </span>
+                            <span className={`status status--${item.sort}`}>{getStateLabel(item.sort)}</span>
                           </div>
                           <div className="col" style={{ flex: "0 0 10%" }}>
-                            <span className={`status status--${item.state}`}>
-                              {getStateLabel(item.state)}
-                            </span>
+                            <span className={`status status--${item.state}`}>{getStateLabel(item.state)}</span>
                           </div>
 
-                          <div
-                            className="col wallet-copy-com"
-                            style={{ flex: "0 0 15%" }}
-                          >
+                          <div className="col wallet-copy-com" style={{ flex: "0 0 15%" }}>
                             {formatWalletAddress(item.deposit_wallet_address)}
-                            <CopyButton
-                              textToCopy={item.deposit_wallet_address}
-                            />
+                            <CopyButton textToCopy={item.deposit_wallet_address} />
                           </div>
                           <div className="col" style={{ flex: "0 0 10%" }}>
                             {formatNumber(item.unit_price)}
@@ -477,14 +436,9 @@ function MasterDashboardDoing() {
                           <div className="col" style={{ flex: "0 0 10%" }}>
                             {formatNumber(item.amount)}
                           </div>
-                          <div
-                            className="col wallet-copy-com"
-                            style={{ flex: "0 0 15%" }}
-                          >
+                          <div className="col wallet-copy-com" style={{ flex: "0 0 15%" }}>
                             {formatWalletAddress(item.buyer_wallet_address)}
-                            <CopyButton
-                              textToCopy={item.buyer_wallet_address}
-                            />
+                            <CopyButton textToCopy={item.buyer_wallet_address} />
                           </div>
                           <div className="col col--action toggle-btn-box">
                             {/* 1) 승인/취소 버튼 (pending일 때만) */}
@@ -493,19 +447,13 @@ function MasterDashboardDoing() {
                                 <button
                                   className="twoway-btn btn--blue"
                                   onClick={() => {
-                                    console.log(
-                                      "🟢 승인 클릭됨 - item.id:",
-                                      item.id
-                                    );
+                                    console.log("🟢 승인 클릭됨 - item.id:", item.id);
                                     handleChangeState(item.id, "approved");
                                   }}
                                 >
                                   Approval
                                 </button>
-                                <button
-                                  className="twoway-btn btn--red"
-                                  onClick={() => setConfirmModalOpenId(item.id)}
-                                >
+                                <button className="twoway-btn btn--red" onClick={() => setConfirmModalOpenId(item.id)}>
                                   Cancel
                                 </button>
                               </div>
@@ -521,9 +469,7 @@ function MasterDashboardDoing() {
 
                             {/* 토글 버튼은 항상 우측에 유지 */}
                             <button
-                              className={`toggle-btn ${
-                                openIndex === index ? "rotate" : ""
-                              }`}
+                              className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
                               onClick={() => toggle(index)}
                             >
                               <img src={arrowDownIcon} alt="토글" />
@@ -535,71 +481,38 @@ function MasterDashboardDoing() {
                           <div className="list-item__detail">
                             <div className="info-table">
                               <div className="info-header">
-                                <div
-                                  className="col col--email"
-                                  style={{ flex: "0 0 20%" }}
-                                >
+                                <div className="col col--email" style={{ flex: "0 0 20%" }}>
                                   Email Address
                                 </div>
-                                <div
-                                  className="col"
-                                  style={{ flex: "0 0 10%" }}
-                                >
+                                <div className="col" style={{ flex: "0 0 10%" }}>
                                   Share
                                 </div>
-                                <div
-                                  className="col"
-                                  style={{ flex: "0 0 30%" }}
-                                >
+                                <div className="col" style={{ flex: "0 0 30%" }}>
                                   Settlement Amount
                                 </div>
-                                <div
-                                  className="col"
-                                  style={{ flex: "0 0 20%" }}
-                                >
+                                <div className="col" style={{ flex: "0 0 20%" }}>
                                   Wallet Address
                                 </div>
-                                <div
-                                  className="col"
-                                  style={{ flex: "0 0 20%" }}
-                                >
+                                <div className="col" style={{ flex: "0 0 20%" }}>
                                   Settlement Status
                                 </div>
                               </div>
 
                               {item.referrals?.map((user, i) => (
                                 <div className="info-row" key={i}>
-                                  <div
-                                    className="col col--email"
-                                    style={{ flex: "0 0 20%" }}
-                                  >
-                                    <Link
-                                      to={`/other-sales-record?email=${user.username}`}
-                                    >
+                                  <div className="col col--email" style={{ flex: "0 0 20%" }}>
+                                    <Link to={`/other-sales-record?email=${user.username}`}>
                                       <span>{user.username}</span>
-                                      <img
-                                        src={arrowRightIcon}
-                                        alt="자세히 보기"
-                                        className="arrow-icon"
-                                      />
+                                      <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
                                     </Link>
                                   </div>
-                                  <div
-                                    className="col"
-                                    style={{ flex: "0 0 10%" }}
-                                  >
+                                  <div className="col" style={{ flex: "0 0 10%" }}>
                                     {user.share}%
                                   </div>
-                                  <div
-                                    className="col"
-                                    style={{ flex: "0 0 30%" }}
-                                  >
+                                  <div className="col" style={{ flex: "0 0 30%" }}>
                                     {formatNumber(user.settlement_amount)}
                                   </div>
-                                  <div
-                                    className="col"
-                                    style={{ flex: "0 0 20%" }}
-                                  >
+                                  <div className="col" style={{ flex: "0 0 20%" }}>
                                     {formatWalletAddress(user.wallet_address)
                                       ? formatWalletAddress(user.wallet_address)
                                       : "-"}
@@ -608,17 +521,13 @@ function MasterDashboardDoing() {
                                     {user.is_complt === false ? (
                                       <button
                                         className="btn--blue-line"
-                                        onClick={() =>
-                                          handleSettlement(user.id)
-                                        }
+                                        onClick={() => handleSettlement(user.id)}
                                         disabled={item.state !== "approved"} // 승인완료 아니면 비활성화
                                       >
                                         Settle
                                       </button>
                                     ) : (
-                                      <span>
-                                        {formatDate(user.settlement_dt)}
-                                      </span>
+                                      <span>{formatDate(user.settlement_dt)}</span>
                                     )}
                                   </div>
                                 </div>
@@ -633,11 +542,7 @@ function MasterDashboardDoing() {
               )}
             </div>
           </div>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
         </div>
         <Footer />
         {/* table-section 내 '취소' 선택 시 Confirm Modal 노출  */}

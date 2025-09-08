@@ -81,7 +81,7 @@ function ReferralEarnings({ openIndex, handleToggle, downReferralActive, sliceLi
       pending: "Pending",
       approved: "Approved",
       cancelled: "Cancelled",
-      승인완료: "Settlement",
+      // 승인완료: "Settlement",
       settled: "Settled",
     };
     return map[state] || state;

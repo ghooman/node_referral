@@ -41,14 +41,11 @@ function ReferralPurchaseList() {
   // 레퍼럴 구매목록 대시보드 get api
   const GetReferralDashboard = async () => {
     try {
-      const res = await axios.get(
-        `${serverAPI}/api/sales/referrals/buy/dashboard`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const res = await axios.get(`${serverAPI}/api/sales/referrals/buy/dashboard`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       setReferralDashboard(res.data);
     } catch (e) {
       console.error(e);
@@ -105,15 +102,12 @@ function ReferralPurchaseList() {
   const STATUS_OPTIONS = [
     { key: "all", label: "All" },
     { key: "approved", label: "Approved" },
-    { key: "승인완료", label: "Settlement" },
+    // { key: "승인완료", label: "Settlement" },
     { key: "settled", label: "Settled" },
   ];
 
   // 필터 라벨링
-  const statusLabelMap = React.useMemo(
-    () => Object.fromEntries(STATUS_OPTIONS.map((o) => [o.key, o.label])),
-    []
-  );
+  const statusLabelMap = React.useMemo(() => Object.fromEntries(STATUS_OPTIONS.map((o) => [o.key, o.label])), []);
   const getStateLabel = (state) => statusLabelMap[state] || state;
 
   //----- useEffect 모음  ------------------------------------------------------------------------------------
@@ -168,11 +162,7 @@ function ReferralPurchaseList() {
           <div className="filter-group">
             <div className="filter-group__title">Filter</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-              <button
-                type="button"
-                className="custom-select__btn"
-                onClick={() => setIsFilterOpen((prev) => !prev)}
-              >
+              <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
                 <span>{getStateLabel(selectedStatus)}</span>
                 <i className="custom-select__arrow"></i>
               </button>
@@ -218,17 +208,10 @@ function ReferralPurchaseList() {
 
                   {/* table body */}
                   {referralList.map((item, index) => (
-                    <div
-                      key={index}
-                      className={`list-item ${
-                        openIndex === index ? "open" : ""
-                      }`}
-                    >
+                    <div key={index} className={`list-item ${openIndex === index ? "open" : ""}`}>
                       <div className="list-item__row">
                         <div className="col">
-                          <span className={`status status--${item.state}`}>
-                            {getStateLabel(item.state)}
-                          </span>
+                          <span className={`status status--${item.state}`}>{getStateLabel(item.state)}</span>
                         </div>
                         <div className="col wallet-copy-com">
                           {formatWalletAddress(item.buyer_wallet_address)}
@@ -239,9 +222,7 @@ function ReferralPurchaseList() {
                         <div className="col">{item.amount}</div>
                         <div className="col">{item.settlement_amount}</div>
                         <div className="col">{formatDate(item.create_dt)}</div>
-                        <div className="col">
-                          {formatDate(item.settlement_dt)}
-                        </div>
+                        <div className="col">{formatDate(item.settlement_dt)}</div>
                       </div>
                     </div>
                   ))}

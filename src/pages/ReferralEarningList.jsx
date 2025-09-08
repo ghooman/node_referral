@@ -59,7 +59,7 @@ function ReferralEarningList() {
     { key: "status:pending", label: "Pending" },
     { key: "status:approved", label: "Approved" },
     { key: "status:cancelled", label: "Cancelled" },
-    { key: "status:승인완료", label: "Settlement" },
+    // { key: "status:승인완료", label: "Settlement" },
     { key: "status:settled", label: "Settled" },
   ];
 
@@ -73,7 +73,7 @@ function ReferralEarningList() {
       pending: "Pending",
       approved: "Approved",
       cancelled: "Cancelled",
-      승인완료: "Settlement",
+      // 승인완료: "Settlement",
       settled: "Settled",
     };
     return map[state] || state;
