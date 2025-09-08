@@ -78,7 +78,7 @@
     @include flex-start;
     flex: 2 1 !important;
     gap: 10px;
-    padding-right: 50px !important;
+    // padding-right: 30px !important;
     justify-content: center;
   }
   .btn--line-mini {
@@ -103,6 +103,7 @@
     padding: 40px 0;
     text-align: center;
     color: $color-gray-500;
+    min-width: auto !important;
     @include md {
       @include font-sm-b;
     }
