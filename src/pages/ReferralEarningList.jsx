@@ -179,18 +179,22 @@ function ReferralEarningList() {
             {/* 임시 요약 데이터 */}
             <ul className="sales-section__record-list referral-record-list">
               <li>
+                {/* 하위자 레퍼럴 매출 */}
                 <h3>Sub-affiliate Sales Revenue</h3>
                 <p>{downRevenue}</p>
               </li>
               <li>
+                {/* 하위자 레퍼럴 정산금 */}
                 <h3>Sub-affiliate Settlements</h3>
                 <p>{downSettlement}</p>
               </li>
               <li>
+                {/* 하위자 레퍼럴 가입자 수 */}
                 <h3>Sub-affiliate Referrals</h3>
                 <p>{downReferrals}</p>
               </li>
               <li>
+                {/* 하위자 레퍼럴 판매 노드 수 */}
                 <h3>Sub-affiliate Sold Nodes</h3>
                 <p>{downSoldNode}</p>
               </li>
@@ -201,8 +205,14 @@ function ReferralEarningList() {
           <div className="filter-group">
             <div className="filter-group__title">Filter</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-              <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
-                <span>{FILTER_SORT_OPTIONS.find((o) => o.key === selectedKey)?.label || "All"}</span>
+              <button
+                type="button"
+                className="custom-select__btn"
+                onClick={() => setIsFilterOpen((prev) => !prev)}
+              >
+                <span>
+                  {FILTER_SORT_OPTIONS.find((o) => o.key === selectedKey)?.label || "All"}
+                </span>
                 <i className="custom-select__arrow"></i>
               </button>
               <ul className="custom-select__list">
@@ -225,8 +235,12 @@ function ReferralEarningList() {
                 <div className="result-loading">
                   <Loading />
                 </div>
+              ) : totalCnt === 0 ? (
+                // 데이터 없으면 테이블 전체 감추고 빈 메시지만 표시
+                <div className="table-empty">No sub-referral sales records.</div>
               ) : (
                 <>
+                  {/* table head */}
                   <div className="table-section__tit__list-head">
                     <div className="col">Transaction Type</div>
                     <div className="col">Status</div>
@@ -236,81 +250,92 @@ function ReferralEarningList() {
                     <div className="col">My Settlement Amount</div>
                   </div>
 
-                  {/*  하위 판매자가 없는 경우 */}
-                  {totalCnt === 0 ? (
-                    <div className="table-empty">No sub-referral sales records.</div>
-                  ) : (
-                    downReferralActive.map((item, index) => (
-                      <div
-                        key={item.id ?? `${item.state}-${index}`}
-                        className={`list-item ${openIndex === index ? "open" : ""}`}
-                      >
-                        <div className="list-item__row">
-                          <div className="col">
-                            <span className={`status status--${item.sort}`}>{getStateLabel(item.sort)}</span>
-                          </div>
-                          <div className="col">
-                            <span className={`status status--${item.state}`}>{getStateLabel(item.state)}</span>
-                          </div>
-                          <div className="col">{item.unit_price}</div>
-                          <div className="col">{item.cnt}</div>
-                          <div className="col">{item.amount}</div>
-                          <div className="col col--btn toggle-btn-box" style={{ width: "15px", height: "20px" }}>
-                            {item.my_settlement_amount}
-                            <button
-                              className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
-                              onClick={() => toggle(index)}
-                            >
-                              <img src={arrowDownIcon} alt="토글" />
-                            </button>
+                  {/* table body */}
+                  {downReferralActive.map((item, index) => (
+                    <div
+                      key={item.id ?? `${item.state}-${index}`}
+                      className={`list-item ${openIndex === index ? "open" : ""}`}
+                    >
+                      <div className="list-item__row">
+                        <div className="col">
+                          <span className={`status status--${item.sort}`}>
+                            {getStateLabel(item.sort)}
+                          </span>
+                        </div>
+                        <div className="col">
+                          <span className={`status status--${item.state}`}>
+                            {getStateLabel(item.state)}
+                          </span>
+                        </div>
+                        <div className="col">{item.unit_price}</div>
+                        <div className="col">{item.cnt}</div>
+                        <div className="col">{item.amount}</div>
+                        <div
+                          className="col col--btn toggle-btn-box"
+                          style={{ width: "15px", height: "20px" }}
+                        >
+                          {item.my_settlement_amount}
+                          <button
+                            className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
+                            onClick={() => toggle(index)}
+                          >
+                            <img src={arrowDownIcon} alt="토글" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {openIndex === index && (
+                        <div className="list-item__detail">
+                          <div className="info-table">
+                            <div className="info-header">
+                              <div className="col col--email">Email Address</div>
+                              <div className="col">Share</div>
+                              <div className="col">Settlement Amount</div>
+                              <div className="col">Settlement Status</div>
+                            </div>
+
+                            {(item.down_referrals || item.referrals || []).map((user, i) => (
+                              <div className="info-row" key={i}>
+                                <div className="col col--email">
+                                  {i === 0 ? (
+                                    <strong>{user.username}</strong>
+                                  ) : (
+                                    <>
+                                      <Link to={`/other-sales-record?email=${user.username}`}>
+                                        <span>{user.username}</span>
+                                        <img
+                                          src={arrowRightIcon}
+                                          alt="자세히 보기"
+                                          className="arrow-icon"
+                                        />
+                                      </Link>
+                                    </>
+                                  )}
+                                </div>
+                                <div className="col">{user.share}%</div>
+                                <div className="col">{user.settlement_amount}</div>
+                                <div className="col">
+                                  <span className={`status ${user.is_complt ? "status--success" : "status--failed"}`}>
+                                    {user.is_complt ? "Completed" : "Pending"}
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
-
-                        {openIndex === index && (
-                          <div className="list-item__detail">
-                            <div className="info-table">
-                              <div className="info-header">
-                                <div className="col col--email">Email Address</div>
-                                <div className="col">Share</div>
-                                <div className="col">Settlement Amount</div>
-                                <div className="col">Settlement Status</div>
-                              </div>
-
-                              {(item.down_referrals || item.referrals || []).map((user, i) => (
-                                <div className="info-row" key={i}>
-                                  <div className="col col--email">
-                                    {i === 0 ? (
-                                      <strong>{user.username}</strong>
-                                    ) : (
-                                      <>
-                                        <Link to={`/other-sales-record?email=${user.username}`}>
-                                          <span>{user.username}</span>
-                                          <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
-                                        </Link>
-                                      </>
-                                    )}
-                                  </div>
-                                  <div className="col">{user.share}%</div>
-                                  <div className="col">{user.settlement_amount}</div>
-                                  <div className="col">
-                                    <span className={`status ${user.is_complt ? "status--success" : "status--failed"}`}>
-                                      {user.is_complt ? "Completed" : "Pending"}
-                                    </span>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))
-                  )}
+                      )}
+                    </div>
+                  ))}
                 </>
               )}
             </div>
           </section>
 
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
         </div>
         <Footer />
       </div>

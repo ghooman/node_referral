@@ -49,7 +49,13 @@ body {
   &.empty{
     min-width: auto;
   }
-  
+}
+
+.table-section-inner:has(.table-empty) {
+  min-width: auto;
+  @include lg{
+    min-width: 1200px
+  }
 }
 // scroll style END
 

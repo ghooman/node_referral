@@ -404,117 +404,120 @@ function SalesRecord() {
 
               {!isPageLoading && (
                 <>
-                  {/* list-head는 항상 보여줌 */}
-                  <div className="table-section__tit__list-head sales-record">
-                    <div className="col">Buyer</div>
-                    <div className="col mobile-del">Quantity</div>
-                    <div className="col mobile-del">Unit Price</div>
-                    <div className="col">Total Amount</div>
-                    <div className="col">Settlement Amount</div>
-                    <div className="col mobile-del">Registration Date</div>
-                    <div className="col">Status</div>
-                    <div className="col">Action</div>
-                  </div>
-
                   {/* 데이터 유무에 따라 item or empty */}
                   {newDealList.length === 0 ? (
                     // 판매 기록이 없는 경우
                     <div className="table-empty">No sales records.</div>
                   ) : (
-                    [...newDealList]
-                      .sort((a, b) => new Date(b.create_dt) - new Date(a.create_dt))
-                      .map((item, index) => (
-                        <div className={`list-item ${openIndex === index ? "open" : ""}`} key={index}>
-                          <div className="list-item__row sales-record">
-                            <div className="col">{item.buyer_name}</div>
-                            <div className="col mobile-del">{formatNumber(item.cnt)}</div>
-                            <div className="col mobile-del">{formatNumber(item.unit_price)}</div>
-                            <div className="col">{formatNumber(item.cnt * item.unit_price)}</div>
-                            <div className="col">{formatNumber(item.settlement_amount)}</div>
-                            <div className="col mobile-del">{formatDate(item.create_dt)}</div>
-                            <div className="col toggle-btn-box">
-                              <button
-                                className={`badge badge--${getBadgeClassName(item.state)}`}
-                                onClick={() => {
-                                  console.log("🟡 버튼 클릭됨 - 현재 상태:", item.state, "id:", item.id);
+                    <>
+                      {/* list-head는 데이터 있을 때만 보여줌 */}
+                      <div className="table-section__tit__list-head sales-record">
+                        <div className="col">Buyer</div>
+                        <div className="col mobile-del">Quantity</div>
+                        <div className="col mobile-del">Unit Price</div>
+                        <div className="col">Total Amount</div>
+                        <div className="col">Settlement Amount</div>
+                        <div className="col mobile-del">Registration Date</div>
+                        <div className="col">Status</div>
+                        <div className="col">Action</div>
+                      </div>
 
-                                  if (item.state === "requested") {
-                                    console.log("🟢 승인요청 상태 → pending 으로 변경 시도");
-                                    // handleChangeState(item.id, "pending");
-                                    setShowConfirmModalIndex(item.id);
-                                  } else {
-                                    console.log("🔴 승인요청 상태가 아니라서 아무 작업도 하지 않음");
-                                  }
-                                }}
-                              >
-                                {getStateLabel(item.state)}
-                              </button>
-                            </div>
-                            <div className="col toggle-btn-box">
-                              {/* 취소 버튼 감싸는 래퍼는 항상 존재하지만 내부는 조건부 */}
-                              <div className="cancel-wrap">
-                                {["requested", "pending"].includes(item.state) ? (
-                                  <button className="btn-line-cancel" onClick={() => setCancelTargetId(item.id)}>
-                                    Cancel
-                                  </button>
-                                ) : (
-                                  <span
-                                    style={{
-                                      visibility: "hidden",
-                                      minWidth: "60px",
-                                    }}
-                                  >
-                                    -
-                                  </span> // 공간 유지용
-                                )}
-                              </div>
-
-                              {/* 화살표 버튼은 항상 렌더링 */}
-                              <div className="arrow-wrap">
+                      {[...newDealList]
+                        .sort((a, b) => new Date(b.create_dt) - new Date(a.create_dt))
+                        .map((item, index) => (
+                          <div className={`list-item ${openIndex === index ? "open" : ""}`} key={index}>
+                            <div className="list-item__row sales-record">
+                              <div className="col">{item.buyer_name}</div>
+                              <div className="col mobile-del">{formatNumber(item.cnt)}</div>
+                              <div className="col mobile-del">{formatNumber(item.unit_price)}</div>
+                              <div className="col">{formatNumber(item.cnt * item.unit_price)}</div>
+                              <div className="col">{formatNumber(item.settlement_amount)}</div>
+                              <div className="col mobile-del">{formatDate(item.create_dt)}</div>
+                              <div className="col toggle-btn-box">
                                 <button
-                                  className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
-                                  onClick={() => toggle(index)}
+                                  className={`badge badge--${getBadgeClassName(item.state)}`}
+                                  onClick={() => {
+                                    console.log("🟡 버튼 클릭됨 - 현재 상태:", item.state, "id:", item.id);
+
+                                    if (item.state === "requested") {
+                                      console.log("🟢 승인요청 상태 → pending 으로 변경 시도");
+                                      // handleChangeState(item.id, "pending");
+                                      setShowConfirmModalIndex(item.id);
+                                    } else {
+                                      console.log("🔴 승인요청 상태가 아니라서 아무 작업도 하지 않음");
+                                    }
+                                  }}
                                 >
-                                  <img src={arrowDownIcon} alt="토글" />
+                                  {getStateLabel(item.state)}
                                 </button>
                               </div>
-                            </div>
-                          </div>
+                              <div className="col toggle-btn-box">
+                                {/* 취소 버튼 감싸는 래퍼는 항상 존재하지만 내부는 조건부 */}
+                                <div className="cancel-wrap">
+                                  {["requested", "pending"].includes(item.state) ? (
+                                    <button className="btn-line-cancel" onClick={() => setCancelTargetId(item.id)}>
+                                      Cancel
+                                    </button>
+                                  ) : (
+                                    <span
+                                      style={{
+                                        visibility: "hidden",
+                                        minWidth: "60px",
+                                      }}
+                                    >
+                                      -
+                                    </span> // 공간 유지용
+                                  )}
+                                </div>
 
-                          {openIndex === index && (
-                            <div className="list-item__detail">
-                              <div className="list-item__detail__list">
-                                <p>
-                                  <b>Wallet Address</b>
-                                  <span>
-                                    {item.buyer_wallet_address}
-                                    <CopyButton textToCopy={item.buyer_wallet_address} />
-                                  </span>
-                                </p>
-                                <p>
-                                  <b>Note</b>
-                                  <span>{item.memo ? item.memo : "-"}</span>
-                                </p>
-                              </div>
-                              <div className="list-item__detail__list">
-                                <p>
-                                  <b>Approval Completed Date</b>
-                                  <span>{item.approval_dt ? formatDate(item.approval_dt) : "-"}</span>
-                                </p>
-                                <p>
-                                  <b>Settlement Completed Date</b>
-                                  <span>{item.settlement_dt ? formatDate(item.settlement_dt) : "-"}</span>
-                                </p>
+                                {/* 화살표 버튼은 항상 렌더링 */}
+                                <div className="arrow-wrap">
+                                  <button
+                                    className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
+                                    onClick={() => toggle(index)}
+                                  >
+                                    <img src={arrowDownIcon} alt="토글" />
+                                  </button>
+                                </div>
                               </div>
                             </div>
-                          )}
-                        </div>
-                      ))
+
+                            {openIndex === index && (
+                              <div className="list-item__detail">
+                                <div className="list-item__detail__list">
+                                  <p>
+                                    <b>Wallet Address</b>
+                                    <span>
+                                      {item.buyer_wallet_address}
+                                      <CopyButton textToCopy={item.buyer_wallet_address} />
+                                    </span>
+                                  </p>
+                                  <p>
+                                    <b>Note</b>
+                                    <span>{item.memo ? item.memo : "-"}</span>
+                                  </p>
+                                </div>
+                                <div className="list-item__detail__list">
+                                  <p>
+                                    <b>Approval Completed Date</b>
+                                    <span>{item.approval_dt ? formatDate(item.approval_dt) : "-"}</span>
+                                  </p>
+                                  <p>
+                                    <b>Settlement Completed Date</b>
+                                    <span>{item.settlement_dt ? formatDate(item.settlement_dt) : "-"}</span>
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                    </>
                   )}
                 </>
               )}
             </div>
           </section>
+
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
         </div>
         <Footer />

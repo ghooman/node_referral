@@ -1,13 +1,23 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
+// img
 import arrowDownIcon from "../../assets/images/icon-arrow-down.svg";
 import arrowUpIcon from "../../assets/images/icon-arrow-up.svg";
 import arrowRightIcon from "../../assets/images/icon-arrow-right.svg";
 import OtherSalesRecord from "../../pages/OtherSalesRecord";
-import { Link } from "react-router-dom";
+
 import "./ReferralEarnings.scss";
 import Loading from "../Loading.jsx";
 
-function ReferralEarnings({ openIndex, handleToggle, downReferralActive, sliceList5, isPageLoading, formatNumber }) {
+function ReferralEarnings({
+  openIndex,
+  handleToggle,
+  downReferralActive,
+  sliceList5,
+  isPageLoading,
+  formatNumber,
+}) {
   const dummyDataList = [
     {
       state: "requested", // ← 문자열
@@ -64,6 +74,7 @@ function ReferralEarnings({ openIndex, handleToggle, downReferralActive, sliceLi
       return {
         ...item,
         settleStatusType: isComplete ? "success" : "failed",
+        down_referrals: item.down_referrals || item.referrals || [],
       };
     });
   };
@@ -81,7 +92,6 @@ function ReferralEarnings({ openIndex, handleToggle, downReferralActive, sliceLi
       pending: "Pending",
       approved: "Approved",
       cancelled: "Cancelled",
-      // 승인완료: "Settlement",
       settled: "Settled",
     };
     return map[state] || state;
@@ -101,77 +111,105 @@ function ReferralEarnings({ openIndex, handleToggle, downReferralActive, sliceLi
               <Link to="/referral-earning-list">View All</Link>
             </div>
 
-            <div className="table-section__tit__list-head">
-              <div className="col">Status</div>
-              <div className="col">Unit Price</div>
-              <div className="col">Quantity</div>
-              <div className="col">Total Amount</div>
-              <div className="col">My Settlement Amount</div>
-              <div className="col col--btn"></div>
-            </div>
-
-            {/*  하위 판매자가 없는 경우 */}
+            {/* 데이터 없으면 테이블 전체 감춤 */}
             {slicedData.length === 0 ? (
               <div className="table-empty">No sub-referral sales records.</div>
             ) : (
-              slicedData.map((item, index) => (
-                <div key={index} className={`list-item ${openIndex === index ? "open" : ""}`}>
-                  <div className="list-item__row">
-                    <div className="col">
-                      <span className={`status status--${item.state}`}>{getStateLabel(item.state)}</span>
-                    </div>
-                    <div className="col">{formatNumber(item.unit_price)}</div>
-                    <div className="col">{formatNumber(item.cnt)}</div>
-                    <div className="col">{formatNumber(item.amount)}</div>
-                    <div className="col">{formatNumber(item.my_settlement_amount)}</div>
-                    <div className="col col--btn toggle-btn-box" style={{ width: "15px", height: "20px" }}>
-                      <button
-                        className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
-                        onClick={() => toggle(index)}
+              <>
+                {/* table head */}
+                <div className="table-section__tit__list-head">
+                  <div className="col">Status</div>
+                  <div className="col">Unit Price</div>
+                  <div className="col">Quantity</div>
+                  <div className="col">Total Amount</div>
+                  <div className="col">My Settlement Amount</div>
+                  <div className="col col--btn"></div>
+                </div>
+
+                {/* table body */}
+                {slicedData.map((item, index) => (
+                  <div
+                    key={index}
+                    className={`list-item ${openIndex === index ? "open" : ""}`}
+                  >
+                    <div className="list-item__row">
+                      <div className="col">
+                        <span className={`status status--${item.state}`}>
+                          {getStateLabel(item.state)}
+                        </span>
+                      </div>
+                      <div className="col">{formatNumber(item.unit_price)}</div>
+                      <div className="col">{formatNumber(item.cnt)}</div>
+                      <div className="col">{formatNumber(item.amount)}</div>
+                      <div className="col">
+                        {formatNumber(item.my_settlement_amount)}
+                      </div>
+                      <div
+                        className="col col--btn toggle-btn-box"
+                        style={{ width: "15px", height: "20px" }}
                       >
-                        <img src={arrowDownIcon} alt="토글" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {openIndex === index && (
-                    <div className="list-item__detail">
-                      <div className="info-table">
-                        <div className="info-header">
-                          <div className="col col--email">Email Address</div>
-                          <div className="col">Share</div>
-                          <div className="col">Settlement Amount</div>
-                          <div className="col">Settlement Status</div>
-                        </div>
-
-                        {item.down_referrals.map((user, i) => (
-                          <div className="info-row" key={i}>
-                            <div className="col col--email">
-                              {i === 0 ? (
-                                <strong>{user.username}</strong>
-                              ) : (
-                                <>
-                                  <Link to={`/other-sales-record?email=${user.username}`}>
-                                    <span>{user.username}</span>
-                                    <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
-                                  </Link>
-                                </>
-                              )}
-                            </div>
-                            <div className="col">{user.share}%</div>
-                            <div className="col">{user.settlement_amount}</div>
-                            <div className="col">
-                              <span className={`status ${user.is_complt ? "status--success" : "status--failed"}`}>
-                                {user.is_complt ? "Completed" : "Pending"}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
+                        <button
+                          className={`toggle-btn ${
+                            openIndex === index ? "rotate" : ""
+                          }`}
+                          onClick={() => toggle(index)}
+                        >
+                          <img src={arrowDownIcon} alt="토글" />
+                        </button>
                       </div>
                     </div>
-                  )}
-                </div>
-              ))
+
+                    {openIndex === index && (
+                      <div className="list-item__detail">
+                        <div className="info-table">
+                          <div className="info-header">
+                            <div className="col col--email">Email Address</div>
+                            <div className="col">Share</div>
+                            <div className="col">Settlement Amount</div>
+                            <div className="col">Settlement Status</div>
+                          </div>
+
+                          {item.down_referrals.map((user, i) => (
+                            <div className="info-row" key={i}>
+                              <div className="col col--email">
+                                {i === 0 ? (
+                                  <strong>{user.username}</strong>
+                                ) : (
+                                  <Link
+                                    to={`/other-sales-record?email=${user.username}`}
+                                  >
+                                    <span>{user.username}</span>
+                                    <img
+                                      src={arrowRightIcon}
+                                      alt="자세히 보기"
+                                      className="arrow-icon"
+                                    />
+                                  </Link>
+                                )}
+                              </div>
+                              <div className="col">{user.share}%</div>
+                              <div className="col">
+                                {formatNumber(user.settlement_amount)}
+                              </div>
+                              <div className="col">
+                                <span
+                                  className={`status ${
+                                    user.is_complt
+                                      ? "status--success"
+                                      : "status--failed"
+                                  }`}
+                                >
+                                  {user.is_complt ? "Completed" : "Pending"}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </>
             )}
           </>
         )}
