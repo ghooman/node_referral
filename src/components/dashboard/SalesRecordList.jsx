@@ -36,7 +36,7 @@ function SalesRecordList({
       pending: "Pending",
       approved: "Approved",
       cancelled: "Cancelled",
-      승인완료: "Settlement",
+      // 승인완료: "Settlement",
       settled: "Settled",
     };
     return stateMap[state] || state;

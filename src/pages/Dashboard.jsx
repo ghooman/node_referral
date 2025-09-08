@@ -140,7 +140,7 @@ function Dashboard() {
     setCopiedIndex((prev) => ({ ...prev, code: true }));
   };
   const handleCopyLink = (code) => {
-    const fullUrl = `https://affiliate.musicontheblock.com/signup/?r=${code}`; // 노드구매페이지 url나오면 붙이기
+    const fullUrl = `https://purchase-node.musicontheblock.com/?r=${code}`; // 노드구매페이지 url나오면 붙이기
     navigator.clipboard.writeText(fullUrl);
     setCopiedIndex((prev) => ({ ...prev, link: true }));
   };

@@ -173,20 +173,14 @@ function SalesRecord() {
   // 승인 요청 버튼 클릭 -> 상태 변경하는 함수
   const handleChangeState = async (salesId, newState) => {
     try {
-      const res = await axios.post(
-        `${serverAPI}/api/sales/${salesId}/state`,
-        null,
-        {
-          params: { state: newState },
-          headers: { Authorization: `Bearer ${userToken}` },
-        }
-      );
+      const res = await axios.post(`${serverAPI}/api/sales/${salesId}/state`, null, {
+        params: { state: newState },
+        headers: { Authorization: `Bearer ${userToken}` },
+      });
       console.log("상태 변경 성공:", res.data.status);
 
       // 상태만 변경하는 경우
-      const updatedList = newDealList.map((item) =>
-        item.id === salesId ? { ...item, state: newState } : item
-      );
+      const updatedList = newDealList.map((item) => (item.id === salesId ? { ...item, state: newState } : item));
       setNewDealList(updatedList);
 
       // 혹은 최신 상태 fetch
@@ -202,15 +196,11 @@ function SalesRecord() {
   const handleCancelRequest = async (salesId) => {
     console.log("🟡 취소 요청 시도 중 - salesId:", salesId);
     try {
-      const res = await axios.post(
-        `${serverAPI}/api/sales/${salesId}/cancel`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const res = await axios.post(`${serverAPI}/api/sales/${salesId}/cancel`, null, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       console.log("🟢 승인요청 취소 성공:", res.data);
       await fetchNewDealList(); // 리스트 갱신
     } catch (error) {
@@ -292,15 +282,12 @@ function SalesRecord() {
     { key: "pending", label: "Pending" },
     { key: "approved", label: "Approved" },
     { key: "cancelled", label: "Cancelled" },
-    { key: "승인완료", label: "Settlement" },
+    // { key: "승인완료", label: "Settlement" },
     { key: "settled", label: "Settled" },
   ];
 
   // 필터 라벨링
-  const statusLabelMap = React.useMemo(
-    () => Object.fromEntries(STATUS_OPTIONS.map((o) => [o.key, o.label])),
-    []
-  );
+  const statusLabelMap = React.useMemo(() => Object.fromEntries(STATUS_OPTIONS.map((o) => [o.key, o.label])), []);
   const getStateLabel = (state) => statusLabelMap[state] || state;
 
   //----- useEffect 모음  ------------------------------------------------------------------------------------
@@ -358,11 +345,7 @@ function SalesRecord() {
                   Total <small>{totalCnt}</small>
                 </span>
               </div>
-              <button
-                type="button"
-                className="sales-section__btn"
-                onClick={handleClickNewDealBtn}
-              >
+              <button type="button" className="sales-section__btn" onClick={handleClickNewDealBtn}>
                 New Transaction
               </button>
             </div>
@@ -389,11 +372,7 @@ function SalesRecord() {
           <div className="filter-group">
             <div className="filter-group__title">Filter</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-              <button
-                type="button"
-                className="custom-select__btn"
-                onClick={() => setIsFilterOpen((prev) => !prev)}
-              >
+              <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
                 <span>{getStateLabel(selectedStatus)}</span>
                 <i className="custom-select__arrow"></i>
               </button>
@@ -443,56 +422,28 @@ function SalesRecord() {
                     <div className="table-empty">No sales records.</div>
                   ) : (
                     [...newDealList]
-                      .sort(
-                        (a, b) => new Date(b.create_dt) - new Date(a.create_dt)
-                      )
+                      .sort((a, b) => new Date(b.create_dt) - new Date(a.create_dt))
                       .map((item, index) => (
-                        <div
-                          className={`list-item ${
-                            openIndex === index ? "open" : ""
-                          }`}
-                          key={index}
-                        >
+                        <div className={`list-item ${openIndex === index ? "open" : ""}`} key={index}>
                           <div className="list-item__row sales-record">
                             <div className="col">{item.buyer_name}</div>
-                            <div className="col mobile-del">
-                              {formatNumber(item.cnt)}
-                            </div>
-                            <div className="col mobile-del">
-                              {formatNumber(item.unit_price)}
-                            </div>
-                            <div className="col">
-                              {formatNumber(item.cnt * item.unit_price)}
-                            </div>
-                            <div className="col">
-                              {formatNumber(item.settlement_amount)}
-                            </div>
-                            <div className="col mobile-del">
-                              {formatDate(item.create_dt)}
-                            </div>
+                            <div className="col mobile-del">{formatNumber(item.cnt)}</div>
+                            <div className="col mobile-del">{formatNumber(item.unit_price)}</div>
+                            <div className="col">{formatNumber(item.cnt * item.unit_price)}</div>
+                            <div className="col">{formatNumber(item.settlement_amount)}</div>
+                            <div className="col mobile-del">{formatDate(item.create_dt)}</div>
                             <div className="col toggle-btn-box">
                               <button
-                                className={`badge badge--${getBadgeClassName(
-                                  item.state
-                                )}`}
+                                className={`badge badge--${getBadgeClassName(item.state)}`}
                                 onClick={() => {
-                                  console.log(
-                                    "🟡 버튼 클릭됨 - 현재 상태:",
-                                    item.state,
-                                    "id:",
-                                    item.id
-                                  );
+                                  console.log("🟡 버튼 클릭됨 - 현재 상태:", item.state, "id:", item.id);
 
                                   if (item.state === "requested") {
-                                    console.log(
-                                      "🟢 승인요청 상태 → pending 으로 변경 시도"
-                                    );
+                                    console.log("🟢 승인요청 상태 → pending 으로 변경 시도");
                                     // handleChangeState(item.id, "pending");
                                     setShowConfirmModalIndex(item.id);
                                   } else {
-                                    console.log(
-                                      "🔴 승인요청 상태가 아니라서 아무 작업도 하지 않음"
-                                    );
+                                    console.log("🔴 승인요청 상태가 아니라서 아무 작업도 하지 않음");
                                   }
                                 }}
                               >
@@ -502,13 +453,8 @@ function SalesRecord() {
                             <div className="col toggle-btn-box">
                               {/* 취소 버튼 감싸는 래퍼는 항상 존재하지만 내부는 조건부 */}
                               <div className="cancel-wrap">
-                                {["requested", "pending"].includes(
-                                  item.state
-                                ) ? (
-                                  <button
-                                    className="btn-line-cancel"
-                                    onClick={() => setCancelTargetId(item.id)}
-                                  >
+                                {["requested", "pending"].includes(item.state) ? (
+                                  <button className="btn-line-cancel" onClick={() => setCancelTargetId(item.id)}>
                                     Cancel
                                   </button>
                                 ) : (
@@ -526,9 +472,7 @@ function SalesRecord() {
                               {/* 화살표 버튼은 항상 렌더링 */}
                               <div className="arrow-wrap">
                                 <button
-                                  className={`toggle-btn ${
-                                    openIndex === index ? "rotate" : ""
-                                  }`}
+                                  className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
                                   onClick={() => toggle(index)}
                                 >
                                   <img src={arrowDownIcon} alt="토글" />
@@ -544,9 +488,7 @@ function SalesRecord() {
                                   <b>Wallet Address</b>
                                   <span>
                                     {item.buyer_wallet_address}
-                                    <CopyButton
-                                      textToCopy={item.buyer_wallet_address}
-                                    />
+                                    <CopyButton textToCopy={item.buyer_wallet_address} />
                                   </span>
                                 </p>
                                 <p>
@@ -557,19 +499,11 @@ function SalesRecord() {
                               <div className="list-item__detail__list">
                                 <p>
                                   <b>Approval Completed Date</b>
-                                  <span>
-                                    {item.approval_dt
-                                      ? formatDate(item.approval_dt)
-                                      : "-"}
-                                  </span>
+                                  <span>{item.approval_dt ? formatDate(item.approval_dt) : "-"}</span>
                                 </p>
                                 <p>
                                   <b>Settlement Completed Date</b>
-                                  <span>
-                                    {item.settlement_dt
-                                      ? formatDate(item.settlement_dt)
-                                      : "-"}
-                                  </span>
+                                  <span>{item.settlement_dt ? formatDate(item.settlement_dt) : "-"}</span>
                                 </p>
                               </div>
                             </div>
@@ -581,11 +515,7 @@ function SalesRecord() {
               )}
             </div>
           </section>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
         </div>
         <Footer />
       </div>
@@ -679,14 +609,13 @@ function SalesRecord() {
               </div>
               <div className="modal__footer">
                 <button
-                  className={`btn btn-content-modal ${
-                    isNewDealValid ? "" : "btn--disabled"
-                  } ${isLoading ? "btn--loading" : ""}`}
+                  className={`btn btn-content-modal ${isNewDealValid ? "" : "btn--disabled"} ${
+                    isLoading ? "btn--loading" : ""
+                  }`}
                   disabled={!isNewDealValid}
                   onClick={handleNewDealSubmit}
                 >
-                  {isLoading ? "Submitting..." : "Submit Transaction"}{" "}
-                  <LoadingDots />
+                  {isLoading ? "Submitting..." : "Submit Transaction"} <LoadingDots />
                 </button>
               </div>
             </div>
