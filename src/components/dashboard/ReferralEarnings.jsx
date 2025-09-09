@@ -10,14 +10,7 @@ import OtherSalesRecord from "../../pages/OtherSalesRecord";
 import "./ReferralEarnings.scss";
 import Loading from "../Loading.jsx";
 
-function ReferralEarnings({
-  openIndex,
-  handleToggle,
-  downReferralActive,
-  sliceList5,
-  isPageLoading,
-  formatNumber,
-}) {
+function ReferralEarnings({ openIndex, handleToggle, downReferralActive, sliceList5, isPageLoading, formatNumber }) {
   const dummyDataList = [
     {
       state: "requested", // ← 문자열
@@ -92,7 +85,7 @@ function ReferralEarnings({
       pending: "Pending",
       approved: "Approved",
       cancelled: "Cancelled",
-      settled: "Settled",
+      settled: "Paid",
     };
     return map[state] || state;
   };
@@ -128,30 +121,18 @@ function ReferralEarnings({
 
                 {/* table body */}
                 {slicedData.map((item, index) => (
-                  <div
-                    key={index}
-                    className={`list-item ${openIndex === index ? "open" : ""}`}
-                  >
+                  <div key={index} className={`list-item ${openIndex === index ? "open" : ""}`}>
                     <div className="list-item__row">
                       <div className="col">
-                        <span className={`status status--${item.state}`}>
-                          {getStateLabel(item.state)}
-                        </span>
+                        <span className={`status status--${item.state}`}>{getStateLabel(item.state)}</span>
                       </div>
                       <div className="col">{formatNumber(item.unit_price)}</div>
                       <div className="col">{formatNumber(item.cnt)}</div>
                       <div className="col">{formatNumber(item.amount)}</div>
-                      <div className="col">
-                        {formatNumber(item.my_settlement_amount)}
-                      </div>
-                      <div
-                        className="col col--btn toggle-btn-box"
-                        style={{ width: "15px", height: "20px" }}
-                      >
+                      <div className="col">{formatNumber(item.my_settlement_amount)}</div>
+                      <div className="col col--btn toggle-btn-box" style={{ width: "15px", height: "20px" }}>
                         <button
-                          className={`toggle-btn ${
-                            openIndex === index ? "rotate" : ""
-                          }`}
+                          className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
                           onClick={() => toggle(index)}
                         >
                           <img src={arrowDownIcon} alt="토글" />
@@ -175,30 +156,16 @@ function ReferralEarnings({
                                 {i === 0 ? (
                                   <strong>{user.username}</strong>
                                 ) : (
-                                  <Link
-                                    to={`/other-sales-record?email=${user.username}`}
-                                  >
+                                  <Link to={`/other-sales-record?email=${user.username}`}>
                                     <span>{user.username}</span>
-                                    <img
-                                      src={arrowRightIcon}
-                                      alt="자세히 보기"
-                                      className="arrow-icon"
-                                    />
+                                    <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
                                   </Link>
                                 )}
                               </div>
                               <div className="col">{user.share}%</div>
+                              <div className="col">{formatNumber(user.settlement_amount)}</div>
                               <div className="col">
-                                {formatNumber(user.settlement_amount)}
-                              </div>
-                              <div className="col">
-                                <span
-                                  className={`status ${
-                                    user.is_complt
-                                      ? "status--success"
-                                      : "status--failed"
-                                  }`}
-                                >
+                                <span className={`status ${user.is_complt ? "status--success" : "status--failed"}`}>
                                   {user.is_complt ? "Completed" : "Pending"}
                                 </span>
                               </div>

@@ -26,14 +26,11 @@ function ReferralRegistrantsList() {
   const GetReferralList = async () => {
     setIsPageLoading(true);
     try {
-      const res = await axios.get(
-        `${serverAPI}/api/user/referrals?sort_by=${selectedSortOption}`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const res = await axios.get(`${serverAPI}/api/user/referrals?sort_by=${selectedSortOption}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
 
       const list = res.data || [];
       setReferralList(list);
@@ -80,7 +77,7 @@ function ReferralRegistrantsList() {
         <div className="page-wrapper table-center">
           <div className="sales-section">
             <div className="sales-section__record-tit">
-              <h2>Referral Registrants List</h2>
+              <h2>My Direct Clients List</h2>
               <span>
                 Total <small>{referralCnt}</small>
               </span>
@@ -90,26 +87,15 @@ function ReferralRegistrantsList() {
           <div className="filter-group">
             <div className="filter-group__title">Filter</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-              <button
-                type="button"
-                className="custom-select__btn"
-                onClick={() => setIsFilterOpen((prev) => !prev)}
-              >
-                <span>
-                  {
-                    SORT_OPTIONS.find((o) => o.value === selectedSortOption)
-                      ?.label
-                  }
-                </span>
+              <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
+                <span>{SORT_OPTIONS.find((o) => o.value === selectedSortOption)?.label}</span>
                 <i className="custom-select__arrow"></i>
               </button>
               <ul className="custom-select__list">
                 {SORT_OPTIONS.map((opt) => (
                   <li
                     key={opt.value}
-                    className={
-                      selectedSortOption === opt.value ? "is-selected" : ""
-                    }
+                    className={selectedSortOption === opt.value ? "is-selected" : ""}
                     onClick={() => {
                       setSelectedSortOption(opt.value);
                       setIsFilterOpen(false);
@@ -133,7 +119,7 @@ function ReferralRegistrantsList() {
               ) : (
                 <>
                   <div className="table-section__tit__list-head">
-                    <div className="col">Registrants</div>
+                    <div className="col">Client</div>
                     <div className="col">Join Date</div>
                   </div>
 

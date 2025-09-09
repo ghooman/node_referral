@@ -45,29 +45,23 @@ function MasterDashboardDone() {
   // 필터 드롭다운 순서
   const STATUS_OPTIONS = [
     { key: "all", label: "All" },
-    { key: "normal", label: "Affiliate" },
-    { key: "referral", label: "User" },
+    { key: "normal", label: "Sales" },
+    { key: "referral", label: "Client" },
   ];
 
   // 필터 라벨링
-  const statusLabelMap = React.useMemo(
-    () => Object.fromEntries(STATUS_OPTIONS.map((o) => [o.key, o.label])),
-    []
-  );
+  const statusLabelMap = React.useMemo(() => Object.fromEntries(STATUS_OPTIONS.map((o) => [o.key, o.label])), []);
   const getStateLabel = (state) => statusLabelMap[state] || state;
 
   //----- API 호출 함수  ------------------------------------------------------------------------------------
   // 상단 대시보드 API 함수
   const handleGetDashboard = async () => {
     try {
-      const res = await axios.get(
-        `${serverAPI}/api/sales/settlement/dashboard`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const res = await axios.get(`${serverAPI}/api/sales/settlement/dashboard`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
       console.log("상단 대시보드 가져오기 완료!", res.data);
       setDashboard(res.data);
     } catch (error) {
@@ -77,13 +71,9 @@ function MasterDashboardDone() {
 
   // 하단 리스트 API 함수
   const handleGetDataList = async () => {
-    const isoStart = startDate
-      ? new Date(new Date(startDate).setHours(0, 0, 0, 0)).toISOString()
-      : null;
+    const isoStart = startDate ? new Date(new Date(startDate).setHours(0, 0, 0, 0)).toISOString() : null;
 
-    const isoEnd = endDate
-      ? new Date(new Date(endDate).setHours(23, 59, 59, 999)).toISOString()
-      : null;
+    const isoEnd = endDate ? new Date(new Date(endDate).setHours(23, 59, 59, 999)).toISOString() : null;
 
     console.log("📤 서버로 보내는 start_date", isoStart);
     console.log("📤 서버로 보내는 end_date", isoEnd);
@@ -167,12 +157,10 @@ function MasterDashboardDone() {
         <div className="page-wrapper masterdashboard-wrapper">
           <ul className="tab-ui">
             <li>
-              <Link to="/master-dashboard-doing">
-                Sales Approval / Settlement
-              </Link>
+              <Link to="/master-dashboard-doing">Sales Approval / Paid</Link>
             </li>
             <li className="selected">
-              <Link to="/master-dashboard-done">Settlement History</Link>
+              <Link to="/master-dashboard-done">Paid History</Link>
             </li>
           </ul>
 
@@ -181,16 +169,10 @@ function MasterDashboardDone() {
             <label htmlFor="startDate"> Date Filter</label>
             <div className="date-field">
               {/* 시작일 */}
-              <MyDatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-              />
+              <MyDatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
               <span className="dash">-</span>
               {/* 종료일 */}
-              <MyDatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-              />
+              <MyDatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
               <button className="btn--reset" onClick={handleReset}>
                 Reset
               </button>
@@ -203,19 +185,19 @@ function MasterDashboardDone() {
             <div className="dash-section__txt">
               <ul className="dash-section__txt__board">
                 <li>
-                  <h3>Settled</h3>
+                  <h3>Paid</h3>
                   <p>{formatNumber(dashboard.settlement_complt)}</p>
                 </li>
                 <li>
-                  <h3>Revenue</h3>
+                  <h3>Total Sales Volume</h3>
                   <p>{formatNumber(dashboard.total_income)}</p>
                 </li>
                 <li>
-                  <h3>Settlement</h3>
+                  <h3>Total Commission</h3>
                   <p>{formatNumber(dashboard.total_settlement)}</p>
                 </li>
                 <li>
-                  <h3>Fee Revenue</h3>
+                  <h3>Total Fee</h3>
                   <p>{formatNumber(dashboard.total_fee_income)}</p>
                 </li>
                 <li>
@@ -230,11 +212,7 @@ function MasterDashboardDone() {
             <div className="filter-group">
               <div className="filter-group__title">Filter</div>
               <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-                <button
-                  type="button"
-                  className="custom-select__btn"
-                  onClick={() => setIsFilterOpen((prev) => !prev)}
-                >
+                <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
                   <span>{getStateLabel(selectedKey)}</span>
                   <i className="custom-select__arrow"></i>
                 </button>
@@ -277,12 +255,7 @@ function MasterDashboardDone() {
                   handleGetDataList();
                 }}
               >
-                <img
-                  src={SearchIcon}
-                  alt="검색"
-                  aria-hidden="true"
-                  className="icon-search"
-                />
+                <img src={SearchIcon} alt="검색" aria-hidden="true" className="icon-search" />
                 <span className="sr-only">검색</span>
               </button>
             </div>
@@ -303,15 +276,15 @@ function MasterDashboardDone() {
                   <>
                     {/* table head */}
                     <div className="table-section__tit__list-head">
-                      <div className="col">Transaction Type</div>
-                      <div className="col">Buyer</div>
-                      <div className="col">Seller Email</div>
+                      <div className="col">Sales Type</div>
+                      <div className="col">Client</div>
+                      <div className="col">Sub-Affiliate E-Mail</div>
                       <div className="col">Wallet Address</div>
                       <div className="col">Quantity</div>
-                      <div className="col">Total Amount</div>
-                      <div className="col">Settlement Amount</div>
+                      <div className="col">Total Sales Volume</div>
+                      <div className="col">Total Commission</div>
                       <div className="col">Fee</div>
-                      <div className="col">Settlement Date</div>
+                      <div className="col">Paid Date</div>
                     </div>
 
                     {/* table body */}
@@ -319,9 +292,7 @@ function MasterDashboardDone() {
                       <div key={index} className="list-item">
                         <div className="list-item__row">
                           <div className="col">
-                            <span className={`status status--${item.sort}`}>
-                              {getStateLabel(item.sort)}
-                            </span>
+                            <span className={`status status--${item.sort}`}>{getStateLabel(item.sort)}</span>
                           </div>
                           <div className="col">{item.buyer_name}</div>
                           <div className="col email">{item.username}</div>
@@ -331,13 +302,9 @@ function MasterDashboardDone() {
                           </div>
                           <div className="col">{formatNumber(item.cnt)}</div>
                           <div className="col">{formatNumber(item.amount)}</div>
-                          <div className="col">
-                            {formatNumber(item.total_settlement_amount)}
-                          </div>
+                          <div className="col">{formatNumber(item.total_settlement_amount)}</div>
                           <div className="col">{formatNumber(item.fee)}</div>
-                          <div className="col">
-                            {formatDate(item.settlement_dt)}
-                          </div>
+                          <div className="col">{formatDate(item.settlement_dt)}</div>
                         </div>
                       </div>
                     ))}
@@ -346,11 +313,7 @@ function MasterDashboardDone() {
               )}
             </div>
           </div>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
         </div>
         <Footer />
       </div>

@@ -35,10 +35,10 @@ function Header() {
   const menuItems = [
     { path: "/dashboard", label: "Dashboard" },
     { path: "/sales-record", label: "My Sales Records" },
-    { path: "/referral-purchase-list", label: "Referral Purchases" },
-    { path: "/referral-registrants-list", label: "Referral Registrants" },
+    { path: "/referral-purchase-list", label: "My Direct Clients Sales Board" },
+    { path: "/referral-registrants-list", label: "My Direct Clients List" },
     { path: "/recommender-list", label: "Invite Code" },
-    { path: "/referral-earning-list", label: "Sub-Affiliate Earnings" },
+    { path: "/referral-earning-list", label: "Sub-Affiliate’s Sales Board" },
   ];
 
   // embla
