@@ -97,13 +97,19 @@ function ReferralPurchaseList() {
     return `${address.slice(0, 4)}....${address.slice(-4)}`;
   };
 
+  // 숫자 포맷 함수
+  const formatNumber = (num) => {
+    if (isNaN(num)) return 0;
+    return Number(num).toLocaleString("en-US"); // "1,000", "50,000" 형태
+  };
+
   //----- 필터 제어 ------------------------------------------------------------------------------------
   // 필터 드롭다운 순서
   const STATUS_OPTIONS = [
     { key: "all", label: "All" },
     { key: "approved", label: "Approved" },
     // { key: "승인완료", label: "Settlement" },
-    { key: "settled", label: "Settled" },
+    { key: "settled", label: "Paid" },
   ];
 
   // 필터 라벨링
@@ -128,7 +134,7 @@ function ReferralPurchaseList() {
         <div className="page-wrapper">
           <div className="sales-section">
             <div className="sales-section__record-tit">
-              <h2>Referral Purchases List</h2>
+              <h2>My Direct Clients Sales Board</h2>
               <span>
                 Total <small>{referralCnt}</small>
               </span>
@@ -137,23 +143,23 @@ function ReferralPurchaseList() {
             <ul className="sales-section__record-list referral-record-list">
               <li>
                 {/* 레퍼럴 구매 수입 */}
-                <h3>Referral Purchase Revenue</h3>
-                <p>{referralDashboard.referral_buy_revenue}</p>
+                <h3>Sales Volume by Direct Client</h3>
+                <p>{formatNumber(referralDashboard.referral_buy_revenue)}</p>
               </li>
               <li>
                 {/* 레퍼럴 구매 정산금 */}
-                <h3>Referral Purchase Settlements</h3>
-                <p>{referralDashboard.referral_settlement}</p>
+                <h3>Direct Client’s Commission</h3>
+                <p>{formatNumber(referralDashboard.referral_settlement)}</p>
               </li>
               <li>
                 {/* 레퍼럴 구매 노드 수 */}
-                <h3>Referral Purchase Nodes</h3>
-                <p>{referralDashboard.referral_sold_nodes}</p>
+                <h3>Number of Nodes Direct Client Sold</h3>
+                <p>{formatNumber(referralDashboard.referral_sold_nodes)}</p>
               </li>
               <li>
                 {/* 내 레퍼럴 가입자 */}
-                <h3>My Referral Members</h3>
-                <p>{referralDashboard.my_referrals}</p>
+                <h3>My Direct Clients</h3>
+                <p>{formatNumber(referralDashboard.my_referrals)}</p>
               </li>
             </ul>
           </div>
@@ -197,13 +203,13 @@ function ReferralPurchaseList() {
                   {/* table head */}
                   <div className="table-section__tit__list-head">
                     <div className="col">Status</div>
-                    <div className="col">Buyer</div>
+                    <div className="col">Client</div>
                     <div className="col">Unit Price</div>
                     <div className="col">Quantity</div>
-                    <div className="col">Total Amount</div>
-                    <div className="col">Settlement</div>
+                    <div className="col">Sales Volume</div>
+                    <div className="col">My Commission</div>
                     <div className="col">Purchase Date</div>
-                    <div className="col">Settlement Date</div>
+                    <div className="col">Paid Date</div>
                   </div>
 
                   {/* table body */}

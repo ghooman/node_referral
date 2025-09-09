@@ -283,7 +283,7 @@ function SalesRecord() {
     { key: "approved", label: "Approved" },
     { key: "cancelled", label: "Cancelled" },
     // { key: "승인완료", label: "Settlement" },
-    { key: "settled", label: "Settled" },
+    { key: "settled", label: "Paid" },
   ];
 
   // 필터 라벨링
@@ -346,16 +346,16 @@ function SalesRecord() {
                 </span>
               </div>
               <button type="button" className="sales-section__btn" onClick={handleClickNewDealBtn}>
-                New Transaction
+                Register a New Sales
               </button>
             </div>
             <ul className="sales-section__record-list">
               <li>
-                <h3>My Sales Revenue</h3>
+                <h3>My Own Sales</h3>
                 <p>{formatNumber(myRevenue)}</p>
               </li>
               <li>
-                <h3>My Sales Settlements</h3>
+                <h3>My Commission</h3>
                 <p>{formatNumber(mySettlement)}</p>
               </li>
               {/* <li>
@@ -363,7 +363,7 @@ function SalesRecord() {
                 <p>{formatNumber(myReferrals)}</p>
               </li> */}
               <li>
-                <h3>My Sold Nodes</h3>
+                <h3>Number of Nodes I Sold</h3>
                 <p>{formatNumber(mySoldNode)}</p>
               </li>
             </ul>
@@ -412,11 +412,11 @@ function SalesRecord() {
                     <>
                       {/* list-head는 데이터 있을 때만 보여줌 */}
                       <div className="table-section__tit__list-head sales-record">
-                        <div className="col">Buyer</div>
+                        <div className="col">Client</div>
                         <div className="col mobile-del">Quantity</div>
                         <div className="col mobile-del">Unit Price</div>
-                        <div className="col">Total Amount</div>
-                        <div className="col">Settlement Amount</div>
+                        <div className="col">Sales Volume</div>
+                        <div className="col">Commission</div>
                         <div className="col mobile-del">Registration Date</div>
                         <div className="col">Status</div>
                         <div className="col">Action</div>
@@ -503,7 +503,7 @@ function SalesRecord() {
                                     <span>{item.approval_dt ? formatDate(item.approval_dt) : "-"}</span>
                                   </p>
                                   <p>
-                                    <b>Settlement Completed Date</b>
+                                    <b>Paid Date</b>
                                     <span>{item.settlement_dt ? formatDate(item.settlement_dt) : "-"}</span>
                                   </p>
                                 </div>
@@ -539,7 +539,7 @@ function SalesRecord() {
           <div className="modal modal-transaction">
             <div className="modal__content">
               <div className="modal__header">
-                <h2>New Transaction</h2>
+                <h2>Register a New Sales</h2>
                 <button
                   type="button"
                   onClick={() => {
@@ -553,9 +553,9 @@ function SalesRecord() {
               <div className="modal__body">
                 <InputField
                   id="buyerName"
-                  label="Buyer Name"
+                  label="Client"
                   type="text"
-                  placeholder="Enter buyer name"
+                  placeholder="Enter Client Name"
                   required
                   value={newDealUser}
                   onChange={handleBuyerNameChange}
@@ -593,9 +593,9 @@ function SalesRecord() {
                 </div>
                 <InputField
                   id="buyerWalletAddress"
-                  label="Buyer Wallet Address"
+                  label="Client Wallet Address"
                   type="text"
-                  placeholder="Enter buyer's wallet address"
+                  placeholder="Enter Client’s Wallet Address"
                   required
                   value={newDealWallet}
                   onChange={(e) => setNewDealWallet(e.target.value)}

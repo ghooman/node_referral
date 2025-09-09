@@ -53,7 +53,7 @@ export default function ProtectedRoutes() {
       <Route
         path="/other-sales-record"
         element={
-          <RoleRoute allowedRoles={["user"]}>
+          <RoleRoute allowedRoles={["user", "master"]}>
             <OtherSalesRecord />
           </RoleRoute>
         }
@@ -75,7 +75,6 @@ export default function ProtectedRoutes() {
           </RoleRoute>
         }
       />
-
 
       {/* 마스터 전용 */}
       <Route

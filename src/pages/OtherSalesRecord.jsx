@@ -60,29 +60,29 @@ function OtherSalesRecord() {
   const FILTER_SORT_OPTIONS = [
     { key: "status:all", label: "All" },
     // sort 계열
-    { key: "sort:normal", label: "Affiliate" },
-    { key: "sort:referral", label: "User" },
+    { key: "sort:normal", label: "Sales" },
+    { key: "sort:referral", label: "Client" },
     // status 계열
     { key: "status:requested", label: "Requested" },
     { key: "status:pending", label: "Pending" },
     { key: "status:approved", label: "Approved" },
     { key: "status:cancelled", label: "Cancelled" },
     // { key: "status:승인완료", label: "Settlement" },
-    { key: "status:settled", label: "Settled" },
+    { key: "status:settled", label: "Paid" },
   ];
 
   // 필터 라벨링
   const getStateLabel = (state) => {
     const map = {
       all: "All",
-      normal: "Affiliate",
-      referral: "User",
+      normal: "Sales",
+      referral: "Client",
       requested: "Requested",
       pending: "Pending",
       approved: "Approved",
       cancelled: "Cancelled",
       // 승인완료: "Settlement",
-      settled: "Settled",
+      settled: "Paid",
     };
     return map[state] || state;
   };
@@ -233,23 +233,23 @@ function OtherSalesRecord() {
             </div>
             <ul className="sales-section__record-list referral-record-list">
               <li>
-                <h3>Sales Income</h3>
+                <h3>Sales income of this sub-affiliate</h3>
                 <p>{formatNumber(subUserDashboard.sales_revenue)}</p>
               </li>
               <li>
-                <h3>Sales Settlement Amount</h3>
+                <h3>Commission</h3>
                 <p>{formatNumber(subUserDashboard.settlement)}</p>
               </li>
               <li>
-                <h3>Invites</h3>
+                <h3>Direct Sub-Affiliates</h3>
                 <p>{formatNumber(subUserDashboard.referrals)}</p>
               </li>
               <li>
-                <h3>Number of Sales Nodes</h3>
+                <h3>Number of Nodes This Sub-Affiliate’s Sold</h3>
                 <p>{formatNumber(subUserDashboard.sold_nodes)}</p>
               </li>
               <li>
-                <h3>Referrals</h3>
+                <h3>Direct Clients</h3>
                 <p>{formatNumber(subUserDashboard.referral_code_user)}</p>
               </li>
             </ul>
@@ -286,14 +286,14 @@ function OtherSalesRecord() {
               {!isPageLoading && (
                 <>
                   <div className="table-section__tit__list-head">
-                    <div className="col">Transaction Type</div>
+                    <div className="col">Sales Type</div>
                     <div className="col">Status</div>
                     <div className="col">Unit Price</div>
                     <div className="col">Quantity</div>
-                    <div className="col">Total Amount</div>
-                    <div className="col">Settlement Amount</div>
+                    <div className="col">Sales Volume</div>
+                    <div className="col">Commission</div>
                     <div className="col">Registration Date</div>
-                    <div className="col">Buyer</div>
+                    <div className="col">Client</div>
                   </div>
 
                   {/*  하위 판매자가 없는 경우 */}

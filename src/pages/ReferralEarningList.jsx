@@ -52,29 +52,29 @@ function ReferralEarningList() {
   const FILTER_SORT_OPTIONS = [
     { key: "status:all", label: "All" },
     // sort 계열
-    { key: "sort:normal", label: "Affiliate" },
-    { key: "sort:referral", label: "User" },
+    { key: "sort:normal", label: "Sales" },
+    { key: "sort:referral", label: "Client" },
     // status 계열
     { key: "status:requested", label: "Requested" },
     { key: "status:pending", label: "Pending" },
     { key: "status:approved", label: "Approved" },
     { key: "status:cancelled", label: "Cancelled" },
     // { key: "status:승인완료", label: "Settlement" },
-    { key: "status:settled", label: "Settled" },
+    { key: "status:settled", label: "Paid" },
   ];
 
   // 필터 라벨링
   const getStateLabel = (state) => {
     const map = {
       all: "All",
-      normal: "Affiliate",
-      referral: "User",
+      normal: "Sales",
+      referral: "Client",
       requested: "Requested",
       pending: "Pending",
       approved: "Approved",
       cancelled: "Cancelled",
       // 승인완료: "Settlement",
-      settled: "Settled",
+      settled: "Paid",
     };
     return map[state] || state;
   };
@@ -154,6 +154,12 @@ function ReferralEarningList() {
     setOpenIndex((prev) => (prev === index ? null : index));
   };
 
+  // 숫자 포맷 함수
+  const formatNumber = (num) => {
+    if (isNaN(num)) return 0;
+    return Number(num).toLocaleString("en-US"); // "1,000", "50,000" 형태
+  };
+
   //----- useEffect 모음  ------------------------------------------------------------------------------------
   useEffect(() => {
     handleDownReferralActiveList();
@@ -171,7 +177,7 @@ function ReferralEarningList() {
         <div className="page-wrapper padding-del">
           <div className="sales-section">
             <div className="sales-section__record-tit">
-              <h2>Sub-Affiliate Earnings List</h2>
+              <h2>Sub-Affiliate’s Sales Board</h2>
               <span>
                 Total <small>{totalCnt}</small>
               </span>
@@ -180,23 +186,23 @@ function ReferralEarningList() {
             <ul className="sales-section__record-list referral-record-list">
               <li>
                 {/* 하위자 레퍼럴 매출 */}
-                <h3>Sub-affiliate Sales Revenue</h3>
-                <p>{downRevenue}</p>
+                <h3>Sales Volume by Sub-Affiliate</h3>
+                <p>{formatNumber(downRevenue)}</p>
               </li>
               <li>
                 {/* 하위자 레퍼럴 정산금 */}
-                <h3>Sub-affiliate Settlements</h3>
-                <p>{downSettlement}</p>
+                <h3>Sub-Affiliate’s Commission</h3>
+                <p>{formatNumber(downSettlement)}</p>
               </li>
               <li>
                 {/* 하위자 레퍼럴 가입자 수 */}
-                <h3>Sub-affiliate Referrals</h3>
-                <p>{downReferrals}</p>
+                <h3>Number of Nodes Sub-Affiliate Sold</h3>
+                <p>{formatNumber(downReferrals)}</p>
               </li>
               <li>
                 {/* 하위자 레퍼럴 판매 노드 수 */}
-                <h3>Sub-affiliate Sold Nodes</h3>
-                <p>{downSoldNode}</p>
+                <h3>My Indirect Clients</h3>
+                <p>{formatNumber(downSoldNode)}</p>
               </li>
             </ul>
           </div>
@@ -205,14 +211,8 @@ function ReferralEarningList() {
           <div className="filter-group">
             <div className="filter-group__title">Filter</div>
             <div className={`custom-select ${isFilterOpen ? "is-open" : ""}`}>
-              <button
-                type="button"
-                className="custom-select__btn"
-                onClick={() => setIsFilterOpen((prev) => !prev)}
-              >
-                <span>
-                  {FILTER_SORT_OPTIONS.find((o) => o.key === selectedKey)?.label || "All"}
-                </span>
+              <button type="button" className="custom-select__btn" onClick={() => setIsFilterOpen((prev) => !prev)}>
+                <span>{FILTER_SORT_OPTIONS.find((o) => o.key === selectedKey)?.label || "All"}</span>
                 <i className="custom-select__arrow"></i>
               </button>
               <ul className="custom-select__list">
@@ -242,12 +242,12 @@ function ReferralEarningList() {
                 <>
                   {/* table head */}
                   <div className="table-section__tit__list-head">
-                    <div className="col">Transaction Type</div>
+                    <div className="col">Sales Type</div>
                     <div className="col">Status</div>
                     <div className="col">Unit Price</div>
                     <div className="col">Quantity</div>
-                    <div className="col">Total Amount</div>
-                    <div className="col">My Settlement Amount</div>
+                    <div className="col">Total Sales Volume</div>
+                    <div className="col">My Commission</div>
                   </div>
 
                   {/* table body */}
@@ -258,22 +258,15 @@ function ReferralEarningList() {
                     >
                       <div className="list-item__row">
                         <div className="col">
-                          <span className={`status status--${item.sort}`}>
-                            {getStateLabel(item.sort)}
-                          </span>
+                          <span className={`status status--${item.sort}`}>{getStateLabel(item.sort)}</span>
                         </div>
                         <div className="col">
-                          <span className={`status status--${item.state}`}>
-                            {getStateLabel(item.state)}
-                          </span>
+                          <span className={`status status--${item.state}`}>{getStateLabel(item.state)}</span>
                         </div>
                         <div className="col">{item.unit_price}</div>
                         <div className="col">{item.cnt}</div>
                         <div className="col">{item.amount}</div>
-                        <div
-                          className="col col--btn toggle-btn-box"
-                          style={{ width: "15px", height: "20px" }}
-                        >
+                        <div className="col col--btn toggle-btn-box" style={{ width: "15px", height: "20px" }}>
                           {item.my_settlement_amount}
                           <button
                             className={`toggle-btn ${openIndex === index ? "rotate" : ""}`}
@@ -290,8 +283,8 @@ function ReferralEarningList() {
                             <div className="info-header">
                               <div className="col col--email">Email Address</div>
                               <div className="col">Share</div>
-                              <div className="col">Settlement Amount</div>
-                              <div className="col">Settlement Status</div>
+                              <div className="col">Commission</div>
+                              <div className="col">Commission Status</div>
                             </div>
 
                             {(item.down_referrals || item.referrals || []).map((user, i) => (
@@ -303,11 +296,7 @@ function ReferralEarningList() {
                                     <>
                                       <Link to={`/other-sales-record?email=${user.username}`}>
                                         <span>{user.username}</span>
-                                        <img
-                                          src={arrowRightIcon}
-                                          alt="자세히 보기"
-                                          className="arrow-icon"
-                                        />
+                                        <img src={arrowRightIcon} alt="자세히 보기" className="arrow-icon" />
                                       </Link>
                                     </>
                                   )}
@@ -331,11 +320,7 @@ function ReferralEarningList() {
             </div>
           </section>
 
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
         </div>
         <Footer />
       </div>

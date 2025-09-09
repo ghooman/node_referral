@@ -37,7 +37,7 @@ function SalesRecordList({
       approved: "Approved",
       cancelled: "Cancelled",
       // 승인완료: "Settlement",
-      settled: "Settled",
+      settled: "Paid",
     };
     return stateMap[state] || state;
   };

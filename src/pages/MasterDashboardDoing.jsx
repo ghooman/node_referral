@@ -57,29 +57,29 @@ function MasterDashboardDoing() {
   const FILTER_SORT_OPTIONS = [
     { key: "status:all", label: "All" },
     // sort 계열
-    { key: "sort:normal", label: "Affiliate" },
-    { key: "sort:referral", label: "User" },
+    { key: "sort:normal", label: "Sales" },
+    { key: "sort:referral", label: "Client" },
     // status 계열
     { key: "status:requested", label: "Requested" },
     { key: "status:pending", label: "Pending" },
     { key: "status:approved", label: "Approved" },
     { key: "status:cancelled", label: "Cancelled" },
     // { key: "status:승인완료", label: "Settlement" },
-    { key: "status:settled", label: "Settled" },
+    { key: "status:settled", label: "Paid" },
   ];
 
   // 필터 라벨링
   const getStateLabel = (state) => {
     const map = {
       all: "All",
-      normal: "Affiliate",
-      referral: "User",
+      normal: "Sales",
+      referral: "Client",
       requested: "Requested",
       pending: "Pending",
       approved: "Approved",
       cancelled: "Cancelled",
       // 승인완료: "Settlement",
-      settled: "Settled",
+      settled: "Paid",
     };
     return map[state] || state;
   };
@@ -284,10 +284,10 @@ function MasterDashboardDoing() {
         <div className="page-wrapper masterdashboard-wrapper">
           <ul className="tab-ui">
             <li className="selected">
-              <Link to="/master-dashboard-doing">Sales Approval / Settlement</Link>
+              <Link to="/master-dashboard-doing">Sales Approval / Paid</Link>
             </li>
             <li>
-              <Link to="/master-dashboard-done">Settlement History</Link>
+              <Link to="/master-dashboard-done">Paid History</Link>
             </li>
           </ul>
 
@@ -301,13 +301,17 @@ function MasterDashboardDoing() {
                   <p>{formatNumber(dashboard.sales_record)}</p>
                 </li>
                 <li>
-                  <h3>Settled</h3>
+                  <h3>Paid</h3>
                   <p>{formatNumber(dashboard.settled)}</p>
                 </li>
                 <li>
-                  <h3>Settlement</h3>
-                  <p>{formatNumber(dashboard.settlement_pending)}</p>
+                  <h3>Pending</h3>
+                  <p>{formatNumber(dashboard.pending)}</p>
                 </li>
+                {/* <li>
+                  <h3>Pending</h3>
+                  <p>{formatNumber(dashboard.settlement_pending)}</p>
+                </li> */}
                 <li>
                   <h3>Approved</h3>
                   <p>{formatNumber(dashboard.approved)}</p>
@@ -315,10 +319,6 @@ function MasterDashboardDoing() {
                 <li>
                   <h3>Cancelled</h3>
                   <p>{formatNumber(dashboard.cancelled)}</p>
-                </li>
-                <li>
-                  <h3>Pending</h3>
-                  <p>{formatNumber(dashboard.pending)}</p>
                 </li>
               </ul>
             </div>
@@ -385,7 +385,7 @@ function MasterDashboardDoing() {
                   {/* table head */}
                   <div className="table-section__tit__list-head">
                     <div className="col" style={{ flex: "0 0 10%" }}>
-                      Transaction Type
+                      Sales Type
                     </div>
                     <div className="col" style={{ flex: "0 0 10%" }}>
                       Status
@@ -400,7 +400,7 @@ function MasterDashboardDoing() {
                       Quantity
                     </div>
                     <div className="col" style={{ flex: "0 0 10%" }}>
-                      Total Amount
+                      Total Sales Volume
                     </div>
                     <div className="col" style={{ flex: "0 0 15%" }}>
                       Wallet to Send
@@ -488,13 +488,13 @@ function MasterDashboardDoing() {
                                   Share
                                 </div>
                                 <div className="col" style={{ flex: "0 0 30%" }}>
-                                  Settlement Amount
+                                  Commission
                                 </div>
                                 <div className="col" style={{ flex: "0 0 20%" }}>
                                   Wallet Address
                                 </div>
                                 <div className="col" style={{ flex: "0 0 20%" }}>
-                                  Settlement Status
+                                  Paid
                                 </div>
                               </div>
 
