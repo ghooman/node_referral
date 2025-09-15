@@ -91,7 +91,7 @@ function Footer() {
             </li>
             <li>
               <Link
-                to="https://medium.com/@musicontheblock."
+                to="https://medium.com/@musicontheblock"
                 target="_blank"
                 rel="noopener noreferrer"
               >
