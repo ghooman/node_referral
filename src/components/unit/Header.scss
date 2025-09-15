@@ -79,7 +79,7 @@
     padding: clamp(12px, 1.1vw, 16px) 2%;
     max-width: 1920px;
     margin: 0 auto;
-    overflow: hidden;
+    // overflow: hidden;
     @include md{
       padding: clamp(12px, 1.1vw, 16px) 4%;
     }
