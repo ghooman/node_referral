@@ -288,7 +288,7 @@ function Dashboard() {
               )}
             </li>
             <li>
-              <span>My Client Code</span>
+              <span>My Promo Code</span>
               <div className="user-section__referral-code-com">
                 <strong>{userReferral}</strong>
                 <div className="user-section__referral-code-com__btn-box">
